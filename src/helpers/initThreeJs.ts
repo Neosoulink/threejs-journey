@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+export interface initThreeProps {
+	enableOrbit?: boolean;
+}
+
 // DEFS
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
@@ -12,7 +16,7 @@ export function animate() {
 	requestAnimationFrame(animate);
 }
 
-export default () => {
+export default (props?: initThreeProps) => {
 	const app = document.querySelector<HTMLDivElement>("#app")!;
 
 	// SCENE & CAMERA
@@ -30,8 +34,10 @@ export default () => {
 	app.appendChild(renderer.domElement);
 
 	// ORBIT CONTROL
-	// @ts-ignore: Will be used later
-	const orbitControls = new OrbitControls(camera, renderer.domElement);
+	if (props?.enableOrbit) {
+		// @ts-ignore: Will be used later
+		const orbitControls = new OrbitControls(camera, renderer.domElement);
+	}
 
 	// ANIMATION LOOP
 	animate();

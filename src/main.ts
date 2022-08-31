@@ -7,7 +7,7 @@ import Cube from "./components/Cube";
 // STYLES
 import "./assets/css/style.css";
 
-const APP = initThreeJs();
+const APP = initThreeJs({ enableOrbit: true });
 
 APP.scene.add(Cube);
 
