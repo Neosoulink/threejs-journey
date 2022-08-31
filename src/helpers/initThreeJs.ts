@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export interface initThreeProps {
+	enableAnimation?: boolean;
 	enableOrbit?: boolean;
 }
 
@@ -40,7 +41,9 @@ export default (props?: initThreeProps) => {
 	}
 
 	// ANIMATION LOOP
-	animate();
+	if (props?.enableAnimation === undefined || props?.enableAnimation) {
+		animate();
+	}
 
 	return {
 		scene,
