@@ -8,10 +8,10 @@ import Cube from "./components/Cube";
 // STYLES
 import "./assets/css/style.css";
 
-const APP = initThreeJs({ enableOrbit: true });
 const CUBE_CLONE = Cube.clone();
 const AXES_HELPER = new THREE.AxesHelper(5);
 const CUBES_GROUP = new THREE.Group();
+// let savedTime = Date.now();
 
 // SCALES
 Cube.scale.set(0.5, 0.5, 0.5);
@@ -26,11 +26,29 @@ Cube.rotation.set(Math.PI / 5, 3, 3);
 CUBE_CLONE.rotation.set(Math.PI / 2, -1, 0, "YXZ");
 CUBES_GROUP.rotation.z = 3;
 
-//
+// GROUPE
 CUBES_GROUP.add(Cube, CUBE_CLONE);
+
+// CLOCK
+const ANIMATION_CLOCK = new THREE.Clock();
+
+const APP = initThreeJs({
+	enableOrbit: true,
+});
 APP.scene.add(AXES_HELPER);
 APP.scene.add(CUBES_GROUP);
 
 //
 APP.camera.position.z = 10;
-APP.camera.lookAt(CUBES_GROUP.position);
+APP.animate(() => {
+	// Animation using native js date
+	// const CURRENT_TIME = Date.now();
+	// const DELTA_TIME = CURRENT_TIME - savedTime;
+	// savedTime = CURRENT_TIME;
+
+	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
+
+	APP.camera.position.y = Math.sin(ELAPSED_TIME);
+	APP.camera.position.x = Math.cos(ELAPSED_TIME);
+	APP.camera.lookAt(CUBE_CLONE.position);
+});
