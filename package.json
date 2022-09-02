@@ -8,6 +8,7 @@
 		"test": "jest"
 	},
 	"dependencies": {
+		"gsap": "3.5.1",
 		"three": "^0.140.0"
 	},
 	"devDependencies": {
