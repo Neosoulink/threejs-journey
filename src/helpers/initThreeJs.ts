@@ -12,9 +12,10 @@ let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGL1Renderer;
 
 // FUNCTIONS
-export function animate() {
+export function animate(callback: () => any = () => {}) {
 	renderer.render(scene, camera);
-	requestAnimationFrame(animate);
+	callback();
+	requestAnimationFrame(() => animate(callback));
 }
 
 export default (props?: initThreeProps) => {
@@ -40,14 +41,10 @@ export default (props?: initThreeProps) => {
 		const orbitControls = new OrbitControls(camera, renderer.domElement);
 	}
 
-	// ANIMATION LOOP
-	if (props?.enableAnimation === undefined || props?.enableAnimation) {
-		animate();
-	}
-
 	return {
 		scene,
 		camera,
 		renderer,
+		animate,
 	};
 };
