@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import GSAP from "gsap";
 
 // HELPERS
 import initThreeJs from "./helpers/initThreeJs";
@@ -30,7 +31,7 @@ CUBES_GROUP.rotation.z = 3;
 CUBES_GROUP.add(Cube, CUBE_CLONE);
 
 // CLOCK
-const ANIMATION_CLOCK = new THREE.Clock();
+// const ANIMATION_CLOCK = new THREE.Clock();
 
 const APP = initThreeJs({
 	enableOrbit: true,
@@ -40,15 +41,18 @@ APP.scene.add(CUBES_GROUP);
 
 //
 APP.camera.position.z = 10;
+
+// GSAP
+GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 1, x: 1 });
+GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
+
 APP.animate(() => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
 	// const DELTA_TIME = CURRENT_TIME - savedTime;
 	// savedTime = CURRENT_TIME;
-
-	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
-
-	APP.camera.position.y = Math.sin(ELAPSED_TIME);
-	APP.camera.position.x = Math.cos(ELAPSED_TIME);
-	APP.camera.lookAt(CUBE_CLONE.position);
+	// const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
+	// APP.camera.position.y = Math.sin(ELAPSED_TIME);
+	// APP.camera.position.x = Math.cos(ELAPSED_TIME);
+	// APP.camera.lookAt(CUBE_CLONE.position);
 });
