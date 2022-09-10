@@ -34,7 +34,7 @@ CUBES_GROUP.add(Cube, CUBE_CLONE);
 const ANIMATION_CLOCK = new THREE.Clock();
 
 const APP = initThreeJs({
-	// enableOrbit: true,
+	enableOrbit: true,
 	axesSizes: 5,
 });
 
@@ -48,15 +48,15 @@ APP.camera.position.z = 10;
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
 
 // CURSOR ANIMATION
-const CURSOR_POS = {
-	x: 0,
-	y: 0,
-};
-window.addEventListener("mousemove", (e) => {
-	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
-	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
-});
-
+// const CURSOR_POS = {
+// 	x: 0,
+// 	y: 0,
+// };
+// window.addEventListener("mousemove", (e) => {
+// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
+// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
+// });
+APP.control.enableDamping = true;
 APP.animate(() => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
@@ -69,8 +69,11 @@ APP.animate(() => {
 	CUBES_GROUP.rotation.x = Math.cos(ELAPSED_TIME);
 
 	// CAMERA ANIMATION
-	APP.camera.position.x = Math.sin(CURSOR_POS.x * Math.PI * 2) * 5;
-	APP.camera.position.z = Math.cos(CURSOR_POS.x * Math.PI * 2) * 5;
-	APP.camera.position.y = CURSOR_POS.y * 10;
-	APP.camera.lookAt(new THREE.Vector3());
+	// APP.camera.position.x = Math.sin(CURSOR_POS.x * Math.PI * 2) * 5;
+	// APP.camera.position.z = Math.cos(CURSOR_POS.x * Math.PI * 2) * 5;
+	// APP.camera.position.y = CURSOR_POS.y * 10;
+	// APP.camera.lookAt(new THREE.Vector3());
+
+	// UPDATE CONTROL
+	APP.control.update();
 });
