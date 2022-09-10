@@ -10,7 +10,7 @@ import Cube from "./components/Cube";
 import "./assets/css/style.css";
 
 const CUBE_CLONE = Cube.clone();
-const AXES_HELPER = new THREE.AxesHelper(5);
+
 const CUBES_GROUP = new THREE.Group();
 // let savedTime = Date.now();
 
@@ -34,9 +34,10 @@ CUBES_GROUP.add(Cube, CUBE_CLONE);
 const ANIMATION_CLOCK = new THREE.Clock();
 
 const APP = initThreeJs({
-	enableOrbit: true,
+	// enableOrbit: true,
+	axesSizes: 5,
 });
-APP.scene.add(AXES_HELPER);
+
 APP.scene.add(CUBES_GROUP);
 
 //

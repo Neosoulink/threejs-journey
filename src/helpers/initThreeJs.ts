@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export interface initThreeProps {
 	enableAnimation?: boolean;
 	enableOrbit?: boolean;
+	axesSizes?: number;
 }
 
 // DEFS
@@ -53,6 +54,11 @@ export default (props?: initThreeProps) => {
 	if (props?.enableOrbit) {
 		// @ts-ignore: Will be used later
 		const orbitControls = new OrbitControls(camera, renderer.domElement);
+	}
+
+	if (typeof props?.axesSizes === "number") {
+		const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
+		scene.add(AXES_HELPER);
 	}
 
 	return {
