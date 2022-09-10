@@ -8,7 +8,7 @@ export interface initThreeProps {
 
 // DEFS
 let scene: THREE.Scene;
-let camera: THREE.PerspectiveCamera;
+let camera: THREE.Camera;
 let renderer: THREE.WebGL1Renderer;
 
 // FUNCTIONS
@@ -23,12 +23,26 @@ export default (props?: initThreeProps) => {
 
 	// SCENE & CAMERA
 	scene = new THREE.Scene();
+
+	// Perspective camera
 	camera = new THREE.PerspectiveCamera(
 		75,
 		window.innerWidth / window.innerHeight,
 		0.1,
 		1000
 	);
+
+	// Orthographic Camera
+	// const ASPECT_RATIO = window.innerWidth / window.innerHeight;
+	// camera = new THREE.OrthographicCamera(
+	// 	-1 * ASPECT_RATIO,
+	// 	1 * ASPECT_RATIO,
+	// 	1,
+	// 	1,
+	// 	0.1,
+	// 	100
+	// );
+	// console.log(ASPECT_RATIO);
 
 	renderer = new THREE.WebGL1Renderer({ antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
