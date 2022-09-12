@@ -10,6 +10,7 @@ export interface initThreeProps {
 		height: number;
 	};
 	control?: OrbitControls;
+	autoSceneResize?: boolean;
 }
 
 // DEFS
@@ -17,6 +18,10 @@ let scene: THREE.Scene;
 let camera: THREE.Camera;
 let renderer: THREE.WebGL1Renderer;
 let control: OrbitControls;
+let viewPortSize = {
+	width: window.innerWidth,
+	height: window.innerHeight,
+};
 
 // FUNCTIONS
 export function animate(callback: () => any = () => {}) {
@@ -27,10 +32,8 @@ export function animate(callback: () => any = () => {}) {
 
 export default (props?: initThreeProps) => {
 	const APP = document.querySelector<HTMLDivElement>("#app")!;
-	const SCENE_SIZES: initThreeProps["sceneSizes"] = props?.sceneSizes ?? {
-		width: window.innerWidth,
-		height: window.innerHeight,
-	};
+	const SCENE_SIZES: initThreeProps["sceneSizes"] =
+		props?.sceneSizes ?? viewPortSize;
 
 	// SCENE & CAMERA
 	scene = new THREE.Scene();
@@ -68,6 +71,18 @@ export default (props?: initThreeProps) => {
 	if (typeof props?.axesSizes === "number") {
 		const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
 		scene.add(AXES_HELPER);
+	}
+
+	if (props?.autoSceneResize === undefined || props?.autoSceneResize === true) {
+		window.addEventListener("resize", () => {
+			viewPortSize.width = window.innerWidth;
+			viewPortSize.height = window.innerHeight;
+
+			camera.aspect = viewPortSize.width / viewPortSize.height;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(viewPortSize.width, viewPortSize.height);
+		});
 	}
 
 	return {
