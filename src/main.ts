@@ -58,11 +58,27 @@ APP.camera.position.z = 10;
 // });
 
 window.addEventListener("dblclick", () => {
-	if (!window.document.fullscreenElement) {
-		return APP.canvas.requestFullscreen();
-	}
+	const fullscreenElement =
+		// @ts-ignore: Safari fix ಥ‿ಥ
+		document.fullscreenElement || document.webkitFullscreenElement;
 
-	return window.document.exitFullscreen();
+	if (!fullscreenElement) {
+		if (APP.canvas.requestFullscreen) {
+			APP.canvas.requestFullscreen();
+			// @ts-ignore: Safari fix ಥ‿ಥ
+		} else if (APP.canvas.webkitRequestFullscreen) {
+			// @ts-ignore: Safari fix ಥ‿ಥ
+			APP.canvas.webkitRequestFullscreen();
+		}
+	} else {
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+			// @ts-ignore: Safari fix ಥ‿ಥ
+		} else if (document.webkitExitFullscreen) {
+			// @ts-ignore: Safari fix ಥ‿ಥ
+			document.webkitExitFullscreen();
+		}
+	}
 });
 
 APP.control.enableDamping = true;
