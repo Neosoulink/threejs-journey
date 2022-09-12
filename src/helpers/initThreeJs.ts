@@ -15,7 +15,7 @@ export interface initThreeProps {
 
 // DEFS
 let scene: THREE.Scene;
-let camera: THREE.Camera;
+let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGL1Renderer;
 let control: OrbitControls;
 let viewPortSize = {
