@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export interface initThreeProps {
-	enableAnimation?: boolean;
 	enableOrbit?: boolean;
 	axesSizes?: number;
 	sceneSizes?: {
@@ -60,6 +59,7 @@ export default (props?: initThreeProps) => {
 
 	renderer = new THREE.WebGL1Renderer({ antialias: true });
 	renderer.setSize(SCENE_SIZES.width, SCENE_SIZES.height);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 	APP.appendChild(renderer.domElement);
 
@@ -82,6 +82,7 @@ export default (props?: initThreeProps) => {
 			camera.updateProjectionMatrix();
 
 			renderer.setSize(viewPortSize.width, viewPortSize.height);
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		});
 	}
 
