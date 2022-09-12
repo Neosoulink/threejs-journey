@@ -56,6 +56,15 @@ APP.camera.position.z = 10;
 // 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
 // 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
 // });
+
+window.addEventListener("dblclick", () => {
+	if (!window.document.fullscreenElement) {
+		return APP.canvas.requestFullscreen();
+	}
+
+	return window.document.exitFullscreen();
+});
+
 APP.control.enableDamping = true;
 APP.animate(() => {
 	// Animation using native js date

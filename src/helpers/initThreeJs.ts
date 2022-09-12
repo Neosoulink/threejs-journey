@@ -87,6 +87,7 @@ export default (props?: initThreeProps) => {
 	}
 
 	return {
+		canvas: APP,
 		scene,
 		camera,
 		renderer,
