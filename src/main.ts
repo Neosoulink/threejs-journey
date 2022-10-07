@@ -9,9 +9,23 @@ import Cube from "./components/Cube";
 // STYLES
 import "./assets/css/style.css";
 
-const CUBE_CLONE = Cube.clone();
+// DATA
+const TRIANGLE_VERTICES = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
 
-const CUBES_GROUP = new THREE.Group();
+// FORMS
+const CubeClone = Cube.clone();
+const TriangleGeometry = new THREE.BufferGeometry();
+const TriangleMaterial = new THREE.MeshBasicMaterial({
+	color: 0xff55ee,
+	wireframe: true,
+});
+TriangleGeometry.setAttribute(
+	"position",
+	new THREE.BufferAttribute(TRIANGLE_VERTICES, 3)
+);
+const TriangleMesh = new THREE.Mesh(TriangleGeometry, TriangleMaterial);
+
+const CubesGroup = new THREE.Group();
 // let savedTime = Date.now();
 
 // SCALES
@@ -19,16 +33,17 @@ Cube.scale.set(0.5, 0.5, 0.5);
 
 // POSITIONS
 Cube.position.set(0, 0, 0);
-CUBE_CLONE.position.set(-3, -1, 0);
+CubeClone.position.set(-3, -1, 0);
+CubeClone.material.wireframe = true;
 
 // ROTATIONS
 Cube.rotation.reorder("YXZ");
 Cube.rotation.set(Math.PI / 5, 3, 3);
-CUBE_CLONE.rotation.set(Math.PI / 2, -1, 0, "YXZ");
-// CUBES_GROUP.rotation.z = 3;
+CubeClone.rotation.set(Math.PI / 2, -1, 0, "YXZ");
+// CubesGroup.rotation.z = 3;
 
 // GROUPE
-CUBES_GROUP.add(Cube, CUBE_CLONE);
+CubesGroup.add(Cube, CubeClone);
 
 // CLOCK
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -38,14 +53,15 @@ const APP = initThreeJs({
 	axesSizes: 5,
 });
 
-APP.scene.add(CUBES_GROUP);
+APP.scene.add(CubesGroup);
+APP.scene.add(TriangleMesh);
 
 //
 APP.camera.position.z = 10;
 
 // GSAP
-// GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 1, x: 1 });
-// GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
+// GSAP.to(CubesGroup.position, { duration: 0.2, delay: 1, x: 1 });
+// GSAP.to(CubesGroup.position, { duration: 0.2, delay: 2, x: 0 });
 
 // CURSOR ANIMATION
 // const CURSOR_POS = {
@@ -90,8 +106,8 @@ APP.animate(() => {
 
 	// ANIMATION using THREE clock
 	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
-	CUBES_GROUP.rotation.y = Math.sin(ELAPSED_TIME);
-	CUBES_GROUP.rotation.x = Math.cos(ELAPSED_TIME);
+	CubesGroup.rotation.y = Math.sin(ELAPSED_TIME);
+	CubesGroup.rotation.x = Math.cos(ELAPSED_TIME);
 
 	// CAMERA ANIMATION
 	// APP.camera.position.x = Math.sin(CURSOR_POS.x * Math.PI * 2) * 5;
