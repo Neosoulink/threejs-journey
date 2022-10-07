@@ -10,7 +10,12 @@ import Cube from "./components/Cube";
 import "./assets/css/style.css";
 
 // DATA
-const TRIANGLE_VERTICES = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+const TRIANGLE_VERTICES_COUNT = 500;
+const TRIANGLE_VERTICES = new Float32Array(TRIANGLE_VERTICES_COUNT * 3 * 3);
+
+for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
+	TRIANGLE_VERTICES[i] = (Math.random() - 0.5) * 4;
+}
 
 // FORMS
 const CubeClone = Cube.clone();
