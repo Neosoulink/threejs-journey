@@ -1,13 +1,18 @@
 import * as THREE from "three";
-// import GSAP from "gsap";
+import GUI from "lil-gui";
+import GSAP from "gsap";
 
 // HELPERS
 import initThreeJs from "./helpers/initThreeJs";
+
 // COMPONENTS
 import Cube from "./components/Cube";
 
 // STYLES
 import "./assets/css/style.css";
+
+// DEBUGGER
+const _GUI = new GUI();
 
 // DATA
 const TRIANGLE_VERTICES_COUNT = 500;
@@ -99,6 +104,33 @@ window.addEventListener("dblclick", () => {
 			// @ts-ignore: Safari fix ಥ‿ಥ
 			document.webkitExitFullscreen();
 		}
+	}
+});
+
+// CONTROLS
+_GUI.add(CubesGroup.position, "y").min(-100).max(100).step(0.01);
+_GUI.add(TriangleMesh, "visible");
+_GUI.add(TriangleMaterial, "wireframe");
+_GUI.add(Cube.material, "wireframe");
+_GUI.addColor(Cube.material, "color");
+_GUI.add(
+	{
+		function: () => {
+			GSAP.to(CubeClone.rotation, {
+				duration: 1,
+				y: CubeClone.rotation.y + Math.PI * 2,
+			});
+			GSAP.to(Cube.rotation, { duration: 1, y: Cube.rotation.y + Math.PI * 2 });
+		},
+	},
+	"function"
+);
+
+window.addEventListener("keydown", (e) => {
+	console.log("pressend h");
+	if (e.key === "h") {
+		if (_GUI._hidden) _GUI.show();
+		else _GUI.hide();
 	}
 });
 
