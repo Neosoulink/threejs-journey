@@ -11,6 +11,9 @@ import Cube from "./components/Cube";
 // STYLES
 import "./assets/css/style.css";
 
+// IMAGES
+import doorColorImg from "./assets/img/textures/door/color.jpg";
+
 // DEBUGGER
 const _GUI = new GUI();
 
@@ -22,8 +25,21 @@ for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
 	TRIANGLE_VERTICES[i] = (Math.random() - 0.5) * 4;
 }
 
+// TEXTURE
+const CUBE_IMG = new Image();
+const CUBE_TEXTURE = new THREE.Texture(CUBE_IMG);
+
+CUBE_IMG.onload = () => {
+	CUBE_TEXTURE.needsUpdate = true;
+};
+
+CUBE_IMG.src = doorColorImg;
+
 // FORMS
 const CubeClone = Cube.clone();
+CubeClone.material.color = new THREE.Color();
+CubeClone.material.map = CUBE_TEXTURE;
+
 const TriangleGeometry = new THREE.BufferGeometry();
 const TriangleMaterial = new THREE.MeshBasicMaterial({
 	color: 0xff55ee,
@@ -34,7 +50,7 @@ TriangleGeometry.setAttribute(
 	new THREE.BufferAttribute(TRIANGLE_VERTICES, 3)
 );
 const TriangleMesh = new THREE.Mesh(TriangleGeometry, TriangleMaterial);
-
+TriangleMesh.visible = false;
 const CubesGroup = new THREE.Group();
 // let savedTime = Date.now();
 
@@ -44,7 +60,6 @@ Cube.scale.set(0.5, 0.5, 0.5);
 // POSITIONS
 Cube.position.set(0, 0, 0);
 CubeClone.position.set(-3, -1, 0);
-CubeClone.material.wireframe = true;
 
 // ROTATIONS
 Cube.rotation.reorder("YXZ");
