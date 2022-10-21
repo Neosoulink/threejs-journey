@@ -12,7 +12,13 @@ import Cube from "./components/Cube";
 import "./assets/css/style.css";
 
 // IMAGES
+// import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
+// import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
 import doorColorImg from "./assets/img/textures/door/color.jpg";
+// import doorHeightImg from "./assets/img/textures/door/height.jpg";
+// import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
+// import doorNormalImg from "./assets/img/textures/door/normal.jpg";
+// import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 
 // DEBUGGER
 const _GUI = new GUI();
@@ -27,21 +33,42 @@ for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
 
 // TEXTURE
 // const CUBE_IMG = new Image();
-// const CUBE_TEXTURE = new THREE.Texture(CUBE_IMG);
+// const DOOR_COLOR_TEXTURE = new THREE.Texture(CUBE_IMG);
 
 // CUBE_IMG.onload = () => {
-// 	CUBE_TEXTURE.needsUpdate = true;
+// 	DOOR_COLOR_TEXTURE.needsUpdate = true;
 // };
 
 // CUBE_IMG.src = doorColorImg;
-const CUBE_TEXTURE = new THREE.TextureLoader().load(
-	doorColorImg
-);
+const LOADING_MANAGER = new THREE.LoadingManager();
+LOADING_MANAGER.onStart = () => {
+	console.log("on start loading");
+};
+LOADING_MANAGER.onProgress = () => {
+	console.log("On progress");
+};
+LOADING_MANAGER.onLoad = () => {
+	console.log("End loading");
+};
+LOADING_MANAGER.onError = () => {
+	console.log("Error triggered");
+};
+
+const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
+// const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
+// const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
+// 	doorAmbientOcclusionImg
+// );
+const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorColorImg);
+// const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
+// const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
+// const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
+// const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
 
 // FORMS
 const CubeClone = Cube.clone();
 CubeClone.material.color = new THREE.Color();
-CubeClone.material.map = CUBE_TEXTURE;
+CubeClone.material.map = DOOR_COLOR_TEXTURE;
 
 const TriangleGeometry = new THREE.BufferGeometry();
 const TriangleMaterial = new THREE.MeshBasicMaterial({
@@ -69,6 +96,7 @@ Cube.rotation.reorder("YXZ");
 Cube.rotation.set(Math.PI / 5, 3, 3);
 CubeClone.rotation.set(Math.PI / 2, -1, 0, "YXZ");
 // CubesGroup.rotation.z = 3;
+console.log(Cube);
 
 // GROUPE
 CubesGroup.add(Cube, CubeClone);
