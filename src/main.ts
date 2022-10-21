@@ -14,7 +14,7 @@ import "./assets/css/style.css";
 // IMAGES
 // import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
 // import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
-import doorColorImg from "./assets/img/textures/door/color.jpg";
+import doorColorImg from "./assets/img/textures/minecraft.png";
 // import doorHeightImg from "./assets/img/textures/door/height.jpg";
 // import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
 // import doorNormalImg from "./assets/img/textures/door/normal.jpg";
@@ -64,6 +64,22 @@ const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorColorImg);
 // const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
 // const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
 // const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
+// DOOR_COLOR_TEXTURE.repeat.x = 2;
+// DOOR_COLOR_TEXTURE.repeat.y = 3;
+
+// DOOR_COLOR_TEXTURE.offset.x = 0.5;
+// DOOR_COLOR_TEXTURE.offset.y = 0.5;
+
+// DOOR_COLOR_TEXTURE.wrapS = THREE.RepeatWrapping;
+// DOOR_COLOR_TEXTURE.wrapT = THREE.RepeatWrapping;
+
+// DOOR_COLOR_TEXTURE.center.x = 0.5;
+// DOOR_COLOR_TEXTURE.center.y = 0.5;
+
+// DOOR_COLOR_TEXTURE.rotation = Math.PI / 4;
+DOOR_COLOR_TEXTURE.generateMipmaps = false;
+DOOR_COLOR_TEXTURE.minFilter = THREE.NearestFilter;
+DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 
 // FORMS
 const CubeClone = Cube.clone();
@@ -113,7 +129,7 @@ APP.scene.add(CubesGroup);
 APP.scene.add(TriangleMesh);
 
 //
-APP.camera.position.z = 10;
+APP.camera.position.z = 1;
 
 // GSAP
 // GSAP.to(CubesGroup.position, { duration: 0.2, delay: 1, x: 1 });
