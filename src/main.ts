@@ -26,14 +26,17 @@ for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
 }
 
 // TEXTURE
-const CUBE_IMG = new Image();
-const CUBE_TEXTURE = new THREE.Texture(CUBE_IMG);
+// const CUBE_IMG = new Image();
+// const CUBE_TEXTURE = new THREE.Texture(CUBE_IMG);
 
-CUBE_IMG.onload = () => {
-	CUBE_TEXTURE.needsUpdate = true;
-};
+// CUBE_IMG.onload = () => {
+// 	CUBE_TEXTURE.needsUpdate = true;
+// };
 
-CUBE_IMG.src = doorColorImg;
+// CUBE_IMG.src = doorColorImg;
+const CUBE_TEXTURE = new THREE.TextureLoader().load(
+	doorColorImg
+);
 
 // FORMS
 const CubeClone = Cube.clone();
