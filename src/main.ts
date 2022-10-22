@@ -21,7 +21,7 @@ import minecraftImg from "./assets/img/textures/minecraft.png";
 // import doorNormalImg from "./assets/img/textures/door/normal.jpg";
 // import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 
-import matcaps1Img from "./assets/img/textures/matcaps/3.png";
+// import matcaps1Img from "./assets/img/textures/matcaps/3.png";
 
 // DEBUGGER
 const _GUI = new GUI();
@@ -94,7 +94,8 @@ CubeClone.material.map = DOOR_COLOR_TEXTURE;
 // const NEW_MATER6IAL = new THREE.MeshMatcapMaterial({
 // 	matcap: SPHERE_1_TEXTURE,
 // });
-const NEW_MATER6IAL = new THREE.MeshDepthMaterial();
+// const NEW_MATER6IAL = new THREE.MeshDepthMaterial();
+const NEW_MATER6IAL = new THREE.MeshLambertMaterial();
 
 // NEW_MATER6IAL.flatShading = true;
 // NEW_MATER6IAL.wireframe = true;
@@ -149,6 +150,14 @@ CubesGroup.add(Cube, CubeClone);
 // CLOCK
 const ANIMATION_CLOCK = new THREE.Clock();
 
+// LIGHT
+const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
+const POINT_LIGHT = new THREE.PointLight(0xffffff, 0.5);
+POINT_LIGHT.position.x = 2;
+POINT_LIGHT.position.y = 3;
+POINT_LIGHT.position.z = 4;
+
+// APP
 const APP = initThreeJs({
 	enableOrbit: true,
 	axesSizes: 5,
@@ -159,6 +168,8 @@ APP.scene.add(TriangleMesh);
 APP.scene.add(SPHERE_FORM);
 APP.scene.add(PLANE_FORM);
 APP.scene.add(TORUS_FORM);
+APP.scene.add(AMBIENT_LIGHT);
+APP.scene.add(POINT_LIGHT);
 
 //
 APP.camera.position.z = 8;
