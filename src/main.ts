@@ -12,13 +12,16 @@ import Cube from "./components/Cube";
 import "./assets/css/style.css";
 
 // IMAGES
-// import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
+import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
 // import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
-import doorColorImg from "./assets/img/textures/minecraft.png";
+import minecraftImg from "./assets/img/textures/minecraft.png";
+import doorDoorImg from "./assets/img/textures/door/color.jpg";
 // import doorHeightImg from "./assets/img/textures/door/height.jpg";
 // import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
 // import doorNormalImg from "./assets/img/textures/door/normal.jpg";
 // import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
+
+// import sphere1Img from "./assets/img/textures/matcaps/1.png";
 
 // DEBUGGER
 const _GUI = new GUI();
@@ -39,7 +42,7 @@ for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
 // 	DOOR_COLOR_TEXTURE.needsUpdate = true;
 // };
 
-// CUBE_IMG.src = doorColorImg;
+// CUBE_IMG.src = minecraftImg;
 const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
@@ -55,11 +58,12 @@ LOADING_MANAGER.onError = () => {
 };
 
 const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
-// const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
+const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
 // const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
 // 	doorAmbientOcclusionImg
 // );
-const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorColorImg);
+const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(minecraftImg);
+const SPHERE_1_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
 // const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
 // const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
 // const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
@@ -85,7 +89,11 @@ DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 const CubeClone = Cube.clone();
 CubeClone.material.color = new THREE.Color();
 CubeClone.material.map = DOOR_COLOR_TEXTURE;
-const NEW_MATER6IAL = new THREE.MeshBasicMaterial();
+const NEW_MATER6IAL = new THREE.MeshBasicMaterial({ map: SPHERE_1_TEXTURE });
+NEW_MATER6IAL.transparent = true;
+NEW_MATER6IAL.alphaMap = DOOR_ALPHA_TEXTURE;
+NEW_MATER6IAL.side = THREE.DoubleSide;
+
 const SPHERE_FORM = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
 	NEW_MATER6IAL
@@ -116,9 +124,9 @@ Cube.scale.set(0.5, 0.5, 0.5);
 // POSITIONS
 Cube.position.set(0, 0, 0);
 CubeClone.position.set(-3, -1, 0);
-SPHERE_FORM.position.set(2, 3, 0);
-PLANE_FORM.position.set(-3, 2, 0);
-TORUS_FORM.position.set(-3, -2, 0);
+SPHERE_FORM.position.set(-2, 3, 0);
+PLANE_FORM.position.set(0, 3, 0);
+TORUS_FORM.position.set(2, 3, 0);
 
 // ROTATIONS
 Cube.rotation.reorder("YXZ");
@@ -223,6 +231,14 @@ APP.animate(() => {
 	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
 	CubesGroup.rotation.y = Math.sin(ELAPSED_TIME);
 	CubesGroup.rotation.x = Math.cos(ELAPSED_TIME);
+
+	SPHERE_FORM.rotation.y = 0.1 * ELAPSED_TIME;
+	PLANE_FORM.rotation.y = 0.1 * ELAPSED_TIME;
+	TORUS_FORM.rotation.y = 0.1 * ELAPSED_TIME;
+
+	SPHERE_FORM.rotation.x = 0.25 * ELAPSED_TIME;
+	PLANE_FORM.rotation.x = 0.25 * ELAPSED_TIME;
+	TORUS_FORM.rotation.x = 0.25 * ELAPSED_TIME;
 
 	// CAMERA ANIMATION
 	// APP.camera.position.x = Math.sin(CURSOR_POS.x * Math.PI * 2) * 5;
