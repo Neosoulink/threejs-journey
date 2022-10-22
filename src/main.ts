@@ -95,8 +95,11 @@ CubeClone.material.map = DOOR_COLOR_TEXTURE;
 // 	matcap: SPHERE_1_TEXTURE,
 // });
 // const NEW_MATER6IAL = new THREE.MeshDepthMaterial();
-const NEW_MATER6IAL = new THREE.MeshLambertMaterial();
+// const NEW_MATER6IAL = new THREE.MeshLambertMaterial();
+const NEW_MATER6IAL = new THREE.MeshPhongMaterial();
 
+NEW_MATER6IAL.shininess = 100;
+NEW_MATER6IAL.specular = new THREE.Color(0xfff00f);
 // NEW_MATER6IAL.flatShading = true;
 // NEW_MATER6IAL.wireframe = true;
 // NEW_MATER6IAL.transparent = true;
