@@ -85,6 +85,16 @@ DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 const CubeClone = Cube.clone();
 CubeClone.material.color = new THREE.Color();
 CubeClone.material.map = DOOR_COLOR_TEXTURE;
+const NEW_MATER6IAL = new THREE.MeshBasicMaterial();
+const SPHERE_FORM = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 16, 16),
+	NEW_MATER6IAL
+);
+const PLANE_FORM = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), NEW_MATER6IAL);
+const TORUS_FORM = new THREE.Mesh(
+	new THREE.TorusGeometry(0.3, 0.2, 16, 32),
+	NEW_MATER6IAL
+);
 
 const TriangleGeometry = new THREE.BufferGeometry();
 const TriangleMaterial = new THREE.MeshBasicMaterial({
@@ -106,6 +116,9 @@ Cube.scale.set(0.5, 0.5, 0.5);
 // POSITIONS
 Cube.position.set(0, 0, 0);
 CubeClone.position.set(-3, -1, 0);
+SPHERE_FORM.position.set(2, 3, 0);
+PLANE_FORM.position.set(-3, 2, 0);
+TORUS_FORM.position.set(-3, -2, 0);
 
 // ROTATIONS
 Cube.rotation.reorder("YXZ");
@@ -127,9 +140,12 @@ const APP = initThreeJs({
 
 APP.scene.add(CubesGroup);
 APP.scene.add(TriangleMesh);
+APP.scene.add(SPHERE_FORM);
+APP.scene.add(PLANE_FORM);
+APP.scene.add(TORUS_FORM);
 
 //
-APP.camera.position.z = 1;
+APP.camera.position.z = 8;
 
 // GSAP
 // GSAP.to(CubesGroup.position, { duration: 0.2, delay: 1, x: 1 });
