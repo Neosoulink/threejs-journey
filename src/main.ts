@@ -12,16 +12,16 @@ import Cube from "./components/Cube";
 import "./assets/css/style.css";
 
 // IMAGES
-import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
+// import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
 // import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
 import minecraftImg from "./assets/img/textures/minecraft.png";
-import doorDoorImg from "./assets/img/textures/door/color.jpg";
+// import doorDoorImg from "./assets/img/textures/door/color.jpg";
 // import doorHeightImg from "./assets/img/textures/door/height.jpg";
 // import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
 // import doorNormalImg from "./assets/img/textures/door/normal.jpg";
 // import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 
-// import sphere1Img from "./assets/img/textures/matcaps/1.png";
+import matcaps1Img from "./assets/img/textures/matcaps/3.png";
 
 // DEBUGGER
 const _GUI = new GUI();
@@ -58,12 +58,12 @@ LOADING_MANAGER.onError = () => {
 };
 
 const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
-const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
+// const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
 // const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
 // 	doorAmbientOcclusionImg
 // );
 const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(minecraftImg);
-const SPHERE_1_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
+// const SPHERE_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
 // const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
 // const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
 // const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
@@ -89,10 +89,18 @@ DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 const CubeClone = Cube.clone();
 CubeClone.material.color = new THREE.Color();
 CubeClone.material.map = DOOR_COLOR_TEXTURE;
-const NEW_MATER6IAL = new THREE.MeshBasicMaterial({ map: SPHERE_1_TEXTURE });
-NEW_MATER6IAL.transparent = true;
-NEW_MATER6IAL.alphaMap = DOOR_ALPHA_TEXTURE;
-NEW_MATER6IAL.side = THREE.DoubleSide;
+// const NEW_MATER6IAL = new THREE.MeshBasicMaterial({map: SPHERE_1_TEXTURE});
+// const NEW_MATER6IAL = new THREE.MeshNormalMaterial();
+// const NEW_MATER6IAL = new THREE.MeshMatcapMaterial({
+// 	matcap: SPHERE_1_TEXTURE,
+// });
+const NEW_MATER6IAL = new THREE.MeshDepthMaterial();
+
+// NEW_MATER6IAL.flatShading = true;
+// NEW_MATER6IAL.wireframe = true;
+// NEW_MATER6IAL.transparent = true;
+// NEW_MATER6IAL.alphaMap = DOOR_ALPHA_TEXTURE;
+// NEW_MATER6IAL.side = THREE.DoubleSide;
 
 const SPHERE_FORM = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
