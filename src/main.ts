@@ -22,6 +22,7 @@ import minecraftImg from "./assets/img/textures/minecraft.png";
 // import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 
 // import matcaps1Img from "./assets/img/textures/matcaps/3.png";
+import gradientsImg from "./assets/img/textures/gradients/5.jpg";
 
 // DEBUGGER
 const _GUI = new GUI();
@@ -63,6 +64,10 @@ const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
 // 	doorAmbientOcclusionImg
 // );
 const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(minecraftImg);
+const GRADIENT_TEXTURE = TEXTURE_LOADER.load(gradientsImg);
+GRADIENT_TEXTURE.minFilter = THREE.NearestFilter;
+GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
+GRADIENT_TEXTURE.generateMipmaps = false;
 // const SPHERE_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
 // const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
 // const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
@@ -96,10 +101,13 @@ CubeClone.material.map = DOOR_COLOR_TEXTURE;
 // });
 // const NEW_MATER6IAL = new THREE.MeshDepthMaterial();
 // const NEW_MATER6IAL = new THREE.MeshLambertMaterial();
-const NEW_MATER6IAL = new THREE.MeshPhongMaterial();
+// const NEW_MATER6IAL = new THREE.MeshPhongMaterial();
+const NEW_MATER6IAL = new THREE.MeshToonMaterial({
+	gradientMap: GRADIENT_TEXTURE,
+});
 
-NEW_MATER6IAL.shininess = 100;
-NEW_MATER6IAL.specular = new THREE.Color(0xfff00f);
+// NEW_MATER6IAL.shininess = 100;
+// NEW_MATER6IAL.specular = new THREE.Color(0xfff00f);
 // NEW_MATER6IAL.flatShading = true;
 // NEW_MATER6IAL.wireframe = true;
 // NEW_MATER6IAL.transparent = true;
