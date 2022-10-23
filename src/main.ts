@@ -12,9 +12,6 @@ import Cube from "./components/Cube";
 /* STYLES */
 import "./assets/css/style.css";
 
-// FONTS
-// const HFont = require('./assets/fonts/helvetiker/helvetiker_regular.typeface.json')
-
 /* IMAGES */
 /* Door images */
 // import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
@@ -29,6 +26,7 @@ import doorDoorImg from "./assets/img/textures/door/color.jpg";
 // import matcaps1Img from "./assets/img/textures/matcaps/3.png";
 
 /* Gradients images */
+import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typeface.json?url";
 // import gradientsImg from "./assets/img/textures/gradients/5.jpg";
 
 /* Environment map images */
@@ -120,11 +118,8 @@ DOOR_COLOR_TEXTURE.minFilter = THREE.NearestFilter;
 DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 
 // FONTS
-// const FONT_LOADER = new FontLoader();
-// FONT_LOADER.load(
-// 	"./assets/fonts/helvetiker/helvetiker_regular.typeface.json",
-// 	() => console.log("Font loaded")
-// );
+const FONT_LOADER = new FontLoader();
+FONT_LOADER.load(HelvetikerFont, () => console.log("Font loaded"));
 
 /* MATERIALS */
 /** Define Material using MeshBasicMaterial */
