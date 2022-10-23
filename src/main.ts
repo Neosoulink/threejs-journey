@@ -12,17 +12,17 @@ import Cube from "./components/Cube";
 import "./assets/css/style.css";
 
 // IMAGES
-// import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
-// import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
-import minecraftImg from "./assets/img/textures/minecraft.png";
-// import doorDoorImg from "./assets/img/textures/door/color.jpg";
-// import doorHeightImg from "./assets/img/textures/door/height.jpg";
-// import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
-// import doorNormalImg from "./assets/img/textures/door/normal.jpg";
-// import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
+import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
+import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
+// import minecraftImg from "./assets/img/textures/minecraft.png";
+import doorDoorImg from "./assets/img/textures/door/color.jpg";
+import doorHeightImg from "./assets/img/textures/door/height.jpg";
+import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
+import doorNormalImg from "./assets/img/textures/door/normal.jpg";
+import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 
 // import matcaps1Img from "./assets/img/textures/matcaps/3.png";
-import gradientsImg from "./assets/img/textures/gradients/5.jpg";
+// import gradientsImg from "./assets/img/textures/gradients/5.jpg";
 
 // DEBUGGER
 const _GUI = new GUI();
@@ -43,7 +43,7 @@ for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
 // 	DOOR_COLOR_TEXTURE.needsUpdate = true;
 // };
 
-// CUBE_IMG.src = minecraftImg;
+// CUBE_IMG.src = doorDoorImg;
 const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
@@ -59,20 +59,20 @@ LOADING_MANAGER.onError = () => {
 };
 
 const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
-// const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
-// const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
-// 	doorAmbientOcclusionImg
-// );
-const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(minecraftImg);
-const GRADIENT_TEXTURE = TEXTURE_LOADER.load(gradientsImg);
-GRADIENT_TEXTURE.minFilter = THREE.NearestFilter;
-GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
-GRADIENT_TEXTURE.generateMipmaps = false;
+const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
+const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
+	doorAmbientOcclusionImg
+);
+const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
+// const GRADIENT_TEXTURE = TEXTURE_LOADER.load(gradientsImg);
+// GRADIENT_TEXTURE.minFilter = THREE.NearestFilter;
+// GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
+// GRADIENT_TEXTURE.generateMipmaps = false;
 // const SPHERE_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
-// const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
-// const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
-// const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
-// const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
+const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
+const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
+const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
+const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
 // DOOR_COLOR_TEXTURE.repeat.x = 2;
 // DOOR_COLOR_TEXTURE.repeat.y = 3;
 
@@ -102,8 +102,21 @@ CubeClone.material.map = DOOR_COLOR_TEXTURE;
 // const NEW_MATER6IAL = new THREE.MeshDepthMaterial();
 // const NEW_MATER6IAL = new THREE.MeshLambertMaterial();
 // const NEW_MATER6IAL = new THREE.MeshPhongMaterial();
-const NEW_MATER6IAL = new THREE.MeshToonMaterial({
-	gradientMap: GRADIENT_TEXTURE,
+// const NEW_MATER6IAL = new THREE.MeshToonMaterial({
+// 	gradientMap: GRADIENT_TEXTURE,
+// });
+const NEW_MATER6IAL = new THREE.MeshStandardMaterial({
+	map: DOOR_COLOR_TEXTURE,
+	aoMap: DOOR_AMBIENT_OCCLUSION_TEXTURE,
+	aoMapIntensity: 1,
+	displacementMap: DOOR_HEIGHT_TEXTURE,
+	displacementScale: 0.05,
+	metalnessMap: DOOR_METALNESS_TEXTURE,
+	roughnessMap: DOOR_ROUGHNESS_TEXTURE,
+	normalMap: DOOR_NORMAL_TEXTURE,
+	normalScale: new THREE.Vector2(0.5, 0.5),
+	alphaMap: DOOR_ALPHA_TEXTURE,
+	transparent: true,
 });
 
 // NEW_MATER6IAL.shininess = 100;
@@ -115,13 +128,29 @@ const NEW_MATER6IAL = new THREE.MeshToonMaterial({
 // NEW_MATER6IAL.side = THREE.DoubleSide;
 
 const SPHERE_FORM = new THREE.Mesh(
-	new THREE.SphereGeometry(0.5, 16, 16),
+	new THREE.SphereGeometry(0.5, 64, 64),
 	NEW_MATER6IAL
 );
-const PLANE_FORM = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), NEW_MATER6IAL);
-const TORUS_FORM = new THREE.Mesh(
-	new THREE.TorusGeometry(0.3, 0.2, 16, 32),
+const PLANE_FORM = new THREE.Mesh(
+	new THREE.PlaneGeometry(1, 1, 100, 100),
 	NEW_MATER6IAL
+);
+
+const TORUS_FORM = new THREE.Mesh(
+	new THREE.TorusGeometry(0.3, 0.2, 64, 128),
+	NEW_MATER6IAL
+);
+SPHERE_FORM.geometry.setAttribute(
+	"uv2",
+	new THREE.BufferAttribute(SPHERE_FORM.geometry.attributes.uv.array, 2)
+);
+PLANE_FORM.geometry.setAttribute(
+	"uv2",
+	new THREE.BufferAttribute(PLANE_FORM.geometry.attributes.uv.array, 2)
+);
+TORUS_FORM.geometry.setAttribute(
+	"uv2",
+	new THREE.BufferAttribute(TORUS_FORM.geometry.attributes.uv.array, 2)
 );
 
 const TriangleGeometry = new THREE.BufferGeometry();
@@ -183,7 +212,7 @@ APP.scene.add(AMBIENT_LIGHT);
 APP.scene.add(POINT_LIGHT);
 
 //
-APP.camera.position.z = 8;
+APP.camera.position.z = 5;
 
 // GSAP
 // GSAP.to(CubesGroup.position, { duration: 0.2, delay: 1, x: 1 });
@@ -241,6 +270,9 @@ _GUI.add(
 	},
 	"function"
 );
+const _GUI_MATERIAL_FOLDER = _GUI.addFolder("New Material props");
+_GUI_MATERIAL_FOLDER.add(NEW_MATER6IAL, "metalness").min(0).max(1).step(0.0001);
+_GUI_MATERIAL_FOLDER.add(NEW_MATER6IAL, "roughness").min(0).max(1).step(0.0001);
 
 window.addEventListener("keydown", (e) => {
 	console.log("pressend h");
@@ -262,13 +294,13 @@ APP.animate(() => {
 	CubesGroup.rotation.y = Math.sin(ELAPSED_TIME);
 	CubesGroup.rotation.x = Math.cos(ELAPSED_TIME);
 
-	SPHERE_FORM.rotation.y = 0.1 * ELAPSED_TIME;
-	PLANE_FORM.rotation.y = 0.1 * ELAPSED_TIME;
-	TORUS_FORM.rotation.y = 0.1 * ELAPSED_TIME;
+	// SPHERE_FORM.rotation.y = 0.1 * ELAPSED_TIME;
+	// PLANE_FORM.rotation.y = 0.1 * ELAPSED_TIME;
+	// TORUS_FORM.rotation.y = 0.1 * ELAPSED_TIME;
 
-	SPHERE_FORM.rotation.x = 0.25 * ELAPSED_TIME;
-	PLANE_FORM.rotation.x = 0.25 * ELAPSED_TIME;
-	TORUS_FORM.rotation.x = 0.25 * ELAPSED_TIME;
+	// SPHERE_FORM.rotation.x = 0.25 * ELAPSED_TIME;
+	// PLANE_FORM.rotation.x = 0.25 * ELAPSED_TIME;
+	// TORUS_FORM.rotation.x = 0.25 * ELAPSED_TIME;
 
 	// CAMERA ANIMATION
 	// APP.camera.position.x = Math.sin(CURSOR_POS.x * Math.PI * 2) * 5;
