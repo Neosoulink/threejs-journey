@@ -2,6 +2,7 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
 /* HELPERS */
 import initThreeJs from "./helpers/initThreeJs";
@@ -116,10 +117,6 @@ const ENVIRNEMET_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
 DOOR_COLOR_TEXTURE.generateMipmaps = false;
 DOOR_COLOR_TEXTURE.minFilter = THREE.NearestFilter;
 DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
-
-// FONTS
-const FONT_LOADER = new FontLoader();
-FONT_LOADER.load(HelvetikerFont, () => console.log("Font loaded"));
 
 /* MATERIALS */
 /** Define Material using MeshBasicMaterial */
@@ -256,6 +253,38 @@ POINT_LIGHT.position.z = 4;
 const APP = initThreeJs({
 	enableOrbit: true,
 	axesSizes: 5,
+});
+
+// FONTS
+const FONT_LOADER = new FontLoader();
+FONT_LOADER.load(HelvetikerFont, (font) => {
+	const BEVEL_THICKNESS = 0.03
+	const BEVEL_SIZE = 0.02
+
+	const TEXT_GEOMETRY = new TextGeometry("Three.js", {
+		font,
+		size: 0.5,
+		height: 0.2,
+		curveSegments: 6,
+		bevelEnabled: true,
+		bevelThickness: BEVEL_THICKNESS,
+		bevelSize: BEVEL_SIZE,
+		bevelOffset: 0,
+		bevelSegments: 4,
+	});
+	TEXT_GEOMETRY.computeBoundingBox();
+	// TEXT_GEOMETRY.translate(
+	// 	-((TEXT_GEOMETRY.boundingBox?.max.x ?? 1) - BEVEL_SIZE) * 0.5,
+	// 	-((TEXT_GEOMETRY.boundingBox?.max.y ?? 1) - BEVEL_SIZE) * 0.5,
+	// 	-((TEXT_GEOMETRY.boundingBox?.max.z ?? 1) - BEVEL_THICKNESS) * 0.5
+	// );
+
+	TEXT_GEOMETRY.center();
+	console.log(TEXT_GEOMETRY.boundingBox);
+
+	const TEXT_MATERIAL = new THREE.MeshBasicMaterial({ wireframe: true });
+	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, TEXT_MATERIAL);
+	APP.scene.add(TEXT_FORM);
 });
 
 /* Scene */
