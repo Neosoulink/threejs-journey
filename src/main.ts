@@ -12,17 +12,24 @@ import Cube from "./components/Cube";
 import "./assets/css/style.css";
 
 // IMAGES
-import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
-import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
+// import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
+// import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
 // import minecraftImg from "./assets/img/textures/minecraft.png";
 import doorDoorImg from "./assets/img/textures/door/color.jpg";
-import doorHeightImg from "./assets/img/textures/door/height.jpg";
-import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
-import doorNormalImg from "./assets/img/textures/door/normal.jpg";
-import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
+// import doorHeightImg from "./assets/img/textures/door/height.jpg";
+// import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
+// import doorNormalImg from "./assets/img/textures/door/normal.jpg";
+// import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 
 // import matcaps1Img from "./assets/img/textures/matcaps/3.png";
 // import gradientsImg from "./assets/img/textures/gradients/5.jpg";
+
+import nxEnvImg from "./assets/img/textures/environmentMaps/0/nx.jpg";
+import nyEnvImg from "./assets/img/textures/environmentMaps/0/ny.jpg";
+import nzEnvImg from "./assets/img/textures/environmentMaps/0/nz.jpg";
+import pxEnvImg from "./assets/img/textures/environmentMaps/0/px.jpg";
+import pyEnvImg from "./assets/img/textures/environmentMaps/0/py.jpg";
+import pzEnvImg from "./assets/img/textures/environmentMaps/0/pz.jpg";
 
 // DEBUGGER
 const _GUI = new GUI();
@@ -59,20 +66,21 @@ LOADING_MANAGER.onError = () => {
 };
 
 const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
-const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
-const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
-	doorAmbientOcclusionImg
-);
+const CUBE_TEXTURE_LOADER = new THREE.CubeTextureLoader(LOADING_MANAGER);
+// const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
+// const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
+// 	doorAmbientOcclusionImg
+// );
 const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
 // const GRADIENT_TEXTURE = TEXTURE_LOADER.load(gradientsImg);
 // GRADIENT_TEXTURE.minFilter = THREE.NearestFilter;
 // GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
 // GRADIENT_TEXTURE.generateMipmaps = false;
 // const SPHERE_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
-const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
-const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
-const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
-const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
+// const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
+// const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
+// const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
+// const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
 // DOOR_COLOR_TEXTURE.repeat.x = 2;
 // DOOR_COLOR_TEXTURE.repeat.y = 3;
 
@@ -90,6 +98,15 @@ DOOR_COLOR_TEXTURE.generateMipmaps = false;
 DOOR_COLOR_TEXTURE.minFilter = THREE.NearestFilter;
 DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 
+const ENVIRNEMET_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
+	pxEnvImg,
+	nxEnvImg,
+	pyEnvImg,
+	nyEnvImg,
+	pzEnvImg,
+	nzEnvImg,
+]);
+
 // FORMS
 const CubeClone = Cube.clone();
 CubeClone.material.color = new THREE.Color();
@@ -106,17 +123,20 @@ CubeClone.material.map = DOOR_COLOR_TEXTURE;
 // 	gradientMap: GRADIENT_TEXTURE,
 // });
 const NEW_MATER6IAL = new THREE.MeshStandardMaterial({
-	map: DOOR_COLOR_TEXTURE,
-	aoMap: DOOR_AMBIENT_OCCLUSION_TEXTURE,
-	aoMapIntensity: 1,
-	displacementMap: DOOR_HEIGHT_TEXTURE,
-	displacementScale: 0.05,
-	metalnessMap: DOOR_METALNESS_TEXTURE,
-	roughnessMap: DOOR_ROUGHNESS_TEXTURE,
-	normalMap: DOOR_NORMAL_TEXTURE,
-	normalScale: new THREE.Vector2(0.5, 0.5),
-	alphaMap: DOOR_ALPHA_TEXTURE,
-	transparent: true,
+	metalness: 0.7,
+	roughness: 0.2,
+	envMap: ENVIRNEMET_MAP_TEXTURE,
+	// map: DOOR_COLOR_TEXTURE,
+	// aoMap: DOOR_AMBIENT_OCCLUSION_TEXTURE,
+	// aoMapIntensity: 1,
+	// displacementMap: DOOR_HEIGHT_TEXTURE,
+	// displacementScale: 0.05,
+	// metalnessMap: DOOR_METALNESS_TEXTURE,
+	// roughnessMap: DOOR_ROUGHNESS_TEXTURE,
+	// normalMap: DOOR_NORMAL_TEXTURE,
+	// normalScale: new THREE.Vector2(0.5, 0.5),
+	// alphaMap: DOOR_ALPHA_TEXTURE,
+	// transparent: true,
 });
 
 // NEW_MATER6IAL.shininess = 100;
