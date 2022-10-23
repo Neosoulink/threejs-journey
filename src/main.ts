@@ -288,17 +288,14 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 	TEXT_GEOMETRY.center();
 	console.log(TEXT_GEOMETRY.boundingBox);
 
-	const TEXT_MATERIAL = new THREE.MeshMatcapMaterial({
+	const MAT_CAP_MATERIAL = new THREE.MeshMatcapMaterial({
 		matcap: MATCAP_1_TEXTURE,
 	});
-	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, TEXT_MATERIAL);
-
+	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, MAT_CAP_MATERIAL);
 	const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
-	const donutMaterial = new THREE.MeshMatcapMaterial({
-		matcap: MATCAP_1_TEXTURE,
-	});
+
 	for (let i = 0; i < 100; i++) {
-		const donut = new THREE.Mesh(donutGeometry, donutMaterial);
+		const donut = new THREE.Mesh(donutGeometry, MAT_CAP_MATERIAL);
 
 		donut.position.x = (Math.random() - 0.5) * 10;
 		donut.position.y = (Math.random() - 0.5) * 10;
