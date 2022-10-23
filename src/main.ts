@@ -13,6 +13,9 @@ import Cube from "./components/Cube";
 /* STYLES */
 import "./assets/css/style.css";
 
+/* FONTS */
+import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typeface.json?url";
+
 /* IMAGES */
 /* Door images */
 // import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
@@ -27,7 +30,6 @@ import doorDoorImg from "./assets/img/textures/door/color.jpg";
 import matcaps1Img from "./assets/img/textures/matcaps/4.png";
 
 /* Gradients images */
-import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typeface.json?url";
 // import gradientsImg from "./assets/img/textures/gradients/5.jpg";
 
 /* Environment map images */
@@ -215,8 +217,12 @@ TriangleMesh.visible = false;
 // GROUPE
 const CUBES_GROUP = new THREE.Group();
 const MESH_NEW_MATERIAL_GROUP = new THREE.Group();
+
+CUBES_GROUP.visible = false;
+MESH_NEW_MATERIAL_GROUP.visible = false;
+
 CUBES_GROUP.add(Cube, CubeClone);
-MESH_NEW_MATERIAL_GROUP;
+MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 
 /* UPDATE MESH PROPERTIES */
 /* Material */
@@ -286,15 +292,33 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 		matcap: MATCAP_1_TEXTURE,
 	});
 	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, TEXT_MATERIAL);
+
+	const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
+	const donutMaterial = new THREE.MeshMatcapMaterial({
+		matcap: MATCAP_1_TEXTURE,
+	});
+	for (let i = 0; i < 100; i++) {
+		const donut = new THREE.Mesh(donutGeometry, donutMaterial);
+
+		donut.position.x = (Math.random() - 0.5) * 10;
+		donut.position.y = (Math.random() - 0.5) * 10;
+		donut.position.z = (Math.random() - 0.5) * 10;
+
+		donut.rotation.x = Math.random() * Math.PI;
+		donut.rotation.y = Math.random() * Math.PI;
+
+		const CUSTOM_SCALE = Math.random();
+		donut.scale.set(CUSTOM_SCALE, CUSTOM_SCALE, CUSTOM_SCALE);
+
+		APP.scene.add(donut);
+	}
 	APP.scene.add(TEXT_FORM);
 });
 
 /* Scene */
 APP.scene.add(CUBES_GROUP);
 APP.scene.add(TriangleMesh);
-APP.scene.add(SphereForm);
-APP.scene.add(PlaneForm);
-APP.scene.add(TorusForm);
+APP.scene.add(MESH_NEW_MATERIAL_GROUP);
 APP.scene.add(AMBIENT_LIGHT);
 APP.scene.add(POINT_LIGHT);
 
@@ -346,7 +370,9 @@ APP.animate(() => {
 // };
 
 /* DEBUGGER UI */
+_GUI.close();
 const _GUI_CUBES_GROUP_FOLDER = _GUI.addFolder("Cube group");
+_GUI_CUBES_GROUP_FOLDER.add(CUBES_GROUP, "visible").name("CUBES_GROUP visible");
 _GUI_CUBES_GROUP_FOLDER
 	.add(CUBES_GROUP.position, "y")
 	.min(-100)
@@ -381,6 +407,9 @@ _GUI_TRIANGLE_MESH_FOLDER
 	.name("Triangle Wireframe");
 
 const _GUI_NEW_MATERIAL_FOLDER = _GUI.addFolder("New Material props");
+_GUI_NEW_MATERIAL_FOLDER
+	.add(MESH_NEW_MATERIAL_GROUP, "visible")
+	.name("NEW_MATERIAL_GROUP visible");
 _GUI_NEW_MATERIAL_FOLDER
 	.add(NEW_MATER6IAL, "metalness")
 	.min(0)
