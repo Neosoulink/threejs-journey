@@ -24,7 +24,7 @@ import doorDoorImg from "./assets/img/textures/door/color.jpg";
 // import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 
 /* Matcaps images */
-// import matcaps1Img from "./assets/img/textures/matcaps/3.png";
+import matcaps1Img from "./assets/img/textures/matcaps/4.png";
 
 /* Gradients images */
 import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typeface.json?url";
@@ -85,7 +85,7 @@ const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
 // GRADIENT_TEXTURE.minFilter = THREE.NearestFilter;
 // GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
 // GRADIENT_TEXTURE.generateMipmaps = false;
-// const SPHERE_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
+const MATCAP_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
 // const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
 // const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
 // const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
@@ -120,14 +120,14 @@ DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 
 /* MATERIALS */
 /** Define Material using MeshBasicMaterial */
-// const NEW_MATER6IAL = new THREE.MeshBasicMaterial({map: SPHERE_1_TEXTURE});
+// const NEW_MATER6IAL = new THREE.MeshBasicMaterial({map: MATCAP_1_TEXTURE});
 
 /** Define Material using MeshNormalMaterial */
 // const NEW_MATER6IAL = new THREE.MeshNormalMaterial();
 
 /** Define Material using MeshMatcapMaterial */
 // const NEW_MATER6IAL = new THREE.MeshMatcapMaterial({
-// 	matcap: SPHERE_1_TEXTURE,
+// 	matcap: MATCAP_1_TEXTURE,
 // });
 
 /** Define Material using MeshDepthMaterial */
@@ -258,8 +258,8 @@ const APP = initThreeJs({
 // FONTS
 const FONT_LOADER = new FontLoader();
 FONT_LOADER.load(HelvetikerFont, (font) => {
-	const BEVEL_THICKNESS = 0.03
-	const BEVEL_SIZE = 0.02
+	const BEVEL_THICKNESS = 0.03;
+	const BEVEL_SIZE = 0.02;
 
 	const TEXT_GEOMETRY = new TextGeometry("Three.js", {
 		font,
@@ -282,7 +282,9 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 	TEXT_GEOMETRY.center();
 	console.log(TEXT_GEOMETRY.boundingBox);
 
-	const TEXT_MATERIAL = new THREE.MeshBasicMaterial({ wireframe: true });
+	const TEXT_MATERIAL = new THREE.MeshMatcapMaterial({
+		matcap: MATCAP_1_TEXTURE,
+	});
 	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, TEXT_MATERIAL);
 	APP.scene.add(TEXT_FORM);
 });
