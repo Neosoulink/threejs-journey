@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
 import GSAP from "gsap";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 
 /* HELPERS */
 import initThreeJs from "./helpers/initThreeJs";
@@ -10,6 +11,9 @@ import Cube from "./components/Cube";
 
 /* STYLES */
 import "./assets/css/style.css";
+
+// FONTS
+// const HFont = require('./assets/fonts/helvetiker/helvetiker_regular.typeface.json')
 
 /* IMAGES */
 /* Door images */
@@ -87,6 +91,16 @@ const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
 // const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
 // const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
 // const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
+
+const ENVIRNEMET_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
+	pxEnvImg,
+	nxEnvImg,
+	pyEnvImg,
+	nyEnvImg,
+	pzEnvImg,
+	nzEnvImg,
+]);
+/* Update texture properties */
 // DOOR_COLOR_TEXTURE.repeat.x = 2;
 // DOOR_COLOR_TEXTURE.repeat.y = 3;
 
@@ -105,14 +119,12 @@ DOOR_COLOR_TEXTURE.generateMipmaps = false;
 DOOR_COLOR_TEXTURE.minFilter = THREE.NearestFilter;
 DOOR_COLOR_TEXTURE.magFilter = THREE.NearestFilter;
 
-const ENVIRNEMET_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
-	pxEnvImg,
-	nxEnvImg,
-	pyEnvImg,
-	nyEnvImg,
-	pzEnvImg,
-	nzEnvImg,
-]);
+// FONTS
+// const FONT_LOADER = new FontLoader();
+// FONT_LOADER.load(
+// 	"./assets/fonts/helvetiker/helvetiker_regular.typeface.json",
+// 	() => console.log("Font loaded")
+// );
 
 /* MATERIALS */
 /** Define Material using MeshBasicMaterial */
@@ -158,6 +170,7 @@ const NEW_MATER6IAL = new THREE.MeshStandardMaterial({
 	// transparent: true,
 });
 
+/* Update materials properties */
 // NEW_MATER6IAL.shininess = 100;
 // NEW_MATER6IAL.specular = new THREE.Color(0xfff00f);
 // NEW_MATER6IAL.flatShading = true;
