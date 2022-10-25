@@ -163,6 +163,8 @@ const NEW_MATER6IAL = new THREE.MeshStandardMaterial({
 	// alphaMap: DOOR_ALPHA_TEXTURE,
 	// transparent: true,
 });
+const LIGHT_MATERIAL = new THREE.MeshStandardMaterial();
+LIGHT_MATERIAL.roughness = 0.4;
 
 /* Update materials properties */
 // NEW_MATER6IAL.shininess = 100;
@@ -201,6 +203,30 @@ TorusForm.geometry.setAttribute(
 	new THREE.BufferAttribute(TorusForm.geometry.attributes.uv.array, 2)
 );
 
+// Light objects
+const LIGHT_SPHERE = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 32, 32),
+	LIGHT_MATERIAL
+);
+const LIGHT_CUBE = new THREE.Mesh(
+	new THREE.BoxGeometry(0.75, 0.75, 0.75),
+	LIGHT_MATERIAL
+);
+const LIGHT_TORUS = new THREE.Mesh(
+	new THREE.TorusGeometry(0.3, 0.2, 32, 64),
+	LIGHT_MATERIAL
+);
+const LIGHT_PLANE = new THREE.Mesh(
+	new THREE.PlaneGeometry(5, 5),
+	LIGHT_MATERIAL
+);
+
+LIGHT_SPHERE.position.x = -1.5;
+LIGHT_TORUS.position.x = 1.5;
+LIGHT_PLANE.rotation.x = -Math.PI * 0.5;
+LIGHT_PLANE.position.y = -0.65;
+
+/* Vector objects */
 const TriangleGeometry = new THREE.BufferGeometry();
 const TriangleMaterial = new THREE.MeshBasicMaterial({
 	color: 0xff55ee,
@@ -210,14 +236,15 @@ TriangleGeometry.setAttribute(
 	"position",
 	new THREE.BufferAttribute(TRIANGLE_VERTICES, 3)
 );
-const TriangleMesh = new THREE.Mesh(TriangleGeometry, TriangleMaterial);
-TriangleMesh.visible = false;
+const TRIANGLE_MESH = new THREE.Mesh(TriangleGeometry, TriangleMaterial);
+TRIANGLE_MESH.visible = false;
 // let savedTime = Date.now();
 
 // GROUPE
 const CUBES_GROUP = new THREE.Group();
 const MESH_NEW_MATERIAL_GROUP = new THREE.Group();
 const DONUT_GROUP = new THREE.Group();
+const LIGHT_FORMS_GROUP = new THREE.Group();
 
 CUBES_GROUP.visible = false;
 MESH_NEW_MATERIAL_GROUP.visible = false;
@@ -225,6 +252,7 @@ DONUT_GROUP.visible = false;
 
 CUBES_GROUP.add(Cube, CubeClone);
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
+LIGHT_FORMS_GROUP.add(LIGHT_SPHERE, LIGHT_CUBE, LIGHT_TORUS, LIGHT_PLANE);
 
 /* UPDATE MESH PROPERTIES */
 /* Material */
@@ -323,11 +351,12 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 
 /* Scene */
 APP.scene.add(CUBES_GROUP);
-APP.scene.add(TriangleMesh);
+APP.scene.add(TRIANGLE_MESH);
 APP.scene.add(MESH_NEW_MATERIAL_GROUP);
 APP.scene.add(AMBIENT_LIGHT);
 APP.scene.add(POINT_LIGHT);
 APP.scene.add(DONUT_GROUP);
+APP.scene.add(LIGHT_FORMS_GROUP);
 
 /* Camera */
 APP.camera.position.z = 5;
@@ -407,7 +436,7 @@ _GUI_CUBES_GROUP_FOLDER
 
 const _GUI_TRIANGLE_MESH_FOLDER = _GUI.addFolder("Triangle");
 _GUI_TRIANGLE_MESH_FOLDER
-	.add(TriangleMesh, "visible")
+	.add(TRIANGLE_MESH, "visible")
 	.name("Triangle Mesh Visible");
 _GUI_TRIANGLE_MESH_FOLDER
 	.add(TriangleMaterial, "wireframe")
