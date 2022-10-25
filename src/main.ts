@@ -217,9 +217,11 @@ TriangleMesh.visible = false;
 // GROUPE
 const CUBES_GROUP = new THREE.Group();
 const MESH_NEW_MATERIAL_GROUP = new THREE.Group();
+const DONUT_GROUP = new THREE.Group();
 
 CUBES_GROUP.visible = false;
 MESH_NEW_MATERIAL_GROUP.visible = false;
+DONUT_GROUP.visible = false;
 
 CUBES_GROUP.add(Cube, CubeClone);
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -286,13 +288,20 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 	// );
 
 	TEXT_GEOMETRY.center();
-	console.log(TEXT_GEOMETRY.boundingBox);
 
 	const MAT_CAP_MATERIAL = new THREE.MeshMatcapMaterial({
 		matcap: MATCAP_1_TEXTURE,
 	});
 	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, MAT_CAP_MATERIAL);
 	const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
+
+	TEXT_FORM.visible = false;
+
+	setTimeout(() => {
+		const _GUI_TEXT_FOLDER = _GUI.addFolder("Text");
+
+		_GUI_TEXT_FOLDER.add(TEXT_FORM, "visible");
+	}, 1000);
 
 	for (let i = 0; i < 100; i++) {
 		const donut = new THREE.Mesh(donutGeometry, MAT_CAP_MATERIAL);
@@ -307,7 +316,7 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 		const CUSTOM_SCALE = Math.random();
 		donut.scale.set(CUSTOM_SCALE, CUSTOM_SCALE, CUSTOM_SCALE);
 
-		APP.scene.add(donut);
+		DONUT_GROUP.add(donut);
 	}
 	APP.scene.add(TEXT_FORM);
 });
@@ -318,6 +327,7 @@ APP.scene.add(TriangleMesh);
 APP.scene.add(MESH_NEW_MATERIAL_GROUP);
 APP.scene.add(AMBIENT_LIGHT);
 APP.scene.add(POINT_LIGHT);
+APP.scene.add(DONUT_GROUP);
 
 /* Camera */
 APP.camera.position.z = 5;
@@ -417,6 +427,9 @@ _GUI_NEW_MATERIAL_FOLDER
 	.min(0)
 	.max(1)
 	.step(0.0001);
+
+const _GUI_DONUTS_FOLDER = _GUI.addFolder("Donuts");
+_GUI_DONUTS_FOLDER.add(DONUT_GROUP, "visible").name("Donuts visibility");
 
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
