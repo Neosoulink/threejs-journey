@@ -280,10 +280,11 @@ const ANIMATION_CLOCK = new THREE.Clock();
 
 /* LIGHT */
 const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
-const POINT_LIGHT = new THREE.PointLight(0xffffff, 0.5);
-POINT_LIGHT.position.x = 2;
-POINT_LIGHT.position.y = 3;
-POINT_LIGHT.position.z = 4;
+const DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0x00fffc, 0.3);
+DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
+const HEMISPHERE_LIGHT = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
+const POINT_LIGHT = new THREE.PointLight(0xff9000, 0.5, 10, 2);
+POINT_LIGHT.position.set(1, -0.5, 1);
 
 // APP
 const APP = initThreeJs({
@@ -354,6 +355,8 @@ APP.scene.add(CUBES_GROUP);
 APP.scene.add(TRIANGLE_MESH);
 APP.scene.add(MESH_NEW_MATERIAL_GROUP);
 APP.scene.add(AMBIENT_LIGHT);
+APP.scene.add(DIRECTIONAL_LIGHT);
+APP.scene.add(HEMISPHERE_LIGHT);
 APP.scene.add(POINT_LIGHT);
 APP.scene.add(DONUT_GROUP);
 APP.scene.add(LIGHT_FORMS_GROUP);
