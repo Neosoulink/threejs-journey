@@ -376,6 +376,14 @@ APP.animate(() => {
 	CUBES_GROUP.rotation.y = Math.sin(ELAPSED_TIME);
 	CUBES_GROUP.rotation.x = Math.cos(ELAPSED_TIME);
 
+	LIGHT_SPHERE.rotation.y = 0.1 * ELAPSED_TIME;
+	LIGHT_CUBE.rotation.y = 0.1 * ELAPSED_TIME;
+	LIGHT_TORUS.rotation.y = 0.1 * ELAPSED_TIME;
+
+	LIGHT_SPHERE.rotation.x = 0.15 * ELAPSED_TIME;
+	LIGHT_CUBE.rotation.x = 0.15 * ELAPSED_TIME;
+	LIGHT_TORUS.rotation.x = 0.15 * ELAPSED_TIME;
+
 	// SphereForm.rotation.y = 0.1 * ELAPSED_TIME;
 	// PlaneForm.rotation.y = 0.1 * ELAPSED_TIME;
 	// TorusForm.rotation.y = 0.1 * ELAPSED_TIME;
