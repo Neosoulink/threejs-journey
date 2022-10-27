@@ -511,6 +511,11 @@ _GUI_NEW_MATERIAL_FOLDER
 const _GUI_DONUTS_FOLDER = _GUI.addFolder("Donuts");
 _GUI_DONUTS_FOLDER.add(DONUT_GROUP, "visible").name("Donuts visibility");
 
+const _GUI_LIGHT_FOLDER = _GUI.addFolder("Light");
+_GUI_LIGHT_FOLDER
+	.add(LIGHT_FORMS_GROUP, "visible")
+	.name("Lights group visible");
+
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
 	const fullscreenElement =
