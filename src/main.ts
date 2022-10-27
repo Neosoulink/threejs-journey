@@ -3,6 +3,7 @@ import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 
 /* HELPERS */
 import initThreeJs from "./helpers/initThreeJs";
@@ -299,6 +300,36 @@ const SPOT_LIGHT = new THREE.SpotLight(
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
 
+const DIRECTIONAL_LIGHT_HELPER = new THREE.DirectionalLightHelper(
+	DIRECTIONAL_LIGHT,
+	0.2
+);
+const HEMISPHERE_LIGHT_HELPER = new THREE.HemisphereLightHelper(
+	HEMISPHERE_LIGHT,
+	0.2
+);
+const POINT_LIGHT_HELPER = new THREE.PointLightHelper(POINT_LIGHT, 0.2);
+const SPOT_LIGHT_HELPER = new THREE.SpotLightHelper(SPOT_LIGHT);
+window.requestAnimationFrame(() => {
+	SPOT_LIGHT_HELPER.update();
+});
+const RECT_AREA_LIGHT_HELPER = new RectAreaLightHelper(RECT_AREA_LIGHT);
+
+LIGHT_FORMS_GROUP.add(
+	AMBIENT_LIGHT,
+	DIRECTIONAL_LIGHT,
+	HEMISPHERE_LIGHT,
+	POINT_LIGHT,
+	RECT_AREA_LIGHT,
+	SPOT_LIGHT,
+	SPOT_LIGHT.target,
+	DIRECTIONAL_LIGHT_HELPER,
+	HEMISPHERE_LIGHT_HELPER,
+	POINT_LIGHT_HELPER,
+	SPOT_LIGHT_HELPER,
+	RECT_AREA_LIGHT_HELPER
+);
+
 // APP
 const APP = initThreeJs({
 	enableOrbit: true,
@@ -367,13 +398,6 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 APP.scene.add(CUBES_GROUP);
 APP.scene.add(TRIANGLE_MESH);
 APP.scene.add(MESH_NEW_MATERIAL_GROUP);
-APP.scene.add(AMBIENT_LIGHT);
-APP.scene.add(DIRECTIONAL_LIGHT);
-APP.scene.add(HEMISPHERE_LIGHT);
-APP.scene.add(POINT_LIGHT);
-APP.scene.add(RECT_AREA_LIGHT);
-APP.scene.add(SPOT_LIGHT);
-APP.scene.add(SPOT_LIGHT.target);
 APP.scene.add(DONUT_GROUP);
 APP.scene.add(LIGHT_FORMS_GROUP);
 
