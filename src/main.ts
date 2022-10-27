@@ -3,6 +3,7 @@ import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 
 /* HELPERS */
 import initThreeJs from "./helpers/initThreeJs";
@@ -163,6 +164,8 @@ const NEW_MATER6IAL = new THREE.MeshStandardMaterial({
 	// alphaMap: DOOR_ALPHA_TEXTURE,
 	// transparent: true,
 });
+const LIGHT_MATERIAL = new THREE.MeshStandardMaterial();
+LIGHT_MATERIAL.roughness = 0.4;
 
 /* Update materials properties */
 // NEW_MATER6IAL.shininess = 100;
@@ -201,6 +204,30 @@ TorusForm.geometry.setAttribute(
 	new THREE.BufferAttribute(TorusForm.geometry.attributes.uv.array, 2)
 );
 
+// Light objects
+const LIGHT_SPHERE = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 32, 32),
+	LIGHT_MATERIAL
+);
+const LIGHT_CUBE = new THREE.Mesh(
+	new THREE.BoxGeometry(0.75, 0.75, 0.75),
+	LIGHT_MATERIAL
+);
+const LIGHT_TORUS = new THREE.Mesh(
+	new THREE.TorusGeometry(0.3, 0.2, 32, 64),
+	LIGHT_MATERIAL
+);
+const LIGHT_PLANE = new THREE.Mesh(
+	new THREE.PlaneGeometry(5, 5),
+	LIGHT_MATERIAL
+);
+
+LIGHT_SPHERE.position.x = -1.5;
+LIGHT_TORUS.position.x = 1.5;
+LIGHT_PLANE.rotation.x = -Math.PI * 0.5;
+LIGHT_PLANE.position.y = -0.65;
+
+/* Vector objects */
 const TriangleGeometry = new THREE.BufferGeometry();
 const TriangleMaterial = new THREE.MeshBasicMaterial({
 	color: 0xff55ee,
@@ -210,19 +237,23 @@ TriangleGeometry.setAttribute(
 	"position",
 	new THREE.BufferAttribute(TRIANGLE_VERTICES, 3)
 );
-const TriangleMesh = new THREE.Mesh(TriangleGeometry, TriangleMaterial);
-TriangleMesh.visible = false;
+const TRIANGLE_MESH = new THREE.Mesh(TriangleGeometry, TriangleMaterial);
+TRIANGLE_MESH.visible = false;
 // let savedTime = Date.now();
 
 // GROUPE
 const CUBES_GROUP = new THREE.Group();
 const MESH_NEW_MATERIAL_GROUP = new THREE.Group();
+const DONUT_GROUP = new THREE.Group();
+const LIGHT_FORMS_GROUP = new THREE.Group();
 
 CUBES_GROUP.visible = false;
 MESH_NEW_MATERIAL_GROUP.visible = false;
+DONUT_GROUP.visible = false;
 
 CUBES_GROUP.add(Cube, CubeClone);
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
+LIGHT_FORMS_GROUP.add(LIGHT_SPHERE, LIGHT_CUBE, LIGHT_TORUS, LIGHT_PLANE);
 
 /* UPDATE MESH PROPERTIES */
 /* Material */
@@ -250,10 +281,54 @@ const ANIMATION_CLOCK = new THREE.Clock();
 
 /* LIGHT */
 const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
-const POINT_LIGHT = new THREE.PointLight(0xffffff, 0.5);
-POINT_LIGHT.position.x = 2;
-POINT_LIGHT.position.y = 3;
-POINT_LIGHT.position.z = 4;
+const DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0x00fffc, 0.3);
+DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
+const HEMISPHERE_LIGHT = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
+const POINT_LIGHT = new THREE.PointLight(0xff9000, 0.5, 10, 2);
+POINT_LIGHT.position.set(1, -0.5, 1);
+const RECT_AREA_LIGHT = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
+RECT_AREA_LIGHT.position.set(-1.5, 0, 1.5);
+RECT_AREA_LIGHT.lookAt(new THREE.Vector3());
+const SPOT_LIGHT = new THREE.SpotLight(
+	0x78ff00,
+	0.5,
+	10,
+	Math.PI * 0.1,
+	0.25,
+	1
+);
+SPOT_LIGHT.position.set(0, 2, 3);
+SPOT_LIGHT.target.position.x = -0.75;
+
+const DIRECTIONAL_LIGHT_HELPER = new THREE.DirectionalLightHelper(
+	DIRECTIONAL_LIGHT,
+	0.2
+);
+const HEMISPHERE_LIGHT_HELPER = new THREE.HemisphereLightHelper(
+	HEMISPHERE_LIGHT,
+	0.2
+);
+const POINT_LIGHT_HELPER = new THREE.PointLightHelper(POINT_LIGHT, 0.2);
+const SPOT_LIGHT_HELPER = new THREE.SpotLightHelper(SPOT_LIGHT);
+window.requestAnimationFrame(() => {
+	SPOT_LIGHT_HELPER.update();
+});
+const RECT_AREA_LIGHT_HELPER = new RectAreaLightHelper(RECT_AREA_LIGHT);
+
+LIGHT_FORMS_GROUP.add(
+	AMBIENT_LIGHT,
+	DIRECTIONAL_LIGHT,
+	HEMISPHERE_LIGHT,
+	POINT_LIGHT,
+	RECT_AREA_LIGHT,
+	SPOT_LIGHT,
+	SPOT_LIGHT.target,
+	DIRECTIONAL_LIGHT_HELPER,
+	HEMISPHERE_LIGHT_HELPER,
+	POINT_LIGHT_HELPER,
+	SPOT_LIGHT_HELPER,
+	RECT_AREA_LIGHT_HELPER
+);
 
 // APP
 const APP = initThreeJs({
@@ -286,13 +361,20 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 	// );
 
 	TEXT_GEOMETRY.center();
-	console.log(TEXT_GEOMETRY.boundingBox);
 
 	const MAT_CAP_MATERIAL = new THREE.MeshMatcapMaterial({
 		matcap: MATCAP_1_TEXTURE,
 	});
 	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, MAT_CAP_MATERIAL);
 	const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
+
+	TEXT_FORM.visible = false;
+
+	setTimeout(() => {
+		const _GUI_TEXT_FOLDER = _GUI.addFolder("Text");
+
+		_GUI_TEXT_FOLDER.add(TEXT_FORM, "visible");
+	}, 1000);
 
 	for (let i = 0; i < 100; i++) {
 		const donut = new THREE.Mesh(donutGeometry, MAT_CAP_MATERIAL);
@@ -307,17 +389,17 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 		const CUSTOM_SCALE = Math.random();
 		donut.scale.set(CUSTOM_SCALE, CUSTOM_SCALE, CUSTOM_SCALE);
 
-		APP.scene.add(donut);
+		DONUT_GROUP.add(donut);
 	}
 	APP.scene.add(TEXT_FORM);
 });
 
 /* Scene */
 APP.scene.add(CUBES_GROUP);
-APP.scene.add(TriangleMesh);
+APP.scene.add(TRIANGLE_MESH);
 APP.scene.add(MESH_NEW_MATERIAL_GROUP);
-APP.scene.add(AMBIENT_LIGHT);
-APP.scene.add(POINT_LIGHT);
+APP.scene.add(DONUT_GROUP);
+APP.scene.add(LIGHT_FORMS_GROUP);
 
 /* Camera */
 APP.camera.position.z = 5;
@@ -336,6 +418,14 @@ APP.animate(() => {
 	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
 	CUBES_GROUP.rotation.y = Math.sin(ELAPSED_TIME);
 	CUBES_GROUP.rotation.x = Math.cos(ELAPSED_TIME);
+
+	LIGHT_SPHERE.rotation.y = 0.1 * ELAPSED_TIME;
+	LIGHT_CUBE.rotation.y = 0.1 * ELAPSED_TIME;
+	LIGHT_TORUS.rotation.y = 0.1 * ELAPSED_TIME;
+
+	LIGHT_SPHERE.rotation.x = 0.15 * ELAPSED_TIME;
+	LIGHT_CUBE.rotation.x = 0.15 * ELAPSED_TIME;
+	LIGHT_TORUS.rotation.x = 0.15 * ELAPSED_TIME;
 
 	// SphereForm.rotation.y = 0.1 * ELAPSED_TIME;
 	// PlaneForm.rotation.y = 0.1 * ELAPSED_TIME;
@@ -397,7 +487,7 @@ _GUI_CUBES_GROUP_FOLDER
 
 const _GUI_TRIANGLE_MESH_FOLDER = _GUI.addFolder("Triangle");
 _GUI_TRIANGLE_MESH_FOLDER
-	.add(TriangleMesh, "visible")
+	.add(TRIANGLE_MESH, "visible")
 	.name("Triangle Mesh Visible");
 _GUI_TRIANGLE_MESH_FOLDER
 	.add(TriangleMaterial, "wireframe")
@@ -417,6 +507,14 @@ _GUI_NEW_MATERIAL_FOLDER
 	.min(0)
 	.max(1)
 	.step(0.0001);
+
+const _GUI_DONUTS_FOLDER = _GUI.addFolder("Donuts");
+_GUI_DONUTS_FOLDER.add(DONUT_GROUP, "visible").name("Donuts visibility");
+
+const _GUI_LIGHT_FOLDER = _GUI.addFolder("Light");
+_GUI_LIGHT_FOLDER
+	.add(LIGHT_FORMS_GROUP, "visible")
+	.name("Lights group visible");
 
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
