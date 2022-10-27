@@ -285,6 +285,9 @@ DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
 const HEMISPHERE_LIGHT = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
 const POINT_LIGHT = new THREE.PointLight(0xff9000, 0.5, 10, 2);
 POINT_LIGHT.position.set(1, -0.5, 1);
+const RECT_AREA_LIGHT = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
+RECT_AREA_LIGHT.position.set(-1.5, 0, 1.5);
+RECT_AREA_LIGHT.lookAt(new THREE.Vector3());
 
 // APP
 const APP = initThreeJs({
@@ -358,6 +361,7 @@ APP.scene.add(AMBIENT_LIGHT);
 APP.scene.add(DIRECTIONAL_LIGHT);
 APP.scene.add(HEMISPHERE_LIGHT);
 APP.scene.add(POINT_LIGHT);
+APP.scene.add(RECT_AREA_LIGHT);
 APP.scene.add(DONUT_GROUP);
 APP.scene.add(LIGHT_FORMS_GROUP);
 
