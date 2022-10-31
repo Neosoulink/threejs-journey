@@ -52,6 +52,18 @@ for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
 /* DEBUGGERS */
 const _GUI = new GUI();
 
+// GROUPE
+const CUBES_GROUP = new THREE.Group();
+const MESH_NEW_MATERIAL_GROUP = new THREE.Group();
+const DONUT_GROUP = new THREE.Group();
+const LIGHT_FORMS_GROUP = new THREE.Group();
+const SHADOW_GROUP = new THREE.Group();
+
+CUBES_GROUP.visible = false;
+MESH_NEW_MATERIAL_GROUP.visible = false;
+DONUT_GROUP.visible = false;
+LIGHT_FORMS_GROUP.visible = false;
+
 /* LOADING MANAGER */
 const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
@@ -165,7 +177,8 @@ const NEW_MATER6IAL = new THREE.MeshStandardMaterial({
 	// transparent: true,
 });
 const LIGHT_MATERIAL = new THREE.MeshStandardMaterial();
-LIGHT_MATERIAL.roughness = 0.4;
+const SHADOW_MATERIAL = new THREE.MeshStandardMaterial();
+SHADOW_MATERIAL.roughness = 0.7;
 
 /* Update materials properties */
 // NEW_MATER6IAL.shininess = 100;
@@ -175,6 +188,7 @@ LIGHT_MATERIAL.roughness = 0.4;
 // NEW_MATER6IAL.transparent = true;
 // NEW_MATER6IAL.alphaMap = DOOR_ALPHA_TEXTURE;
 // NEW_MATER6IAL.side = THREE.DoubleSide;
+LIGHT_MATERIAL.roughness = 0.4;
 
 /* MESH */
 const CubeClone = Cube.clone();
@@ -241,19 +255,18 @@ const TRIANGLE_MESH = new THREE.Mesh(TriangleGeometry, TriangleMaterial);
 TRIANGLE_MESH.visible = false;
 // let savedTime = Date.now();
 
-// GROUPE
-const CUBES_GROUP = new THREE.Group();
-const MESH_NEW_MATERIAL_GROUP = new THREE.Group();
-const DONUT_GROUP = new THREE.Group();
-const LIGHT_FORMS_GROUP = new THREE.Group();
+/* SHADOW MESH */
+const SHADOW_SPHERE = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 32, 32),
+	SHADOW_MATERIAL
+);
 
-CUBES_GROUP.visible = false;
-MESH_NEW_MATERIAL_GROUP.visible = false;
-DONUT_GROUP.visible = false;
-
-CUBES_GROUP.add(Cube, CubeClone);
-MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
-LIGHT_FORMS_GROUP.add(LIGHT_SPHERE, LIGHT_CUBE, LIGHT_TORUS, LIGHT_PLANE);
+const SHADOW_PLANE = new THREE.Mesh(
+	new THREE.PlaneGeometry(5, 5),
+	SHADOW_MATERIAL
+);
+SHADOW_PLANE.rotation.x = -Math.PI * 0.5;
+SHADOW_PLANE.position.y = -0.5;
 
 /* UPDATE MESH PROPERTIES */
 /* Material */
@@ -282,13 +295,11 @@ const ANIMATION_CLOCK = new THREE.Clock();
 /* LIGHT */
 const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
 const DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0x00fffc, 0.3);
-DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
 const HEMISPHERE_LIGHT = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
 const POINT_LIGHT = new THREE.PointLight(0xff9000, 0.5, 10, 2);
-POINT_LIGHT.position.set(1, -0.5, 1);
 const RECT_AREA_LIGHT = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
-RECT_AREA_LIGHT.position.set(-1.5, 0, 1.5);
-RECT_AREA_LIGHT.lookAt(new THREE.Vector3());
+const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
+const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.5);
 const SPOT_LIGHT = new THREE.SpotLight(
 	0x78ff00,
 	0.5,
@@ -297,6 +308,14 @@ const SPOT_LIGHT = new THREE.SpotLight(
 	0.25,
 	1
 );
+
+DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
+POINT_LIGHT.position.set(1, -0.5, 1);
+RECT_AREA_LIGHT.position.set(-1.5, 0, 1.5);
+RECT_AREA_LIGHT.lookAt(new THREE.Vector3());
+
+SHADOW_DIRECTIONAL_LIGHT.position.set(2, 2, -1);
+
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
 
@@ -314,27 +333,6 @@ window.requestAnimationFrame(() => {
 	SPOT_LIGHT_HELPER.update();
 });
 const RECT_AREA_LIGHT_HELPER = new RectAreaLightHelper(RECT_AREA_LIGHT);
-
-LIGHT_FORMS_GROUP.add(
-	AMBIENT_LIGHT,
-	DIRECTIONAL_LIGHT,
-	HEMISPHERE_LIGHT,
-	POINT_LIGHT,
-	RECT_AREA_LIGHT,
-	SPOT_LIGHT,
-	SPOT_LIGHT.target,
-	DIRECTIONAL_LIGHT_HELPER,
-	HEMISPHERE_LIGHT_HELPER,
-	POINT_LIGHT_HELPER,
-	SPOT_LIGHT_HELPER,
-	RECT_AREA_LIGHT_HELPER
-);
-
-// APP
-const APP = initThreeJs({
-	enableOrbit: true,
-	axesSizes: 5,
-});
 
 // FONTS
 const FONT_LOADER = new FontLoader();
@@ -394,12 +392,48 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 	APP.scene.add(TEXT_FORM);
 });
 
+// ADD TO GROUPE
+CUBES_GROUP.add(Cube, CubeClone);
+MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
+LIGHT_FORMS_GROUP.add(
+	AMBIENT_LIGHT,
+	DIRECTIONAL_LIGHT,
+	HEMISPHERE_LIGHT,
+	POINT_LIGHT,
+	RECT_AREA_LIGHT,
+	SPOT_LIGHT,
+	SPOT_LIGHT.target,
+	DIRECTIONAL_LIGHT_HELPER,
+	HEMISPHERE_LIGHT_HELPER,
+	POINT_LIGHT_HELPER,
+	SPOT_LIGHT_HELPER,
+	RECT_AREA_LIGHT_HELPER,
+	LIGHT_SPHERE,
+	LIGHT_CUBE,
+	LIGHT_TORUS,
+	LIGHT_PLANE
+);
+SHADOW_GROUP.add(
+	SHADOW_AMBIENT_LIGHT,
+	SHADOW_DIRECTIONAL_LIGHT,
+	SHADOW_PLANE,
+	SHADOW_SPHERE
+);
+SHADOW_GROUP.add();
+
+// APP
+const APP = initThreeJs({
+	enableOrbit: true,
+	axesSizes: 5,
+});
+
 /* Scene */
 APP.scene.add(CUBES_GROUP);
 APP.scene.add(TRIANGLE_MESH);
 APP.scene.add(MESH_NEW_MATERIAL_GROUP);
 APP.scene.add(DONUT_GROUP);
 APP.scene.add(LIGHT_FORMS_GROUP);
+APP.scene.add(SHADOW_GROUP);
 
 /* Camera */
 APP.camera.position.z = 5;
@@ -516,6 +550,35 @@ _GUI_LIGHT_FOLDER
 	.add(LIGHT_FORMS_GROUP, "visible")
 	.name("Lights group visible");
 
+const _GUI_SHADOWS_FOLDER = _GUI.addFolder("Shadows folder");
+_GUI_SHADOWS_FOLDER.add(SHADOW_GROUP, "visible");
+_GUI_SHADOWS_FOLDER
+	.add(SHADOW_AMBIENT_LIGHT, "intensity")
+	.min(0)
+	.max(1)
+	.step(0.001);
+_GUI_SHADOWS_FOLDER
+	.add(SHADOW_DIRECTIONAL_LIGHT, "intensity")
+	.min(0)
+	.max(1)
+	.step(0.001);
+_GUI_SHADOWS_FOLDER
+	.add(SHADOW_DIRECTIONAL_LIGHT.position, "x")
+	.min(-5)
+	.max(5)
+	.step(0.001);
+_GUI_SHADOWS_FOLDER
+	.add(SHADOW_DIRECTIONAL_LIGHT.position, "y")
+	.min(-5)
+	.max(5)
+	.step(0.001);
+_GUI_SHADOWS_FOLDER
+	.add(SHADOW_DIRECTIONAL_LIGHT.position, "z")
+	.min(-5)
+	.max(5)
+	.step(0.001);
+_GUI_SHADOWS_FOLDER.add(SHADOW_MATERIAL, "metalness").min(0).max(1).step(0.001);
+_GUI_SHADOWS_FOLDER.add(SHADOW_MATERIAL, "roughness").min(0).max(1).step(0.001);
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
 	const fullscreenElement =
