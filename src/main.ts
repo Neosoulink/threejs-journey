@@ -260,6 +260,7 @@ const SHADOW_SPHERE = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 32, 32),
 	SHADOW_MATERIAL
 );
+SHADOW_SPHERE.castShadow = true;
 
 const SHADOW_PLANE = new THREE.Mesh(
 	new THREE.PlaneGeometry(5, 5),
@@ -267,6 +268,7 @@ const SHADOW_PLANE = new THREE.Mesh(
 );
 SHADOW_PLANE.rotation.x = -Math.PI * 0.5;
 SHADOW_PLANE.position.y = -0.5;
+SHADOW_PLANE.receiveShadow = true;
 
 /* UPDATE MESH PROPERTIES */
 /* Material */
@@ -298,8 +300,6 @@ const DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0x00fffc, 0.3);
 const HEMISPHERE_LIGHT = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.3);
 const POINT_LIGHT = new THREE.PointLight(0xff9000, 0.5, 10, 2);
 const RECT_AREA_LIGHT = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
-const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
-const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.5);
 const SPOT_LIGHT = new THREE.SpotLight(
 	0x78ff00,
 	0.5,
@@ -308,6 +308,8 @@ const SPOT_LIGHT = new THREE.SpotLight(
 	0.25,
 	1
 );
+const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
+const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.5);
 
 DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
 POINT_LIGHT.position.set(1, -0.5, 1);
@@ -315,6 +317,7 @@ RECT_AREA_LIGHT.position.set(-1.5, 0, 1.5);
 RECT_AREA_LIGHT.lookAt(new THREE.Vector3());
 
 SHADOW_DIRECTIONAL_LIGHT.position.set(2, 2, -1);
+SHADOW_DIRECTIONAL_LIGHT.castShadow = true;
 
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
@@ -440,6 +443,9 @@ APP.camera.position.z = 5;
 
 /* Control */
 APP.control.enableDamping = true;
+
+/* Renderer */
+APP.renderer.shadowMap.enabled = true;
 
 /* Animate */
 APP.animate(() => {
