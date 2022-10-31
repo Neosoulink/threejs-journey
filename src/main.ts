@@ -318,6 +318,10 @@ RECT_AREA_LIGHT.lookAt(new THREE.Vector3());
 
 SHADOW_DIRECTIONAL_LIGHT.position.set(2, 2, -1);
 SHADOW_DIRECTIONAL_LIGHT.castShadow = true;
+SHADOW_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+SHADOW_DIRECTIONAL_LIGHT.shadow.camera.near = 1;
+SHADOW_DIRECTIONAL_LIGHT.shadow.camera.far = 6;
+console.log(SHADOW_DIRECTIONAL_LIGHT.shadow);
 
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
@@ -439,7 +443,9 @@ APP.scene.add(LIGHT_FORMS_GROUP);
 APP.scene.add(SHADOW_GROUP);
 
 /* Camera */
-APP.camera.position.z = 5;
+APP.camera.position.x = 1;
+APP.camera.position.y = 1;
+APP.camera.position.z = 2;
 
 /* Control */
 APP.control.enableDamping = true;
@@ -495,6 +501,12 @@ APP.animate(() => {
 // 	x: 0,
 // 	y: 0,
 // };
+
+// HELPERS
+const SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
+	SHADOW_DIRECTIONAL_LIGHT.shadow.camera
+);
+SHADOW_GROUP.add(SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER);
 
 /* DEBUGGER UI */
 _GUI.close();
@@ -611,7 +623,6 @@ window.addEventListener("dblclick", () => {
 });
 
 window.addEventListener("keydown", (e) => {
-	console.log("pressend h");
 	if (e.key === "h") {
 		if (_GUI._hidden) _GUI.show();
 		else _GUI.hide();
