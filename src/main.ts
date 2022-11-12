@@ -316,11 +316,16 @@ POINT_LIGHT.position.set(1, -0.5, 1);
 RECT_AREA_LIGHT.position.set(-1.5, 0, 1.5);
 RECT_AREA_LIGHT.lookAt(new THREE.Vector3());
 
-SHADOW_DIRECTIONAL_LIGHT.position.set(2, 2, -1);
 SHADOW_DIRECTIONAL_LIGHT.castShadow = true;
 SHADOW_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+SHADOW_DIRECTIONAL_LIGHT.position.set(2, 2, -1);
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.near = 1;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.far = 6;
+SHADOW_DIRECTIONAL_LIGHT.shadow.camera.top = 2;
+SHADOW_DIRECTIONAL_LIGHT.shadow.camera.right = 2;
+SHADOW_DIRECTIONAL_LIGHT.shadow.camera.bottom = -2;
+SHADOW_DIRECTIONAL_LIGHT.shadow.camera.left = -2;
+
 console.log(SHADOW_DIRECTIONAL_LIGHT.shadow);
 
 SPOT_LIGHT.position.set(0, 2, 3);
