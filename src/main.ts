@@ -325,6 +325,7 @@ SHADOW_DIRECTIONAL_LIGHT.shadow.camera.top = 2;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.right = 2;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.bottom = -2;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.left = -2;
+SHADOW_DIRECTIONAL_LIGHT.shadow.radius = 10;
 
 console.log(SHADOW_DIRECTIONAL_LIGHT.shadow);
 
