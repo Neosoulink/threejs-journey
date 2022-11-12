@@ -325,9 +325,7 @@ SHADOW_DIRECTIONAL_LIGHT.shadow.camera.top = 2;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.right = 2;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.bottom = -2;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.left = -2;
-SHADOW_DIRECTIONAL_LIGHT.shadow.radius = 10;
-
-console.log(SHADOW_DIRECTIONAL_LIGHT.shadow);
+// SHADOW_DIRECTIONAL_LIGHT.shadow.radius = 10;
 
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
@@ -432,7 +430,6 @@ SHADOW_GROUP.add(
 	SHADOW_PLANE,
 	SHADOW_SPHERE
 );
-SHADOW_GROUP.add();
 
 // APP
 const APP = initThreeJs({
@@ -458,6 +455,7 @@ APP.control.enableDamping = true;
 
 /* Renderer */
 APP.renderer.shadowMap.enabled = true;
+APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /* Animate */
 APP.animate(() => {
