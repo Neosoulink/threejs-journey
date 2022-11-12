@@ -310,6 +310,7 @@ const SPOT_LIGHT = new THREE.SpotLight(
 );
 const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
 const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.5);
+const SHADOW_SPOT_LIGHT = new THREE.SpotLight(0xffffff, 0.4, 10, Math.PI * 0.3);
 
 DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
 POINT_LIGHT.position.set(1, -0.5, 1);
@@ -327,6 +328,9 @@ SHADOW_DIRECTIONAL_LIGHT.shadow.camera.bottom = -2;
 SHADOW_DIRECTIONAL_LIGHT.shadow.camera.left = -2;
 // SHADOW_DIRECTIONAL_LIGHT.shadow.radius = 10;
 
+SHADOW_SPOT_LIGHT.castShadow = true;
+SHADOW_SPOT_LIGHT.position.set(0, 2, 2);
+
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
 
@@ -340,10 +344,13 @@ const HEMISPHERE_LIGHT_HELPER = new THREE.HemisphereLightHelper(
 );
 const POINT_LIGHT_HELPER = new THREE.PointLightHelper(POINT_LIGHT, 0.2);
 const SPOT_LIGHT_HELPER = new THREE.SpotLightHelper(SPOT_LIGHT);
+const RECT_AREA_LIGHT_HELPER = new RectAreaLightHelper(RECT_AREA_LIGHT);
+const SHADOW_SPOT_LIGHT_HELPER = new THREE.SpotLightHelper(SHADOW_SPOT_LIGHT);
+
 window.requestAnimationFrame(() => {
+	SHADOW_SPOT_LIGHT_HELPER.update();
 	SPOT_LIGHT_HELPER.update();
 });
-const RECT_AREA_LIGHT_HELPER = new RectAreaLightHelper(RECT_AREA_LIGHT);
 
 // FONTS
 const FONT_LOADER = new FontLoader();
@@ -427,6 +434,9 @@ LIGHT_FORMS_GROUP.add(
 SHADOW_GROUP.add(
 	SHADOW_AMBIENT_LIGHT,
 	SHADOW_DIRECTIONAL_LIGHT,
+	SHADOW_SPOT_LIGHT,
+	SHADOW_SPOT_LIGHT.target,
+	SHADOW_SPOT_LIGHT_HELPER,
 	SHADOW_PLANE,
 	SHADOW_SPHERE
 );
