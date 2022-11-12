@@ -308,9 +308,10 @@ const SPOT_LIGHT = new THREE.SpotLight(
 	0.25,
 	1
 );
-const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.4);
-const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.4);
-const SHADOW_SPOT_LIGHT = new THREE.SpotLight(0xffffff, 0.4, 10, Math.PI * 0.3);
+const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.3);
+const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.3);
+const SHADOW_SPOT_LIGHT = new THREE.SpotLight(0xffffff, 0.3, 10, Math.PI * 0.3);
+const SHADOW_POINT_LIGHT = new THREE.PointLight(0xffffff, 0.3);
 
 DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
 POINT_LIGHT.position.set(1, -0.5, 1);
@@ -332,7 +333,12 @@ SHADOW_SPOT_LIGHT.castShadow = true;
 SHADOW_SPOT_LIGHT.shadow.mapSize.set(1024, 1024);
 
 SHADOW_SPOT_LIGHT.position.set(0, 2, 2);
-console.log("SHADOW_SPOT_LIGHT.shadow.camera", SHADOW_SPOT_LIGHT.shadow.camera);
+
+SHADOW_POINT_LIGHT.castShadow = true;
+SHADOW_POINT_LIGHT.position.set(-1, 1, 0);
+SHADOW_POINT_LIGHT.shadow.mapSize.set(1024, 1024);
+SHADOW_POINT_LIGHT.shadow.camera.near = 0.1;
+SHADOW_POINT_LIGHT.shadow.camera.far = 4;
 
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
@@ -436,6 +442,7 @@ SHADOW_GROUP.add(
 	SHADOW_DIRECTIONAL_LIGHT,
 	SHADOW_SPOT_LIGHT,
 	SHADOW_SPOT_LIGHT.target,
+	SHADOW_POINT_LIGHT,
 	SHADOW_PLANE,
 	SHADOW_SPHERE
 );
@@ -523,15 +530,19 @@ APP.animate(() => {
 const SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
 	SHADOW_DIRECTIONAL_LIGHT.shadow.camera
 );
-
 const SHADOW_SPOT_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
 	SHADOW_SPOT_LIGHT.shadow.camera
 );
+const SHADOW_POINT_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
+	SHADOW_POINT_LIGHT.shadow.camera
+);
 SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER.visible = false;
 SHADOW_SPOT_LIGHT_CAMERA_HELPER.visible = false;
+SHADOW_POINT_LIGHT_CAMERA_HELPER.visible = false;
 SHADOW_GROUP.add(
 	SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER,
-	SHADOW_SPOT_LIGHT_CAMERA_HELPER
+	SHADOW_SPOT_LIGHT_CAMERA_HELPER,
+	SHADOW_POINT_LIGHT_CAMERA_HELPER
 );
 
 /* DEBUGGER UI */
