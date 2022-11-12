@@ -308,8 +308,8 @@ const SPOT_LIGHT = new THREE.SpotLight(
 	0.25,
 	1
 );
-const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.5);
-const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.5);
+const SHADOW_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.4);
+const SHADOW_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.4);
 const SHADOW_SPOT_LIGHT = new THREE.SpotLight(0xffffff, 0.4, 10, Math.PI * 0.3);
 
 DIRECTIONAL_LIGHT.position.set(1, 0.25, 0);
@@ -329,7 +329,10 @@ SHADOW_DIRECTIONAL_LIGHT.shadow.camera.left = -2;
 // SHADOW_DIRECTIONAL_LIGHT.shadow.radius = 10;
 
 SHADOW_SPOT_LIGHT.castShadow = true;
+SHADOW_SPOT_LIGHT.shadow.mapSize.set(1024, 1024);
+
 SHADOW_SPOT_LIGHT.position.set(0, 2, 2);
+console.log("SHADOW_SPOT_LIGHT.shadow.camera", SHADOW_SPOT_LIGHT.shadow.camera);
 
 SPOT_LIGHT.position.set(0, 2, 3);
 SPOT_LIGHT.target.position.x = -0.75;
@@ -345,10 +348,7 @@ const HEMISPHERE_LIGHT_HELPER = new THREE.HemisphereLightHelper(
 const POINT_LIGHT_HELPER = new THREE.PointLightHelper(POINT_LIGHT, 0.2);
 const SPOT_LIGHT_HELPER = new THREE.SpotLightHelper(SPOT_LIGHT);
 const RECT_AREA_LIGHT_HELPER = new RectAreaLightHelper(RECT_AREA_LIGHT);
-const SHADOW_SPOT_LIGHT_HELPER = new THREE.SpotLightHelper(SHADOW_SPOT_LIGHT);
-
 window.requestAnimationFrame(() => {
-	SHADOW_SPOT_LIGHT_HELPER.update();
 	SPOT_LIGHT_HELPER.update();
 });
 
@@ -436,7 +436,6 @@ SHADOW_GROUP.add(
 	SHADOW_DIRECTIONAL_LIGHT,
 	SHADOW_SPOT_LIGHT,
 	SHADOW_SPOT_LIGHT.target,
-	SHADOW_SPOT_LIGHT_HELPER,
 	SHADOW_PLANE,
 	SHADOW_SPHERE
 );
@@ -501,6 +500,10 @@ APP.animate(() => {
 	// APP.camera.position.y = CURSOR_POS.y * 10;
 	// APP.camera.lookAt(new THREE.Vector3());
 
+	SHADOW_SPOT_LIGHT.shadow.camera.fov = 30;
+	SHADOW_SPOT_LIGHT.shadow.camera.near = 1;
+	SHADOW_SPOT_LIGHT.shadow.camera.far = 6;
+
 	// UPDATE CONTROL
 	APP.control.update();
 });
@@ -520,7 +523,16 @@ APP.animate(() => {
 const SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
 	SHADOW_DIRECTIONAL_LIGHT.shadow.camera
 );
-SHADOW_GROUP.add(SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER);
+
+const SHADOW_SPOT_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
+	SHADOW_SPOT_LIGHT.shadow.camera
+);
+SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER.visible = false;
+SHADOW_SPOT_LIGHT_CAMERA_HELPER.visible = false;
+SHADOW_GROUP.add(
+	SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER,
+	SHADOW_SPOT_LIGHT_CAMERA_HELPER
+);
 
 /* DEBUGGER UI */
 _GUI.close();
