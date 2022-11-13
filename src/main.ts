@@ -476,6 +476,75 @@ SHADOW_GROUP.add(
 );
 /* =========== END SHADOW LESSON =========== */
 
+/* =========== START SHADOW LESSON =========== */
+/* GROUPS */
+const HAUNTED_HOUSE_GROUP = new THREE.Group();
+
+/**
+ * House
+ */
+// Temporary sphere
+const HAUNTED_HOUSE_SPHERE = new THREE.Mesh(
+	new THREE.SphereGeometry(1, 32, 32),
+	new THREE.MeshStandardMaterial({ roughness: 0.7 })
+);
+HAUNTED_HOUSE_SPHERE.position.y = 1;
+
+// Floor
+const HAUNTED_FLOOR = new THREE.Mesh(
+	new THREE.PlaneGeometry(20, 20),
+	new THREE.MeshStandardMaterial({ color: "#a9c388" })
+);
+HAUNTED_FLOOR.rotation.x = -Math.PI * 0.5;
+HAUNTED_FLOOR.position.y = 0;
+
+/**
+ * Lights
+ */
+// Ambient light
+const HAUNTED_AMBIENT_LIGHT = new THREE.AmbientLight("#ffffff", 0.5);
+
+// Directional light
+const HAUNTED_MOON_LIGHT = new THREE.DirectionalLight("#ffffff", 0.5);
+HAUNTED_MOON_LIGHT.position.set(4, 5, -2);
+
+HAUNTED_HOUSE_GROUP.add(
+	HAUNTED_HOUSE_SPHERE,
+	HAUNTED_FLOOR,
+	HAUNTED_AMBIENT_LIGHT,
+	HAUNTED_MOON_LIGHT
+);
+
+// GUI
+const _HAUNTED_HOUSE_GUI = _GUI.addFolder("Haunted house");
+_HAUNTED_HOUSE_GUI
+	.add(HAUNTED_AMBIENT_LIGHT, "intensity")
+	.min(0)
+	.max(1)
+	.step(0.001);
+_HAUNTED_HOUSE_GUI
+	.add(HAUNTED_MOON_LIGHT, "intensity")
+	.min(0)
+	.max(1)
+	.step(0.001);
+_HAUNTED_HOUSE_GUI
+	.add(HAUNTED_MOON_LIGHT.position, "x")
+	.min(-5)
+	.max(5)
+	.step(0.001);
+_HAUNTED_HOUSE_GUI
+	.add(HAUNTED_MOON_LIGHT.position, "y")
+	.min(-5)
+	.max(5)
+	.step(0.001);
+_HAUNTED_HOUSE_GUI
+	.add(HAUNTED_MOON_LIGHT.position, "z")
+	.min(-5)
+	.max(5)
+	.step(0.001);
+
+/* =========== END SHADOW LESSON =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -520,11 +589,12 @@ APP.scene.add(MESH_NEW_MATERIAL_GROUP);
 APP.scene.add(DONUT_GROUP);
 APP.scene.add(LIGHT_FORMS_GROUP);
 APP.scene.add(SHADOW_GROUP);
+APP.scene.add(HAUNTED_HOUSE_GROUP);
 
 /* Camera */
-APP.camera.position.x = 1;
-APP.camera.position.y = 1;
-APP.camera.position.z = 2;
+APP.camera.position.x = 4;
+APP.camera.position.y = 2;
+APP.camera.position.z = 5;
 
 /* Control */
 APP.control.enableDamping = true;
@@ -597,6 +667,7 @@ APP.animate(() => {
 /* DEBUGGER UI */
 _GUI.close();
 const _GUI_CUBES_GROUP_FOLDER = _GUI.addFolder("Cube group");
+_GUI_CUBES_GROUP_FOLDER.close();
 _GUI_CUBES_GROUP_FOLDER.add(CUBES_GROUP, "visible").name("CUBES_GROUP visible");
 _GUI_CUBES_GROUP_FOLDER
 	.add(CUBES_GROUP.position, "y")
@@ -624,6 +695,7 @@ _GUI_CUBES_GROUP_FOLDER
 	.name("Cubes lite animation");
 
 const _GUI_TRIANGLE_MESH_FOLDER = _GUI.addFolder("Triangle");
+_GUI_TRIANGLE_MESH_FOLDER.close();
 _GUI_TRIANGLE_MESH_FOLDER
 	.add(TRIANGLE_MESH, "visible")
 	.name("Triangle Mesh Visible");
@@ -632,6 +704,7 @@ _GUI_TRIANGLE_MESH_FOLDER
 	.name("Triangle Wireframe");
 
 const _GUI_NEW_MATERIAL_FOLDER = _GUI.addFolder("New Material props");
+_GUI_NEW_MATERIAL_FOLDER.close();
 _GUI_NEW_MATERIAL_FOLDER
 	.add(MESH_NEW_MATERIAL_GROUP, "visible")
 	.name("NEW_MATERIAL_GROUP visible");
@@ -647,14 +720,17 @@ _GUI_NEW_MATERIAL_FOLDER
 	.step(0.0001);
 
 const _GUI_DONUTS_FOLDER = _GUI.addFolder("Donuts");
+_GUI_DONUTS_FOLDER.close();
 _GUI_DONUTS_FOLDER.add(DONUT_GROUP, "visible").name("Donuts visibility");
 
 const _GUI_LIGHT_FOLDER = _GUI.addFolder("Light");
+_GUI_LIGHT_FOLDER.close();
 _GUI_LIGHT_FOLDER
 	.add(LIGHT_FORMS_GROUP, "visible")
 	.name("Lights group visible");
 
 const _GUI_SHADOWS_FOLDER = _GUI.addFolder("Shadows folder");
+_GUI_SHADOWS_FOLDER.close();
 _GUI_SHADOWS_FOLDER.add(SHADOW_GROUP, "visible");
 _GUI_SHADOWS_FOLDER
 	.add(SHADOW_AMBIENT_LIGHT, "intensity")
