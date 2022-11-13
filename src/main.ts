@@ -41,6 +41,9 @@ import pxEnvImg from "./assets/img/textures/environmentMaps/0/px.jpg";
 import pyEnvImg from "./assets/img/textures/environmentMaps/0/py.jpg";
 import pzEnvImg from "./assets/img/textures/environmentMaps/0/pz.jpg";
 
+// import bakedShadowImg from "./assets/img/textures/bakedShadow.jpg";
+import simpleShadowImg from "./assets/img/textures/simpleShadow.jpg";
+
 /* DATA */
 const TRIANGLE_VERTICES_COUNT = 500;
 const TRIANGLE_VERTICES = new Float32Array(TRIANGLE_VERTICES_COUNT * 3 * 3);
@@ -105,7 +108,6 @@ const MATCAP_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
 // const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
 // const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
 // const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
-
 const ENVIRNEMET_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
 	pxEnvImg,
 	nxEnvImg,
@@ -114,6 +116,9 @@ const ENVIRNEMET_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
 	pzEnvImg,
 	nzEnvImg,
 ]);
+// const BAKED_SHADOW = TEXTURE_LOADER.load(bakedShadowImg);
+const SIMPLE_SHADOW = TEXTURE_LOADER.load(simpleShadowImg);
+
 /* Update texture properties */
 // DOOR_COLOR_TEXTURE.repeat.x = 2;
 // DOOR_COLOR_TEXTURE.repeat.y = 3;
@@ -264,11 +269,23 @@ SHADOW_SPHERE.castShadow = true;
 
 const SHADOW_PLANE = new THREE.Mesh(
 	new THREE.PlaneGeometry(5, 5),
+	// new THREE.MeshBasicMaterial({ map: BAKED_SHADOW })
 	SHADOW_MATERIAL
 );
 SHADOW_PLANE.rotation.x = -Math.PI * 0.5;
 SHADOW_PLANE.position.y = -0.5;
 SHADOW_PLANE.receiveShadow = true;
+
+const SHADOW_PLANE_BAKED_SHADOW = new THREE.Mesh(
+	new THREE.PlaneGeometry(1.5, 1.5),
+	new THREE.MeshBasicMaterial({
+		color: 0x000000,
+		transparent: true,
+		alphaMap: SIMPLE_SHADOW,
+	})
+);
+SHADOW_PLANE_BAKED_SHADOW.rotation.x = -Math.PI * 0.5;
+SHADOW_PLANE_BAKED_SHADOW.position.y = SHADOW_PLANE.position.y + 0.01;
 
 /* UPDATE MESH PROPERTIES */
 /* Material */
@@ -444,7 +461,8 @@ SHADOW_GROUP.add(
 	SHADOW_SPOT_LIGHT.target,
 	SHADOW_POINT_LIGHT,
 	SHADOW_PLANE,
-	SHADOW_SPHERE
+	SHADOW_SPHERE,
+	SHADOW_PLANE_BAKED_SHADOW
 );
 
 // APP
@@ -470,7 +488,7 @@ APP.camera.position.z = 2;
 APP.control.enableDamping = true;
 
 /* Renderer */
-APP.renderer.shadowMap.enabled = true;
+APP.renderer.shadowMap.enabled = false;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /* Animate */
@@ -492,6 +510,14 @@ APP.animate(() => {
 	LIGHT_SPHERE.rotation.x = 0.15 * ELAPSED_TIME;
 	LIGHT_CUBE.rotation.x = 0.15 * ELAPSED_TIME;
 	LIGHT_TORUS.rotation.x = 0.15 * ELAPSED_TIME;
+
+	SHADOW_SPHERE.position.x = Math.cos(ELAPSED_TIME) * 1.5;
+	SHADOW_SPHERE.position.z = Math.sin(ELAPSED_TIME) * 1.5;
+	SHADOW_SPHERE.position.y = Math.abs(Math.sin(ELAPSED_TIME * 3) * 1.5);
+
+	SHADOW_PLANE_BAKED_SHADOW.position.x = SHADOW_SPHERE.position.x;
+	SHADOW_PLANE_BAKED_SHADOW.position.z = SHADOW_SPHERE.position.z;
+	SHADOW_PLANE_BAKED_SHADOW.material.opacity = 1.2 - SHADOW_SPHERE.position.y;
 
 	// SphereForm.rotation.y = 0.1 * ELAPSED_TIME;
 	// PlaneForm.rotation.y = 0.1 * ELAPSED_TIME;
