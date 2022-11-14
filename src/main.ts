@@ -476,19 +476,34 @@ SHADOW_GROUP.add(
 );
 /* =========== END SHADOW LESSON =========== */
 
-/* =========== START SHADOW LESSON =========== */
+/* =========== START HAUNTED HOUSE =========== */
 /* GROUPS */
 const HAUNTED_HOUSE_GROUP = new THREE.Group();
+const HAUNTED_HOUSE_HOUSE_GROUP = new THREE.Group();
 
 /**
  * House
  */
-// Temporary sphere
-const HAUNTED_HOUSE_SPHERE = new THREE.Mesh(
-	new THREE.SphereGeometry(1, 32, 32),
-	new THREE.MeshStandardMaterial({ roughness: 0.7 })
+// Walls
+const HAUNTED_HOUSE_WALLS = new THREE.Mesh(
+	new THREE.BoxGeometry(4, 2.5, 4),
+	new THREE.MeshStandardMaterial({ color: 0xac8e82 })
 );
-HAUNTED_HOUSE_SPHERE.position.y = 1;
+HAUNTED_HOUSE_WALLS.position.y = 2.5 / 2;
+// Roof
+const HAUNTED_HOUSE_ROOF = new THREE.Mesh(
+	new THREE.ConeBufferGeometry(3.5, 1, 4),
+	new THREE.MeshStandardMaterial({ color: 0xb35e45 })
+);
+HAUNTED_HOUSE_ROOF.position.y = 2.5 + 0.5;
+HAUNTED_HOUSE_ROOF.rotation.y = Math.PI * 0.25;
+// Door
+const HAUNTED_HOUSE_DOOR = new THREE.Mesh(
+	new THREE.PlaneBufferGeometry(2, 2),
+	new THREE.MeshStandardMaterial({ color: 0xaa7b7b })
+);
+HAUNTED_HOUSE_DOOR.position.y = 1;
+HAUNTED_HOUSE_DOOR.position.z = 2 + 0.0001;
 
 // Floor
 const HAUNTED_FLOOR = new THREE.Mesh(
@@ -508,11 +523,16 @@ const HAUNTED_AMBIENT_LIGHT = new THREE.AmbientLight("#ffffff", 0.5);
 const HAUNTED_MOON_LIGHT = new THREE.DirectionalLight("#ffffff", 0.5);
 HAUNTED_MOON_LIGHT.position.set(4, 5, -2);
 
+HAUNTED_HOUSE_HOUSE_GROUP.add(
+	HAUNTED_HOUSE_WALLS,
+	HAUNTED_HOUSE_ROOF,
+	HAUNTED_HOUSE_DOOR
+);
 HAUNTED_HOUSE_GROUP.add(
-	HAUNTED_HOUSE_SPHERE,
 	HAUNTED_FLOOR,
 	HAUNTED_AMBIENT_LIGHT,
-	HAUNTED_MOON_LIGHT
+	HAUNTED_MOON_LIGHT,
+	HAUNTED_HOUSE_HOUSE_GROUP
 );
 
 // GUI
@@ -543,7 +563,7 @@ _HAUNTED_HOUSE_GUI
 	.max(5)
 	.step(0.001);
 
-/* =========== END SHADOW LESSON =========== */
+/* =========== END HAUNTED HOUSE =========== */
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
