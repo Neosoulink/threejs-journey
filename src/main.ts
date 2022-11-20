@@ -691,6 +691,10 @@ APP.control.enableDamping = true;
 APP.renderer.shadowMap.enabled = false;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+/* Haunted house fog */
+APP.scene.fog = new THREE.Fog('#262837', 0, 15)
+APP.renderer.setClearColor('#262837')
+
 /* Animate */
 APP.animate(() => {
 	// Animation using native js date
