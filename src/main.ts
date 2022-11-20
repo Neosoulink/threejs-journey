@@ -563,6 +563,7 @@ HAUNTED_HOUSE_WALLS.geometry.setAttribute(
 	)
 );
 HAUNTED_HOUSE_WALLS.position.y = 2.5 / 2;
+HAUNTED_HOUSE_WALLS.castShadow = true;
 // Roof
 const HAUNTED_HOUSE_ROOF = new THREE.Mesh(
 	new THREE.ConeBufferGeometry(3.5, 1, 4),
@@ -637,6 +638,11 @@ const HAUNTED_HOUSE_BUSH4 = new THREE.Mesh(
 );
 HAUNTED_HOUSE_BUSH4.scale.set(0.15, 0.15, 0.15);
 HAUNTED_HOUSE_BUSH4.position.set(-1, 0.05, 2.6);
+
+HAUNTED_HOUSE_BUSH1.castShadow = true;
+HAUNTED_HOUSE_BUSH2.castShadow = true;
+HAUNTED_HOUSE_BUSH3.castShadow = true;
+HAUNTED_HOUSE_BUSH4.castShadow = true;
 // Graves
 const HAUNTED_HOUSE_GRAVE_GEOMETRY = new THREE.BoxGeometry(0.6, 0.8, 0.2);
 const HAUNTED_HOUSE_GRAVE_MATERIAL = new THREE.MeshStandardMaterial({
@@ -659,6 +665,7 @@ for (let i = 0; i < 40; i++) {
 	_GRAVE_MESH.rotation.y = (Math.random() - 0.5) * 0.5;
 	_GRAVE_MESH.rotation.z = (Math.random() - 0.5) * 0.3;
 
+	_GRAVE_MESH.castShadow= true;
 	HAUNTED_HOUSE_GRAVES_GROUP.add(_GRAVE_MESH);
 }
 
@@ -682,6 +689,7 @@ HAUNTED_FLOOR.geometry.setAttribute(
 );
 HAUNTED_FLOOR.rotation.x = -Math.PI * 0.5;
 HAUNTED_FLOOR.position.y = 0;
+HAUNTED_FLOOR.receiveShadow = true;
 
 /**
  * Lights
@@ -692,15 +700,28 @@ const HAUNTED_AMBIENT_LIGHT = new THREE.AmbientLight("#b9d5ff", 0.12);
 // Directional light
 const HAUNTED_MOON_LIGHT = new THREE.DirectionalLight("#b9d5ff", 0.12);
 HAUNTED_MOON_LIGHT.position.set(4, 5, -2);
+HAUNTED_MOON_LIGHT.castShadow = true;
+
+HAUNTED_MOON_LIGHT.shadow.mapSize.set(256, 256)
+HAUNTED_MOON_LIGHT.shadow.camera.far = 15
 
 // Door light
 const HAUNTED_DOOR_LIGHT = new THREE.PointLight("#ff7d46", 1, 7);
 HAUNTED_DOOR_LIGHT.position.set(0, 2.2, 2.7);
+HAUNTED_DOOR_LIGHT.castShadow = true;
+HAUNTED_DOOR_LIGHT.shadow.mapSize.set(256, 256)
+HAUNTED_DOOR_LIGHT.shadow.camera.far = 7
 
 // Ghosts
-const HAUNTED_HOUSE_GHOST1 = new THREE.PointLight("#ff00ff", 2, 3);
-const HAUNTED_HOUSE_GHOST2 = new THREE.PointLight("#00ffff", 2, 3);
-const HAUNTED_HOUSE_GHOST3 = new THREE.PointLight("#ffff00", 2, 3);
+const HAUNTED_HOUSE_GHOST1 = new THREE.PointLight("#ff00ff", 2, 3);HAUNTED_HOUSE_GHOST1.castShadow = true;
+HAUNTED_HOUSE_GHOST1.shadow.mapSize.set(256, 256)
+HAUNTED_HOUSE_GHOST1.shadow.camera.far = 7
+const HAUNTED_HOUSE_GHOST2 = new THREE.PointLight("#00ffff", 2, 3);HAUNTED_HOUSE_GHOST2.castShadow = true;
+HAUNTED_HOUSE_GHOST2.shadow.mapSize.set(256, 256)
+HAUNTED_HOUSE_GHOST2.shadow.camera.far = 7
+const HAUNTED_HOUSE_GHOST3 = new THREE.PointLight("#ffff00", 2, 3);HAUNTED_HOUSE_GHOST3.castShadow = true;
+HAUNTED_HOUSE_GHOST3.shadow.mapSize.set(256, 256)
+HAUNTED_HOUSE_GHOST3.shadow.camera.far = 7
 
 HAUNTED_HOUSE_HOUSE_GROUP.add(
 	HAUNTED_HOUSE_WALLS,
@@ -808,7 +829,7 @@ APP.camera.position.z = 5;
 APP.control.enableDamping = true;
 
 /* Renderer */
-APP.renderer.shadowMap.enabled = false;
+APP.renderer.shadowMap.enabled = true;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /* Haunted house fog */
