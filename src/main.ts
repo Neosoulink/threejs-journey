@@ -19,13 +19,13 @@ import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typefac
 
 /* IMAGES */
 /* Door images */
-// import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
-// import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
+import doorAlphaImg from "./assets/img/textures/door/alpha.jpg";
+import doorAmbientOcclusionImg from "./assets/img/textures/door/ambientOcclusion.jpg";
 import doorDoorImg from "./assets/img/textures/door/color.jpg";
-// import doorHeightImg from "./assets/img/textures/door/height.jpg";
-// import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
-// import doorNormalImg from "./assets/img/textures/door/normal.jpg";
-// import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
+import doorHeightImg from "./assets/img/textures/door/height.jpg";
+import doorMetalnessImg from "./assets/img/textures/door/metalness.jpg";
+import doorNormalImg from "./assets/img/textures/door/normal.jpg";
+import doorRoughnessImg from "./assets/img/textures/door/roughness.jpg";
 /* Matcaps images */
 import matcaps1Img from "./assets/img/textures/matcaps/4.png";
 /* Gradients images */
@@ -99,20 +99,20 @@ const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
 const CUBE_TEXTURE_LOADER = new THREE.CubeTextureLoader(LOADING_MANAGER);
 
 // TEXTURES
-// const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
-// const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
-// 	doorAmbientOcclusionImg
-// );
+const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
+const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
+	doorAmbientOcclusionImg
+);
 const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
+const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
+const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
+const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
+const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
 // const GRADIENT_TEXTURE = TEXTURE_LOADER.load(gradientsImg);
 // GRADIENT_TEXTURE.minFilter = THREE.NearestFilter;
 // GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
 // GRADIENT_TEXTURE.generateMipmaps = false;
 const MATCAP_1_TEXTURE = TEXTURE_LOADER.load(matcaps1Img);
-// const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
-// const DOOR_METALNESS_TEXTURE = TEXTURE_LOADER.load(doorMetalnessImg);
-// const DOOR_NORMAL_TEXTURE = TEXTURE_LOADER.load(doorNormalImg);
-// const DOOR_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(doorRoughnessImg);
 const ENVIRONMENT_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
 	pxEnvImg,
 	nxEnvImg,
@@ -494,14 +494,38 @@ HAUNTED_HOUSE_WALLS.position.y = 2.5 / 2;
 // Roof
 const HAUNTED_HOUSE_ROOF = new THREE.Mesh(
 	new THREE.ConeBufferGeometry(3.5, 1, 4),
-	new THREE.MeshStandardMaterial({ color: 0xb35e45 })
+	new THREE.MeshStandardMaterial({
+		color: 0xb35e45,
+	})
 );
 HAUNTED_HOUSE_ROOF.position.y = 2.5 + 0.5;
 HAUNTED_HOUSE_ROOF.rotation.y = Math.PI * 0.25;
 // Door
 const HAUNTED_HOUSE_DOOR = new THREE.Mesh(
-	new THREE.PlaneBufferGeometry(2, 2),
-	new THREE.MeshStandardMaterial({ color: 0xaa7b7b })
+	new THREE.PlaneBufferGeometry(2.2, 2.2, 100, 100),
+	new THREE.MeshStandardMaterial({
+		// color: 0xaa7b7b,
+		map: DOOR_COLOR_TEXTURE,
+		alphaMap: DOOR_ALPHA_TEXTURE,
+		aoMap: DOOR_AMBIENT_OCCLUSION_TEXTURE,
+		// aoMapIntensity: 1,
+		displacementMap: DOOR_HEIGHT_TEXTURE,
+		displacementScale: 0.1,
+		metalnessMap: DOOR_METALNESS_TEXTURE,
+		// metalness: 0.7,
+		roughnessMap: DOOR_ROUGHNESS_TEXTURE,
+		// roughness: 0.2,
+		normalMap: DOOR_NORMAL_TEXTURE,
+		// normalScale: new THREE.Vector2(0.5, 0.5),
+		transparent: true,
+	})
+);
+HAUNTED_HOUSE_DOOR.geometry.setAttribute(
+	"uv2",
+	new THREE.Float32BufferAttribute(
+		HAUNTED_HOUSE_DOOR.geometry.attributes.uv.array,
+		2
+	)
 );
 HAUNTED_HOUSE_DOOR.position.y = 1;
 HAUNTED_HOUSE_DOOR.position.z = 2 + 0.0001;
@@ -692,8 +716,8 @@ APP.renderer.shadowMap.enabled = false;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /* Haunted house fog */
-APP.scene.fog = new THREE.Fog('#262837', 0, 15)
-APP.renderer.setClearColor('#262837')
+APP.scene.fog = new THREE.Fog("#262837", 0, 15);
+APP.renderer.setClearColor("#262837");
 
 /* Animate */
 APP.animate(() => {
