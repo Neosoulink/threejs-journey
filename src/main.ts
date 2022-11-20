@@ -537,6 +537,16 @@ const HAUNTED_HOUSE_BUSH4 = new THREE.Mesh(
 );
 HAUNTED_HOUSE_BUSH4.scale.set(0.15, 0.15, 0.15);
 HAUNTED_HOUSE_BUSH4.position.set(-1, 0.05, 2.6);
+// Graves
+const HAUNTED_HOUSE_GRAVE_GEOMETRY = new THREE.BoxGeometry(0.6, 0.8, 0.2);
+const HAUNTED_HOUSE_GRAVE_MATERIAL = new THREE.MeshStandardMaterial({
+	color: 0xb6b2b1,
+});
+for (let i = 0; i < 40; i++) {
+	const _ANGLE = Math.random() * Math.PI + 2;
+	const _RADIUS = 3 + Math.random() + 6;
+	console.log(_ANGLE, _RADIUS);
+}
 
 // Floor
 const HAUNTED_FLOOR = new THREE.Mesh(
