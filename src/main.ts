@@ -45,6 +45,11 @@ import hauntedHouseAmbientocclusionWallImg from "./assets/img/textures/hauntedHo
 import hauntedHouseColorWallImg from "./assets/img/textures/hauntedHouse/bricks/color.jpg";
 import hauntedHouseNormalWallImg from "./assets/img/textures/hauntedHouse/bricks/normal.jpg";
 import hauntedHouserRoughnessWallImg from "./assets/img/textures/hauntedHouse/bricks/roughness.jpg";
+/* Haunted house grass */
+import hauntedHouseAmbientocclusionGrassImg from "./assets/img/textures/hauntedHouse/grass/ambientOcclusion.jpg";
+import hauntedHouseColorGrassImg from "./assets/img/textures/hauntedHouse/grass/color.jpg";
+import hauntedHouseNormalGrassImg from "./assets/img/textures/hauntedHouse/grass/normal.jpg";
+import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/grass/roughness.jpg";
 
 /* DATA */
 // let savedTime = Date.now();
@@ -500,6 +505,41 @@ const HAUNTED_HOUSE_WALLS_NORMAL_TEXTURE = TEXTURE_LOADER.load(
 const HAUNTED_HOUSE_WALLS_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(
 	hauntedHouserRoughnessWallImg
 );
+const HAUNTED_HOUSE_GRASS_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseAmbientocclusionGrassImg
+);
+const HAUNTED_HOUSE_GRASS_COLOR_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseColorGrassImg
+);
+const HAUNTED_HOUSE_GRASS_NORMAL_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseNormalGrassImg
+);
+const HAUNTED_HOUSE_GRASS_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouserRoughnessGrassImg
+);
+const HAUNTED_HOUSE_BRUSH_COLOR_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseColorGrassImg
+);
+const HAUNTED_HOUSE_BRUSH_NORMAL_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseNormalGrassImg
+);
+const HAUNTED_HOUSE_BRUSH_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouserRoughnessGrassImg
+);
+HAUNTED_HOUSE_GRASS_AMBIENT_OCCLUSION_TEXTURE.repeat.set(8,8);
+HAUNTED_HOUSE_GRASS_COLOR_TEXTURE.repeat.set(8,8);
+HAUNTED_HOUSE_GRASS_NORMAL_TEXTURE.repeat.set(8,8);
+HAUNTED_HOUSE_GRASS_ROUGHNESS_TEXTURE.repeat.set(8,8);
+
+HAUNTED_HOUSE_GRASS_AMBIENT_OCCLUSION_TEXTURE.wrapS = THREE.RepeatWrapping;
+HAUNTED_HOUSE_GRASS_COLOR_TEXTURE.wrapS = THREE.RepeatWrapping;
+HAUNTED_HOUSE_GRASS_NORMAL_TEXTURE.wrapS = THREE.RepeatWrapping;
+HAUNTED_HOUSE_GRASS_ROUGHNESS_TEXTURE.wrapS = THREE.RepeatWrapping;
+
+HAUNTED_HOUSE_GRASS_AMBIENT_OCCLUSION_TEXTURE.wrapT = THREE.RepeatWrapping;
+HAUNTED_HOUSE_GRASS_COLOR_TEXTURE.wrapT = THREE.RepeatWrapping;
+HAUNTED_HOUSE_GRASS_NORMAL_TEXTURE.wrapT = THREE.RepeatWrapping;
+HAUNTED_HOUSE_GRASS_ROUGHNESS_TEXTURE.wrapT = THREE.RepeatWrapping;
 
 /**
  * House
@@ -565,6 +605,9 @@ HAUNTED_HOUSE_DOOR.position.z = 2 + 0.0001;
 const HAUNTED_HOUSE_BUSH_GEOMETRY = new THREE.SphereGeometry(1, 16, 16);
 const HAUNTED_HOUSE_BUSH_MATERIAL = new THREE.MeshStandardMaterial({
 	color: "#89c854",
+	map: HAUNTED_HOUSE_BRUSH_COLOR_TEXTURE,
+	normalMap: HAUNTED_HOUSE_BRUSH_NORMAL_TEXTURE,
+	roughnessMap: HAUNTED_HOUSE_BRUSH_ROUGHNESS_TEXTURE,
 });
 
 const HAUNTED_HOUSE_BUSH1 = new THREE.Mesh(
@@ -622,7 +665,20 @@ for (let i = 0; i < 40; i++) {
 // Floor
 const HAUNTED_FLOOR = new THREE.Mesh(
 	new THREE.PlaneGeometry(20, 20),
-	new THREE.MeshStandardMaterial({ color: "#a9c388" })
+	new THREE.MeshStandardMaterial({
+		// color: "#a9c388",
+	aoMap: HAUNTED_HOUSE_GRASS_AMBIENT_OCCLUSION_TEXTURE,
+	map: HAUNTED_HOUSE_GRASS_COLOR_TEXTURE,
+	normalMap: HAUNTED_HOUSE_GRASS_NORMAL_TEXTURE,
+	roughnessMap: HAUNTED_HOUSE_GRASS_ROUGHNESS_TEXTURE,
+})
+);
+HAUNTED_FLOOR.geometry.setAttribute(
+	"uv2",
+	new THREE.Float32BufferAttribute(
+		HAUNTED_FLOOR.geometry.attributes.uv.array,
+		2
+	)
 );
 HAUNTED_FLOOR.rotation.x = -Math.PI * 0.5;
 HAUNTED_FLOOR.position.y = 0;
