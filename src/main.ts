@@ -480,6 +480,7 @@ SHADOW_GROUP.add(
 /* GROUPS */
 const HAUNTED_HOUSE_GROUP = new THREE.Group();
 const HAUNTED_HOUSE_HOUSE_GROUP = new THREE.Group();
+const HAUNTED_HOUSE_GRAVES_GROUP = new THREE.Group();
 
 /**
  * House
@@ -540,12 +541,26 @@ HAUNTED_HOUSE_BUSH4.position.set(-1, 0.05, 2.6);
 // Graves
 const HAUNTED_HOUSE_GRAVE_GEOMETRY = new THREE.BoxGeometry(0.6, 0.8, 0.2);
 const HAUNTED_HOUSE_GRAVE_MATERIAL = new THREE.MeshStandardMaterial({
-	color: 0xb6b2b1,
+	color: 0xb2b6b1,
 });
 for (let i = 0; i < 40; i++) {
-	const _ANGLE = Math.random() * Math.PI + 2;
-	const _RADIUS = 3 + Math.random() + 6;
-	console.log(_ANGLE, _RADIUS);
+	const _ANGLE = Math.random() * Math.PI * 2;
+	const _RADIUS = 4 + Math.random() * 5;
+	const _X = Math.sin(_ANGLE) * _RADIUS;
+	const _Y = 0.4;
+	const _Z = Math.cos(_ANGLE) * _RADIUS;
+
+	// console.log(_ANGLE, _RADIUS);
+	const _GRAVE_MESH = new THREE.Mesh(
+		HAUNTED_HOUSE_GRAVE_GEOMETRY,
+		HAUNTED_HOUSE_GRAVE_MATERIAL
+	);
+	_GRAVE_MESH.position.set(_X, _Y, _Z);
+	_GRAVE_MESH.rotation.x = (Math.random() - 0.5) * 0.35;
+	_GRAVE_MESH.rotation.y = (Math.random() - 0.5) * 0.5;
+	_GRAVE_MESH.rotation.z = (Math.random() - 0.5) * 0.3;
+
+	HAUNTED_HOUSE_GRAVES_GROUP.add(_GRAVE_MESH);
 }
 
 // Floor
@@ -579,7 +594,8 @@ HAUNTED_HOUSE_GROUP.add(
 	HAUNTED_FLOOR,
 	HAUNTED_AMBIENT_LIGHT,
 	HAUNTED_MOON_LIGHT,
-	HAUNTED_HOUSE_HOUSE_GROUP
+	HAUNTED_HOUSE_HOUSE_GROUP,
+	HAUNTED_HOUSE_GRAVES_GROUP
 );
 
 // GUI
