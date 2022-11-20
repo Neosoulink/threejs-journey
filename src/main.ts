@@ -40,6 +40,11 @@ import pzEnvImg from "./assets/img/textures/environmentMaps/0/pz.jpg";
 /* Shadows */
 // import bakedShadowImg from "./assets/img/textures/bakedShadow.jpg";
 import simpleShadowImg from "./assets/img/textures/simpleShadow.jpg";
+/* Haunted house walls */
+import hauntedHouseAmbientocclusionWallImg from "./assets/img/textures/hauntedHouse/bricks/ambientOcclusion.jpg";
+import hauntedHouseColorWallImg from "./assets/img/textures/hauntedHouse/bricks/color.jpg";
+import hauntedHouseNormalWallImg from "./assets/img/textures/hauntedHouse/bricks/normal.jpg";
+import hauntedHouserRoughnessWallImg from "./assets/img/textures/hauntedHouse/bricks/roughness.jpg";
 
 /* DATA */
 // let savedTime = Date.now();
@@ -482,13 +487,40 @@ const HAUNTED_HOUSE_GROUP = new THREE.Group();
 const HAUNTED_HOUSE_HOUSE_GROUP = new THREE.Group();
 const HAUNTED_HOUSE_GRAVES_GROUP = new THREE.Group();
 
+/* TEXTURES */
+const HAUNTED_HOUSE_WALLS_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseAmbientocclusionWallImg
+);
+const HAUNTED_HOUSE_WALLS_COLOR_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseColorWallImg
+);
+const HAUNTED_HOUSE_WALLS_NORMAL_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouseNormalWallImg
+);
+const HAUNTED_HOUSE_WALLS_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(
+	hauntedHouserRoughnessWallImg
+);
+
 /**
  * House
  */
 // Walls
 const HAUNTED_HOUSE_WALLS = new THREE.Mesh(
 	new THREE.BoxGeometry(4, 2.5, 4),
-	new THREE.MeshStandardMaterial({ color: 0xac8e82 })
+	new THREE.MeshStandardMaterial({
+		// color: 0xac8e82,
+		aoMap: HAUNTED_HOUSE_WALLS_AMBIENT_OCCLUSION_TEXTURE,
+		map: HAUNTED_HOUSE_WALLS_COLOR_TEXTURE,
+		normalMap: HAUNTED_HOUSE_WALLS_NORMAL_TEXTURE,
+		roughnessMap: HAUNTED_HOUSE_WALLS_ROUGHNESS_TEXTURE,
+	})
+);
+HAUNTED_HOUSE_WALLS.geometry.setAttribute(
+	"uv2",
+	new THREE.Float32BufferAttribute(
+		HAUNTED_HOUSE_WALLS.geometry.attributes.uv.array,
+		2
+	)
 );
 HAUNTED_HOUSE_WALLS.position.y = 2.5 / 2;
 // Roof
