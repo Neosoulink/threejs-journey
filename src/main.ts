@@ -575,11 +575,15 @@ HAUNTED_FLOOR.position.y = 0;
  * Lights
  */
 // Ambient light
-const HAUNTED_AMBIENT_LIGHT = new THREE.AmbientLight("#ffffff", 0.5);
+const HAUNTED_AMBIENT_LIGHT = new THREE.AmbientLight("#b9d5ff", 0.12);
 
 // Directional light
-const HAUNTED_MOON_LIGHT = new THREE.DirectionalLight("#ffffff", 0.5);
+const HAUNTED_MOON_LIGHT = new THREE.DirectionalLight("#b9d5ff", 0.12);
 HAUNTED_MOON_LIGHT.position.set(4, 5, -2);
+
+// Door light
+const HAUNTED_DOOR_LIGHT = new THREE.PointLight("#ff7d46", 1, 7);
+HAUNTED_DOOR_LIGHT.position.set(0, 2.2, 2.7);
 
 HAUNTED_HOUSE_HOUSE_GROUP.add(
 	HAUNTED_HOUSE_WALLS,
@@ -588,7 +592,8 @@ HAUNTED_HOUSE_HOUSE_GROUP.add(
 	HAUNTED_HOUSE_BUSH1,
 	HAUNTED_HOUSE_BUSH2,
 	HAUNTED_HOUSE_BUSH3,
-	HAUNTED_HOUSE_BUSH4
+	HAUNTED_HOUSE_BUSH4,
+	HAUNTED_DOOR_LIGHT
 );
 HAUNTED_HOUSE_GROUP.add(
 	HAUNTED_FLOOR,
