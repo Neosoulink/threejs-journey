@@ -491,6 +491,7 @@ SHADOW_GROUP.add(
 const HAUNTED_HOUSE_GROUP = new THREE.Group();
 const HAUNTED_HOUSE_HOUSE_GROUP = new THREE.Group();
 const HAUNTED_HOUSE_GRAVES_GROUP = new THREE.Group();
+HAUNTED_HOUSE_GROUP.visible = false;
 
 /* TEXTURES */
 const HAUNTED_HOUSE_WALLS_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
@@ -665,7 +666,7 @@ for (let i = 0; i < 40; i++) {
 	_GRAVE_MESH.rotation.y = (Math.random() - 0.5) * 0.5;
 	_GRAVE_MESH.rotation.z = (Math.random() - 0.5) * 0.3;
 
-	_GRAVE_MESH.castShadow= true;
+	_GRAVE_MESH.castShadow = true;
 	HAUNTED_HOUSE_GRAVES_GROUP.add(_GRAVE_MESH);
 }
 
@@ -702,26 +703,29 @@ const HAUNTED_MOON_LIGHT = new THREE.DirectionalLight("#b9d5ff", 0.12);
 HAUNTED_MOON_LIGHT.position.set(4, 5, -2);
 HAUNTED_MOON_LIGHT.castShadow = true;
 
-HAUNTED_MOON_LIGHT.shadow.mapSize.set(256, 256)
-HAUNTED_MOON_LIGHT.shadow.camera.far = 15
+HAUNTED_MOON_LIGHT.shadow.mapSize.set(256, 256);
+HAUNTED_MOON_LIGHT.shadow.camera.far = 15;
 
 // Door light
 const HAUNTED_DOOR_LIGHT = new THREE.PointLight("#ff7d46", 1, 7);
 HAUNTED_DOOR_LIGHT.position.set(0, 2.2, 2.7);
 HAUNTED_DOOR_LIGHT.castShadow = true;
-HAUNTED_DOOR_LIGHT.shadow.mapSize.set(256, 256)
-HAUNTED_DOOR_LIGHT.shadow.camera.far = 7
+HAUNTED_DOOR_LIGHT.shadow.mapSize.set(256, 256);
+HAUNTED_DOOR_LIGHT.shadow.camera.far = 7;
 
 // Ghosts
-const HAUNTED_HOUSE_GHOST1 = new THREE.PointLight("#ff00ff", 2, 3);HAUNTED_HOUSE_GHOST1.castShadow = true;
-HAUNTED_HOUSE_GHOST1.shadow.mapSize.set(256, 256)
-HAUNTED_HOUSE_GHOST1.shadow.camera.far = 7
-const HAUNTED_HOUSE_GHOST2 = new THREE.PointLight("#00ffff", 2, 3);HAUNTED_HOUSE_GHOST2.castShadow = true;
-HAUNTED_HOUSE_GHOST2.shadow.mapSize.set(256, 256)
-HAUNTED_HOUSE_GHOST2.shadow.camera.far = 7
-const HAUNTED_HOUSE_GHOST3 = new THREE.PointLight("#ffff00", 2, 3);HAUNTED_HOUSE_GHOST3.castShadow = true;
-HAUNTED_HOUSE_GHOST3.shadow.mapSize.set(256, 256)
-HAUNTED_HOUSE_GHOST3.shadow.camera.far = 7
+const HAUNTED_HOUSE_GHOST1 = new THREE.PointLight("#ff00ff", 2, 3);
+HAUNTED_HOUSE_GHOST1.castShadow = true;
+HAUNTED_HOUSE_GHOST1.shadow.mapSize.set(256, 256);
+HAUNTED_HOUSE_GHOST1.shadow.camera.far = 7;
+const HAUNTED_HOUSE_GHOST2 = new THREE.PointLight("#00ffff", 2, 3);
+HAUNTED_HOUSE_GHOST2.castShadow = true;
+HAUNTED_HOUSE_GHOST2.shadow.mapSize.set(256, 256);
+HAUNTED_HOUSE_GHOST2.shadow.camera.far = 7;
+const HAUNTED_HOUSE_GHOST3 = new THREE.PointLight("#ffff00", 2, 3);
+HAUNTED_HOUSE_GHOST3.castShadow = true;
+HAUNTED_HOUSE_GHOST3.shadow.mapSize.set(256, 256);
+HAUNTED_HOUSE_GHOST3.shadow.camera.far = 7;
 
 HAUNTED_HOUSE_HOUSE_GROUP.add(
 	HAUNTED_HOUSE_WALLS,
@@ -774,6 +778,23 @@ _HAUNTED_HOUSE_GUI
 
 /* =========== END HAUNTED HOUSE =========== */
 
+/* =========== START PARTICLES =========== */
+const PARTICLES_GROUP = new THREE.Group();
+
+const PARTICLES_GEOMETRY = new THREE.SphereBufferGeometry(1, 32, 32);
+const PARTICLES_MATERIAL = new THREE.PointsMaterial({
+	size: 0.02,
+	sizeAttenuation: true,
+});
+
+const PARTICLES_PARTICLES = new THREE.Points(
+	PARTICLES_GEOMETRY,
+	PARTICLES_MATERIAL
+);
+
+PARTICLES_GROUP.add(PARTICLES_PARTICLES);
+/* =========== END PARTICLES =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -812,13 +833,16 @@ const APP = initThreeJs({
 });
 
 /* Scene */
-APP.scene.add(CUBES_GROUP);
-APP.scene.add(TRIANGLE_MESH);
-APP.scene.add(MESH_NEW_MATERIAL_GROUP);
-APP.scene.add(DONUT_GROUP);
-APP.scene.add(LIGHT_FORMS_GROUP);
-APP.scene.add(SHADOW_GROUP);
-APP.scene.add(HAUNTED_HOUSE_GROUP);
+APP.scene.add(
+	CUBES_GROUP,
+	TRIANGLE_MESH,
+	MESH_NEW_MATERIAL_GROUP,
+	DONUT_GROUP,
+	LIGHT_FORMS_GROUP,
+	SHADOW_GROUP,
+	HAUNTED_HOUSE_GROUP,
+	PARTICLES_GROUP
+);
 
 /* Camera */
 APP.camera.position.x = 4;
@@ -833,8 +857,10 @@ APP.renderer.shadowMap.enabled = true;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /* Haunted house fog */
-APP.scene.fog = new THREE.Fog("#262837", 0, 15);
-APP.renderer.setClearColor("#262837");
+APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
+	? new THREE.Fog("#262837", 0, 15)
+	: null;
+APP.renderer.setClearColor(HAUNTED_HOUSE_GROUP.visible ? "#262837" : "#000");
 
 /* Animate */
 APP.animate(() => {
@@ -1020,6 +1046,10 @@ _GUI_SHADOWS_FOLDER
 	.min(0)
 	.max(1)
 	.step(0.001);
+
+const _GUI_HAUNTED_HOUSE = _GUI.addFolder("Haunted house");
+_GUI_HAUNTED_HOUSE.add(HAUNTED_HOUSE_GROUP, "visible");
+
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
 	const fullscreenElement =
