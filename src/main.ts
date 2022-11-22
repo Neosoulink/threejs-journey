@@ -833,7 +833,6 @@ const PARTICLES_CUSTOM_POINTS = new THREE.Points(
 	PARTICLES_CUSTOM_GEOMETRY,
 	PARTICLES_CUSTOM_POINT_MATERIAL
 );
-PARTICLES_CUSTOM_POINTS.rotation.x = Math.PI * 0.5;
 
 PARTICLES_GROUP.add(PARTICLES_CIRCLE_POINTS, PARTICLES_CUSTOM_POINTS);
 /* =========== END PARTICLES =========== */
@@ -970,6 +969,19 @@ APP.animate(() => {
 		Math.sin(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.5));
 	HAUNTED_HOUSE_GHOST3.position.y =
 		Math.sin(ELAPSED_TIME * 3) + Math.sin(ELAPSED_TIME * 2);
+
+	/* Particles */
+	// PARTICLES_CUSTOM_POINTS.rotation.x = ELAPSED_TIME * 0.2;
+	// PARTICLES_CUSTOM_POINTS.rotation.y = ELAPSED_TIME * 0.12;
+	for (let i = 0; i < PARTICLES_CUSTOM_VERTICES_COUNT; i++) {
+		const I3 = i * 3;
+
+		const _X = PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3];
+		PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3 + 1] = Math.sin(
+			ELAPSED_TIME + _X
+		);
+	}
+	PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 
 	// UPDATE CONTROL
 	APP.control.update();
