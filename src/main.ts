@@ -50,15 +50,12 @@ import hauntedHouseAmbientocclusionGrassImg from "./assets/img/textures/hauntedH
 import hauntedHouseColorGrassImg from "./assets/img/textures/hauntedHouse/grass/color.jpg";
 import hauntedHouseNormalGrassImg from "./assets/img/textures/hauntedHouse/grass/normal.jpg";
 import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/grass/roughness.jpg";
+/* Particles */
+import particle2Img from "./assets/img/textures/particles/2.png";
 
 /* DATA */
 // let savedTime = Date.now();
-const TRIANGLE_VERTICES_COUNT = 500;
-const TRIANGLE_VERTICES = new Float32Array(TRIANGLE_VERTICES_COUNT * 3 * 3);
-/* Fill vector 3 square line */
-for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
-	TRIANGLE_VERTICES[i] = (Math.random() - 0.5) * 4;
-}
+
 /* debuggers */
 const _GUI = new GUI();
 
@@ -179,6 +176,12 @@ CUBES_GROUP.visible = false;
 // const MATER6IAL_FOR_LIGHT_PROPOSES_2 = new THREE.MeshToonMaterial({
 // 	gradientMap: GRADIENT_TEXTURE,
 // });
+const TRIANGLE_VERTICES_COUNT = 500;
+const TRIANGLE_VERTICES = new Float32Array(TRIANGLE_VERTICES_COUNT * 3 * 3);
+/* Fill vector 3 square line */
+for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
+	TRIANGLE_VERTICES[i] = (Math.random() - 0.5) * 4;
+}
 const TRIANGLE_GEOMETRY = new THREE.BufferGeometry();
 const TRIANGLE_MATERIAL = new THREE.MeshBasicMaterial({
 	color: 0xff55ee,
@@ -491,6 +494,7 @@ SHADOW_GROUP.add(
 const HAUNTED_HOUSE_GROUP = new THREE.Group();
 const HAUNTED_HOUSE_HOUSE_GROUP = new THREE.Group();
 const HAUNTED_HOUSE_GRAVES_GROUP = new THREE.Group();
+HAUNTED_HOUSE_GROUP.visible = false;
 
 /* TEXTURES */
 const HAUNTED_HOUSE_WALLS_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
@@ -665,7 +669,7 @@ for (let i = 0; i < 40; i++) {
 	_GRAVE_MESH.rotation.y = (Math.random() - 0.5) * 0.5;
 	_GRAVE_MESH.rotation.z = (Math.random() - 0.5) * 0.3;
 
-	_GRAVE_MESH.castShadow= true;
+	_GRAVE_MESH.castShadow = true;
 	HAUNTED_HOUSE_GRAVES_GROUP.add(_GRAVE_MESH);
 }
 
@@ -702,26 +706,29 @@ const HAUNTED_MOON_LIGHT = new THREE.DirectionalLight("#b9d5ff", 0.12);
 HAUNTED_MOON_LIGHT.position.set(4, 5, -2);
 HAUNTED_MOON_LIGHT.castShadow = true;
 
-HAUNTED_MOON_LIGHT.shadow.mapSize.set(256, 256)
-HAUNTED_MOON_LIGHT.shadow.camera.far = 15
+HAUNTED_MOON_LIGHT.shadow.mapSize.set(256, 256);
+HAUNTED_MOON_LIGHT.shadow.camera.far = 15;
 
 // Door light
 const HAUNTED_DOOR_LIGHT = new THREE.PointLight("#ff7d46", 1, 7);
 HAUNTED_DOOR_LIGHT.position.set(0, 2.2, 2.7);
 HAUNTED_DOOR_LIGHT.castShadow = true;
-HAUNTED_DOOR_LIGHT.shadow.mapSize.set(256, 256)
-HAUNTED_DOOR_LIGHT.shadow.camera.far = 7
+HAUNTED_DOOR_LIGHT.shadow.mapSize.set(256, 256);
+HAUNTED_DOOR_LIGHT.shadow.camera.far = 7;
 
 // Ghosts
-const HAUNTED_HOUSE_GHOST1 = new THREE.PointLight("#ff00ff", 2, 3);HAUNTED_HOUSE_GHOST1.castShadow = true;
-HAUNTED_HOUSE_GHOST1.shadow.mapSize.set(256, 256)
-HAUNTED_HOUSE_GHOST1.shadow.camera.far = 7
-const HAUNTED_HOUSE_GHOST2 = new THREE.PointLight("#00ffff", 2, 3);HAUNTED_HOUSE_GHOST2.castShadow = true;
-HAUNTED_HOUSE_GHOST2.shadow.mapSize.set(256, 256)
-HAUNTED_HOUSE_GHOST2.shadow.camera.far = 7
-const HAUNTED_HOUSE_GHOST3 = new THREE.PointLight("#ffff00", 2, 3);HAUNTED_HOUSE_GHOST3.castShadow = true;
-HAUNTED_HOUSE_GHOST3.shadow.mapSize.set(256, 256)
-HAUNTED_HOUSE_GHOST3.shadow.camera.far = 7
+const HAUNTED_HOUSE_GHOST1 = new THREE.PointLight("#ff00ff", 2, 3);
+HAUNTED_HOUSE_GHOST1.castShadow = true;
+HAUNTED_HOUSE_GHOST1.shadow.mapSize.set(256, 256);
+HAUNTED_HOUSE_GHOST1.shadow.camera.far = 7;
+const HAUNTED_HOUSE_GHOST2 = new THREE.PointLight("#00ffff", 2, 3);
+HAUNTED_HOUSE_GHOST2.castShadow = true;
+HAUNTED_HOUSE_GHOST2.shadow.mapSize.set(256, 256);
+HAUNTED_HOUSE_GHOST2.shadow.camera.far = 7;
+const HAUNTED_HOUSE_GHOST3 = new THREE.PointLight("#ffff00", 2, 3);
+HAUNTED_HOUSE_GHOST3.castShadow = true;
+HAUNTED_HOUSE_GHOST3.shadow.mapSize.set(256, 256);
+HAUNTED_HOUSE_GHOST3.shadow.camera.far = 7;
 
 HAUNTED_HOUSE_HOUSE_GROUP.add(
 	HAUNTED_HOUSE_WALLS,
@@ -774,6 +781,62 @@ _HAUNTED_HOUSE_GUI
 
 /* =========== END HAUNTED HOUSE =========== */
 
+/* =========== START PARTICLES =========== */
+const PARTICLES_GROUP = new THREE.Group();
+
+/* Circle point */
+const PARTICLES_GEOMETRY = new THREE.SphereBufferGeometry(1, 32, 32);
+const PARTICLES_MATERIAL = new THREE.PointsMaterial({
+	size: 0.02,
+	sizeAttenuation: true,
+});
+const PARTICLES_CIRCLE_POINTS = new THREE.Points(
+	PARTICLES_GEOMETRY,
+	PARTICLES_MATERIAL
+);
+
+/* Custom particles */
+const PARTICLES_CUSTOM_VERTICES_COUNT = 400;
+const PARTICLES_CUSTOM_VERTICES = new Float32Array(
+	PARTICLES_CUSTOM_VERTICES_COUNT * 3
+);
+const PARTICLES_CUSTOM_VERTICES_COLOR = new Float32Array(
+	PARTICLES_CUSTOM_VERTICES_COUNT * 3
+);
+/* Fill vector 3 square line */
+for (let i = 0; i < PARTICLES_CUSTOM_VERTICES.length; i++) {
+	PARTICLES_CUSTOM_VERTICES[i] = (Math.random() - 0.5) * 7;
+	PARTICLES_CUSTOM_VERTICES_COLOR[i] = Math.random();
+}
+const PARTICLES_CUSTOM_GEOMETRY = new THREE.BufferGeometry();
+PARTICLES_CUSTOM_GEOMETRY.setAttribute(
+	"position",
+	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES, 3)
+);
+PARTICLES_CUSTOM_GEOMETRY.setAttribute(
+	"color",
+	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES_COLOR, 3)
+);
+const PARTICLES_CUSTOM_TEXTURE = TEXTURE_LOADER.load(particle2Img);
+const PARTICLES_CUSTOM_POINT_MATERIAL = new THREE.PointsMaterial({
+	color: 0x5aa5ff,
+	alphaMap: PARTICLES_CUSTOM_TEXTURE,
+	// alphaTest: 0.001,
+	// depthTest: false,
+	depthWrite: false,
+	transparent: true,
+	size: 0.1,
+	sizeAttenuation: true,
+	vertexColors: true,
+});
+const PARTICLES_CUSTOM_POINTS = new THREE.Points(
+	PARTICLES_CUSTOM_GEOMETRY,
+	PARTICLES_CUSTOM_POINT_MATERIAL
+);
+
+PARTICLES_GROUP.add(PARTICLES_CIRCLE_POINTS, PARTICLES_CUSTOM_POINTS);
+/* =========== END PARTICLES =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -812,18 +875,21 @@ const APP = initThreeJs({
 });
 
 /* Scene */
-APP.scene.add(CUBES_GROUP);
-APP.scene.add(TRIANGLE_MESH);
-APP.scene.add(MESH_NEW_MATERIAL_GROUP);
-APP.scene.add(DONUT_GROUP);
-APP.scene.add(LIGHT_FORMS_GROUP);
-APP.scene.add(SHADOW_GROUP);
-APP.scene.add(HAUNTED_HOUSE_GROUP);
+APP.scene.add(
+	CUBES_GROUP,
+	TRIANGLE_MESH,
+	MESH_NEW_MATERIAL_GROUP,
+	DONUT_GROUP,
+	LIGHT_FORMS_GROUP,
+	SHADOW_GROUP,
+	HAUNTED_HOUSE_GROUP,
+	PARTICLES_GROUP
+);
 
 /* Camera */
-APP.camera.position.x = 4;
+APP.camera.position.x = 0;
 APP.camera.position.y = 2;
-APP.camera.position.z = 5;
+APP.camera.position.z = 10;
 
 /* Control */
 APP.control.enableDamping = true;
@@ -833,8 +899,10 @@ APP.renderer.shadowMap.enabled = true;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 /* Haunted house fog */
-APP.scene.fog = new THREE.Fog("#262837", 0, 15);
-APP.renderer.setClearColor("#262837");
+APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
+	? new THREE.Fog("#262837", 0, 15)
+	: null;
+APP.renderer.setClearColor(HAUNTED_HOUSE_GROUP.visible ? "#262837" : "#000");
 
 /* Animate */
 APP.animate(() => {
@@ -901,6 +969,19 @@ APP.animate(() => {
 		Math.sin(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.5));
 	HAUNTED_HOUSE_GHOST3.position.y =
 		Math.sin(ELAPSED_TIME * 3) + Math.sin(ELAPSED_TIME * 2);
+
+	/* Particles */
+	// PARTICLES_CUSTOM_POINTS.rotation.x = ELAPSED_TIME * 0.2;
+	// PARTICLES_CUSTOM_POINTS.rotation.y = ELAPSED_TIME * 0.12;
+	for (let i = 0; i < PARTICLES_CUSTOM_VERTICES_COUNT; i++) {
+		const I3 = i * 3;
+
+		const _X = PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3];
+		PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3 + 1] = Math.sin(
+			ELAPSED_TIME + _X
+		);
+	}
+	PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 
 	// UPDATE CONTROL
 	APP.control.update();
@@ -1020,6 +1101,10 @@ _GUI_SHADOWS_FOLDER
 	.min(0)
 	.max(1)
 	.step(0.001);
+
+const _GUI_HAUNTED_HOUSE = _GUI.addFolder("Haunted house");
+_GUI_HAUNTED_HOUSE.add(HAUNTED_HOUSE_GROUP, "visible");
+
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
 	const fullscreenElement =
