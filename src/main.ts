@@ -50,6 +50,8 @@ import hauntedHouseAmbientocclusionGrassImg from "./assets/img/textures/hauntedH
 import hauntedHouseColorGrassImg from "./assets/img/textures/hauntedHouse/grass/color.jpg";
 import hauntedHouseNormalGrassImg from "./assets/img/textures/hauntedHouse/grass/normal.jpg";
 import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/grass/roughness.jpg";
+/* Particles */
+import particle2Img from "./assets/img/textures/particles/2.png";
 
 /* DATA */
 // let savedTime = Date.now();
@@ -782,33 +784,40 @@ _HAUNTED_HOUSE_GUI
 /* =========== START PARTICLES =========== */
 const PARTICLES_GROUP = new THREE.Group();
 
+/* Circle point */
 const PARTICLES_GEOMETRY = new THREE.SphereBufferGeometry(1, 32, 32);
 const PARTICLES_MATERIAL = new THREE.PointsMaterial({
 	size: 0.02,
 	sizeAttenuation: true,
 });
-
 const PARTICLES_CIRCLE_POINTS = new THREE.Points(
 	PARTICLES_GEOMETRY,
 	PARTICLES_MATERIAL
 );
 
+/* Custom particles */
 const PARTICLES_CUSTOM_VERTICES_COUNT = 400;
 const PARTICLES_CUSTOM_VERTICES = new Float32Array(
 	PARTICLES_CUSTOM_VERTICES_COUNT * 3
 );
 /* Fill vector 3 square line */
 for (let i = 0; i < PARTICLES_CUSTOM_VERTICES.length; i++) {
-	PARTICLES_CUSTOM_VERTICES[i] = (Math.random() - 0.5) * 10;
+	PARTICLES_CUSTOM_VERTICES[i] = (Math.random() - 0.5) * 7;
 }
 const PARTICLES_CUSTOM_GEOMETRY = new THREE.BufferGeometry();
 PARTICLES_CUSTOM_GEOMETRY.setAttribute(
 	"position",
 	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES, 3)
 );
+const PARTICLES_CUSTOM_TEXTURE = TEXTURE_LOADER.load(particle2Img);
 const PARTICLES_CUSTOM_POINT_MATERIAL = new THREE.PointsMaterial({
 	color: 0x5aa5ff,
-	size: 0.04,
+	alphaMap: PARTICLES_CUSTOM_TEXTURE,
+	// alphaTest: 0.001,
+	// depthTest: false,
+	depthWrite: false,
+	transparent: true,
+	size: 0.1,
 	sizeAttenuation: true,
 });
 const PARTICLES_CUSTOM_POINTS = new THREE.Points(
