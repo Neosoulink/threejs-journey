@@ -800,14 +800,22 @@ const PARTICLES_CUSTOM_VERTICES_COUNT = 400;
 const PARTICLES_CUSTOM_VERTICES = new Float32Array(
 	PARTICLES_CUSTOM_VERTICES_COUNT * 3
 );
+const PARTICLES_CUSTOM_VERTICES_COLOR = new Float32Array(
+	PARTICLES_CUSTOM_VERTICES_COUNT * 3
+);
 /* Fill vector 3 square line */
 for (let i = 0; i < PARTICLES_CUSTOM_VERTICES.length; i++) {
 	PARTICLES_CUSTOM_VERTICES[i] = (Math.random() - 0.5) * 7;
+	PARTICLES_CUSTOM_VERTICES_COLOR[i] = Math.random();
 }
 const PARTICLES_CUSTOM_GEOMETRY = new THREE.BufferGeometry();
 PARTICLES_CUSTOM_GEOMETRY.setAttribute(
 	"position",
 	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES, 3)
+);
+PARTICLES_CUSTOM_GEOMETRY.setAttribute(
+	"color",
+	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES_COLOR, 3)
 );
 const PARTICLES_CUSTOM_TEXTURE = TEXTURE_LOADER.load(particle2Img);
 const PARTICLES_CUSTOM_POINT_MATERIAL = new THREE.PointsMaterial({
@@ -819,6 +827,7 @@ const PARTICLES_CUSTOM_POINT_MATERIAL = new THREE.PointsMaterial({
 	transparent: true,
 	size: 0.1,
 	sizeAttenuation: true,
+	vertexColors: true,
 });
 const PARTICLES_CUSTOM_POINTS = new THREE.Points(
 	PARTICLES_CUSTOM_GEOMETRY,
