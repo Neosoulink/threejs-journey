@@ -53,12 +53,7 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 
 /* DATA */
 // let savedTime = Date.now();
-const TRIANGLE_VERTICES_COUNT = 500;
-const TRIANGLE_VERTICES = new Float32Array(TRIANGLE_VERTICES_COUNT * 3 * 3);
-/* Fill vector 3 square line */
-for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
-	TRIANGLE_VERTICES[i] = (Math.random() - 0.5) * 4;
-}
+
 /* debuggers */
 const _GUI = new GUI();
 
@@ -179,6 +174,12 @@ CUBES_GROUP.visible = false;
 // const MATER6IAL_FOR_LIGHT_PROPOSES_2 = new THREE.MeshToonMaterial({
 // 	gradientMap: GRADIENT_TEXTURE,
 // });
+const TRIANGLE_VERTICES_COUNT = 500;
+const TRIANGLE_VERTICES = new Float32Array(TRIANGLE_VERTICES_COUNT * 3 * 3);
+/* Fill vector 3 square line */
+for (let i = 0; i < TRIANGLE_VERTICES.length; i++) {
+	TRIANGLE_VERTICES[i] = (Math.random() - 0.5) * 4;
+}
 const TRIANGLE_GEOMETRY = new THREE.BufferGeometry();
 const TRIANGLE_MATERIAL = new THREE.MeshBasicMaterial({
 	color: 0xff55ee,
@@ -787,12 +788,36 @@ const PARTICLES_MATERIAL = new THREE.PointsMaterial({
 	sizeAttenuation: true,
 });
 
-const PARTICLES_PARTICLES = new THREE.Points(
+const PARTICLES_CIRCLE_POINTS = new THREE.Points(
 	PARTICLES_GEOMETRY,
 	PARTICLES_MATERIAL
 );
 
-PARTICLES_GROUP.add(PARTICLES_PARTICLES);
+const PARTICLES_CUSTOM_VERTICES_COUNT = 400;
+const PARTICLES_CUSTOM_VERTICES = new Float32Array(
+	PARTICLES_CUSTOM_VERTICES_COUNT * 3
+);
+/* Fill vector 3 square line */
+for (let i = 0; i < PARTICLES_CUSTOM_VERTICES.length; i++) {
+	PARTICLES_CUSTOM_VERTICES[i] = (Math.random() - 0.5) * 10;
+}
+const PARTICLES_CUSTOM_GEOMETRY = new THREE.BufferGeometry();
+PARTICLES_CUSTOM_GEOMETRY.setAttribute(
+	"position",
+	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES, 3)
+);
+const PARTICLES_CUSTOM_POINT_MATERIAL = new THREE.PointsMaterial({
+	color: 0x5aa5ff,
+	size: 0.04,
+	sizeAttenuation: true,
+});
+const PARTICLES_CUSTOM_POINTS = new THREE.Points(
+	PARTICLES_CUSTOM_GEOMETRY,
+	PARTICLES_CUSTOM_POINT_MATERIAL
+);
+PARTICLES_CUSTOM_POINTS.rotation.x = Math.PI * 0.5;
+
+PARTICLES_GROUP.add(PARTICLES_CIRCLE_POINTS, PARTICLES_CUSTOM_POINTS);
 /* =========== END PARTICLES =========== */
 
 // ADD TO GROUPE
@@ -845,9 +870,9 @@ APP.scene.add(
 );
 
 /* Camera */
-APP.camera.position.x = 4;
+APP.camera.position.x = 0;
 APP.camera.position.y = 2;
-APP.camera.position.z = 5;
+APP.camera.position.z = 10;
 
 /* Control */
 APP.control.enableDamping = true;
