@@ -783,6 +783,7 @@ _HAUNTED_HOUSE_GUI
 
 /* =========== START PARTICLES =========== */
 const PARTICLES_GROUP = new THREE.Group();
+PARTICLES_GROUP.visible = false;
 
 /* Circle point */
 const PARTICLES_GEOMETRY = new THREE.SphereBufferGeometry(1, 32, 32);
@@ -973,15 +974,18 @@ APP.animate(() => {
 	/* Particles */
 	// PARTICLES_CUSTOM_POINTS.rotation.x = ELAPSED_TIME * 0.2;
 	// PARTICLES_CUSTOM_POINTS.rotation.y = ELAPSED_TIME * 0.12;
-	for (let i = 0; i < PARTICLES_CUSTOM_VERTICES_COUNT; i++) {
-		const I3 = i * 3;
+	if (PARTICLES_GROUP.visible) {
+		for (let i = 0; i < PARTICLES_CUSTOM_VERTICES_COUNT; i++) {
+			const I3 = i * 3;
 
-		const _X = PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3];
-		PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3 + 1] = Math.sin(
-			ELAPSED_TIME + _X
-		);
+			const _X = PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3];
+			// @ts-ignore
+			PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3 + 1] = Math.sin(
+				ELAPSED_TIME + _X
+			);
+		}
+		PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 	}
-	PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 
 	// UPDATE CONTROL
 	APP.control.update();
@@ -1104,6 +1108,9 @@ _GUI_SHADOWS_FOLDER
 
 const _GUI_HAUNTED_HOUSE = _GUI.addFolder("Haunted house");
 _GUI_HAUNTED_HOUSE.add(HAUNTED_HOUSE_GROUP, "visible");
+
+const _GUI_PARTICLES = _GUI.addFolder("Particles");
+_GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
