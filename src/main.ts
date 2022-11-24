@@ -855,6 +855,7 @@ const PARTICLES_GALAXY_DEFAULT_PARAMS = {
 	branches: 3,
 	spin: 1,
 	randomness: 0.2,
+	randomnessPower: 3,
 };
 
 /* GROUP */
@@ -894,11 +895,20 @@ const generateParticleGalaxy = () => {
 			2;
 
 		const _RANDOM_X =
-			(Math.random() - 0.5) * PARTICLES_GALAXY_DEFAULT_PARAMS.randomness;
+			Math.pow(Math.random(), PARTICLES_GALAXY_DEFAULT_PARAMS.randomnessPower) *
+			(Math.random() < 0.5 ? 1 : -1) *
+			PARTICLES_GALAXY_DEFAULT_PARAMS.randomness *
+			_RADIUS;
 		const _RANDOM_Y =
-			(Math.random() - 0.5) * PARTICLES_GALAXY_DEFAULT_PARAMS.randomness;
+			Math.pow(Math.random(), PARTICLES_GALAXY_DEFAULT_PARAMS.randomnessPower) *
+			(Math.random() < 0.5 ? 1 : -1) *
+			PARTICLES_GALAXY_DEFAULT_PARAMS.randomness *
+			_RADIUS;
 		const _RANDOM_Z =
-			(Math.random() - 0.5) * PARTICLES_GALAXY_DEFAULT_PARAMS.randomness;
+			Math.pow(Math.random(), PARTICLES_GALAXY_DEFAULT_PARAMS.randomnessPower) *
+			(Math.random() < 0.5 ? 1 : -1) *
+			PARTICLES_GALAXY_DEFAULT_PARAMS.randomness *
+			_RADIUS;
 
 		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] =
 			Math.cos(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS + _RANDOM_X;
@@ -965,6 +975,12 @@ _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomness")
 	.min(0)
 	.max(2)
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomnessPower")
+	.min(3)
+	.max(10)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
