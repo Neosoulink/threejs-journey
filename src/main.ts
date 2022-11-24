@@ -753,6 +753,8 @@ HAUNTED_HOUSE_GROUP.add(
 
 // GUI
 const _HAUNTED_HOUSE_GUI = _GUI.addFolder("Haunted house");
+_HAUNTED_HOUSE_GUI.close()
+_HAUNTED_HOUSE_GUI.add(HAUNTED_HOUSE_GROUP, "visible");
 _HAUNTED_HOUSE_GUI
 	.add(HAUNTED_AMBIENT_LIGHT, "intensity")
 	.min(0)
@@ -838,6 +840,82 @@ const PARTICLES_CUSTOM_POINTS = new THREE.Points(
 PARTICLES_GROUP.add(PARTICLES_CIRCLE_POINTS, PARTICLES_CUSTOM_POINTS);
 /* =========== END PARTICLES =========== */
 
+/* =========== START PARTICLES_GALAXY =========== */
+/* DATA */
+const PARTICLES_GALAXY_DEFAULT_PARAMS = {
+	count: 1000,
+	size: 0.02,
+};
+
+/* GROUP */
+const PARTICLES_GALAXY_GROUP = new THREE.Group();
+
+/*  */
+let particlesGalaxyBufferGeometry: null | THREE.BufferGeometry = null;
+let particlesGalaxyMaterial: null | THREE.PointsMaterial = null;
+let particlesGalaxyCustomPoints: null | THREE.Points = null;
+
+const generateParticleGalaxy = () => {
+	if (
+		particlesGalaxyCustomPoints &&
+		particlesGalaxyBufferGeometry &&
+		particlesGalaxyMaterial
+	) {
+		particlesGalaxyBufferGeometry.dispose();
+		particlesGalaxyMaterial.dispose();
+		PARTICLES_GALAXY_GROUP.remove(particlesGalaxyCustomPoints);
+	}
+
+	particlesGalaxyBufferGeometry = new THREE.BufferGeometry();
+
+	const PARTICLES_GALAXY_CUSTOM_VERTICES = new Float32Array(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3
+	);
+	/* Fill vector 3 square line */
+	for (let i = 0; i < PARTICLES_GALAXY_DEFAULT_PARAMS.count; i++) {
+		const _I3 = i * 3;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] = (Math.random() - 0.5) * 3;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = (Math.random() - 0.5) * 3;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] = (Math.random() - 0.5) * 3;
+	}
+
+	particlesGalaxyBufferGeometry.setAttribute(
+		"position",
+		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_VERTICES, 3)
+	);
+
+	particlesGalaxyMaterial = new THREE.PointsMaterial({
+		color: "#f52266",
+		size: PARTICLES_GALAXY_DEFAULT_PARAMS.size,
+		sizeAttenuation: true,
+		depthWrite: true,
+		blending: THREE.AdditiveBlending,
+	});
+
+	particlesGalaxyCustomPoints = new THREE.Points(
+		particlesGalaxyBufferGeometry,
+		particlesGalaxyMaterial
+	);
+	PARTICLES_GALAXY_GROUP.add(particlesGalaxyCustomPoints);
+};
+
+generateParticleGalaxy();
+
+/* GUI */
+const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
+_PARTICLES_GALAXY_FOLDER_GUI.add(PARTICLES_GALAXY_GROUP, "visible");
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
+	.min(100)
+	.max(1000000)
+	.step(100).onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
+	.min(0.001)
+	.max(0.1)
+	.step(0.001).onFinishChange(generateParticleGalaxy);
+/* =========== END PARTICLES_GALAXY =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -884,7 +962,8 @@ APP.scene.add(
 	LIGHT_FORMS_GROUP,
 	SHADOW_GROUP,
 	HAUNTED_HOUSE_GROUP,
-	PARTICLES_GROUP
+	PARTICLES_GROUP,
+	PARTICLES_GALAXY_GROUP
 );
 
 /* Camera */
@@ -1105,9 +1184,6 @@ _GUI_SHADOWS_FOLDER
 	.min(0)
 	.max(1)
 	.step(0.001);
-
-const _GUI_HAUNTED_HOUSE = _GUI.addFolder("Haunted house");
-_GUI_HAUNTED_HOUSE.add(HAUNTED_HOUSE_GROUP, "visible");
 
 const _GUI_PARTICLES = _GUI.addFolder("Particles");
 _GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
