@@ -854,6 +854,7 @@ const PARTICLES_GALAXY_DEFAULT_PARAMS = {
 	radius: 3,
 	branches: 3,
 	spin: 1,
+	randomness: 0.2,
 };
 
 /* GROUP */
@@ -883,6 +884,7 @@ const generateParticleGalaxy = () => {
 	/* Fill vector 3 square line */
 	for (let i = 0; i < PARTICLES_GALAXY_DEFAULT_PARAMS.count; i++) {
 		const _I3 = i * 3;
+
 		const _RADIUS = Math.random() * PARTICLES_GALAXY_DEFAULT_PARAMS.radius;
 		const _SPIN_ANGLE = _RADIUS * PARTICLES_GALAXY_DEFAULT_PARAMS.spin;
 		const _BRANCH_ANGLES =
@@ -891,11 +893,18 @@ const generateParticleGalaxy = () => {
 			Math.PI *
 			2;
 
+		const _RANDOM_X =
+			(Math.random() - 0.5) * PARTICLES_GALAXY_DEFAULT_PARAMS.randomness;
+		const _RANDOM_Y =
+			(Math.random() - 0.5) * PARTICLES_GALAXY_DEFAULT_PARAMS.randomness;
+		const _RANDOM_Z =
+			(Math.random() - 0.5) * PARTICLES_GALAXY_DEFAULT_PARAMS.randomness;
+
 		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] =
-			Math.cos(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS;
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = 0;
+			Math.cos(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS + _RANDOM_X;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = 0 + _RANDOM_Y;
 		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] =
-			Math.sin(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS;
+			Math.sin(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS + _RANDOM_Z;
 	}
 
 	particlesGalaxyBufferGeometry.setAttribute(
@@ -950,6 +959,12 @@ _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "spin")
 	.min(-5)
 	.max(5)
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomness")
+	.min(0)
+	.max(2)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
