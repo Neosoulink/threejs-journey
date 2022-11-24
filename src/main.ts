@@ -53,6 +53,12 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 /* Particles */
 import particle2Img from "./assets/img/textures/particles/2.png";
 
+// APP
+const APP = initThreeJs({
+	enableOrbit: true,
+	axesSizes: 2,
+});
+
 /* DATA */
 // let savedTime = Date.now();
 
@@ -843,8 +849,9 @@ PARTICLES_GROUP.add(PARTICLES_CIRCLE_POINTS, PARTICLES_CUSTOM_POINTS);
 /* =========== START PARTICLES_GALAXY =========== */
 /* DATA */
 const PARTICLES_GALAXY_DEFAULT_PARAMS = {
-	count: 1000,
-	size: 0.02,
+	count: 10000,
+	size: 0.01,
+	radius: 3,
 };
 
 /* GROUP */
@@ -874,9 +881,11 @@ const generateParticleGalaxy = () => {
 	/* Fill vector 3 square line */
 	for (let i = 0; i < PARTICLES_GALAXY_DEFAULT_PARAMS.count; i++) {
 		const _I3 = i * 3;
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] = (Math.random() - 0.5) * 3;
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = (Math.random() - 0.5) * 3;
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] = (Math.random() - 0.5) * 3;
+		const _RADIUS = Math.random() * PARTICLES_GALAXY_DEFAULT_PARAMS.radius;
+
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] = _RADIUS;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = 0;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] = 0;
 	}
 
 	particlesGalaxyBufferGeometry.setAttribute(
@@ -885,7 +894,6 @@ const generateParticleGalaxy = () => {
 	);
 
 	particlesGalaxyMaterial = new THREE.PointsMaterial({
-		color: "#f52266",
 		size: PARTICLES_GALAXY_DEFAULT_PARAMS.size,
 		sizeAttenuation: true,
 		depthWrite: true,
@@ -907,13 +915,18 @@ _PARTICLES_GALAXY_FOLDER_GUI.add(PARTICLES_GALAXY_GROUP, "visible");
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
 	.min(100)
-	.max(1000000)
+	.max(100000)
 	.step(100).onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
 	.min(0.001)
 	.max(0.1)
 	.step(0.001).onFinishChange(generateParticleGalaxy);
+	_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "radius")
+	.min(0.01)
+	.max(20)
+	.step(0.01).onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
 
 // ADD TO GROUPE
@@ -946,12 +959,6 @@ SHADOW_GROUP.add(
 	SHADOW_SPHERE,
 	SHADOW_PLANE_BAKED_SHADOW
 );
-
-// APP
-const APP = initThreeJs({
-	enableOrbit: true,
-	axesSizes: 5,
-});
 
 /* Scene */
 APP.scene.add(
