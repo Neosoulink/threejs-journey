@@ -852,6 +852,7 @@ const PARTICLES_GALAXY_DEFAULT_PARAMS = {
 	count: 10000,
 	size: 0.01,
 	radius: 3,
+	branches: 3
 };
 
 /* GROUP */
@@ -927,6 +928,11 @@ _PARTICLES_GALAXY_FOLDER_GUI
 	.min(0.01)
 	.max(20)
 	.step(0.01).onFinishChange(generateParticleGalaxy);
+	_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "branches")
+	.min(2)
+	.max(20)
+	.step(1).onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
 
 // ADD TO GROUPE
