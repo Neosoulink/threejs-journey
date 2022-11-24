@@ -53,6 +53,12 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 /* Particles */
 import particle2Img from "./assets/img/textures/particles/2.png";
 
+// APP
+const APP = initThreeJs({
+	enableOrbit: true,
+	axesSizes: 2,
+});
+
 /* DATA */
 // let savedTime = Date.now();
 
@@ -753,6 +759,8 @@ HAUNTED_HOUSE_GROUP.add(
 
 // GUI
 const _HAUNTED_HOUSE_GUI = _GUI.addFolder("Haunted house");
+_HAUNTED_HOUSE_GUI.close();
+_HAUNTED_HOUSE_GUI.add(HAUNTED_HOUSE_GROUP, "visible");
 _HAUNTED_HOUSE_GUI
 	.add(HAUNTED_AMBIENT_LIGHT, "intensity")
 	.min(0)
@@ -783,6 +791,7 @@ _HAUNTED_HOUSE_GUI
 
 /* =========== START PARTICLES =========== */
 const PARTICLES_GROUP = new THREE.Group();
+PARTICLES_GROUP.visible = false;
 
 /* Circle point */
 const PARTICLES_GEOMETRY = new THREE.SphereBufferGeometry(1, 32, 32);
@@ -837,6 +846,182 @@ const PARTICLES_CUSTOM_POINTS = new THREE.Points(
 PARTICLES_GROUP.add(PARTICLES_CIRCLE_POINTS, PARTICLES_CUSTOM_POINTS);
 /* =========== END PARTICLES =========== */
 
+/* =========== START PARTICLES_GALAXY =========== */
+/* DATA */
+const PARTICLES_GALAXY_DEFAULT_PARAMS = {
+	count: 10000,
+	size: 0.01,
+	radius: 3,
+	branches: 3,
+	spin: 1,
+	randomness: 0.2,
+	randomnessPower: 3,
+	insideColor: "#ff6030",
+	outsideColor: "#1b3984",
+};
+
+/* GROUP */
+const PARTICLES_GALAXY_GROUP = new THREE.Group();
+
+/*  */
+let particlesGalaxyBufferGeometry: null | THREE.BufferGeometry = null;
+let particlesGalaxyMaterial: null | THREE.PointsMaterial = null;
+let particlesGalaxyCustomPoints: null | THREE.Points = null;
+
+const generateParticleGalaxy = () => {
+	if (
+		particlesGalaxyCustomPoints &&
+		particlesGalaxyBufferGeometry &&
+		particlesGalaxyMaterial
+	) {
+		particlesGalaxyBufferGeometry.dispose();
+		particlesGalaxyMaterial.dispose();
+		PARTICLES_GALAXY_GROUP.remove(particlesGalaxyCustomPoints);
+	}
+
+	particlesGalaxyBufferGeometry = new THREE.BufferGeometry();
+
+	const PARTICLES_GALAXY_CUSTOM_VERTICES = new Float32Array(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3
+	);
+	const PARTICLES_GALAXY_CUSTOM_COLORS = new Float32Array(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3
+	);
+
+	const INSIDE_COLOR = new THREE.Color(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.insideColor
+	);
+	const OUTSIDE_COLOR = new THREE.Color(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.outsideColor
+	);
+
+	/* Fill vector 3 square line */
+	for (let i = 0; i < PARTICLES_GALAXY_DEFAULT_PARAMS.count; i++) {
+		const _I3 = i * 3;
+
+		/* Positions */
+		const _RADIUS = Math.random() * PARTICLES_GALAXY_DEFAULT_PARAMS.radius;
+		const _SPIN_ANGLE = _RADIUS * PARTICLES_GALAXY_DEFAULT_PARAMS.spin;
+		const _BRANCH_ANGLES =
+			((i % PARTICLES_GALAXY_DEFAULT_PARAMS.branches) /
+				PARTICLES_GALAXY_DEFAULT_PARAMS.branches) *
+			Math.PI *
+			2;
+
+		const _RANDOM_X =
+			Math.pow(Math.random(), PARTICLES_GALAXY_DEFAULT_PARAMS.randomnessPower) *
+			(Math.random() < 0.5 ? 1 : -1) *
+			PARTICLES_GALAXY_DEFAULT_PARAMS.randomness *
+			_RADIUS;
+		const _RANDOM_Y =
+			Math.pow(Math.random(), PARTICLES_GALAXY_DEFAULT_PARAMS.randomnessPower) *
+			(Math.random() < 0.5 ? 1 : -1) *
+			PARTICLES_GALAXY_DEFAULT_PARAMS.randomness *
+			_RADIUS;
+		const _RANDOM_Z =
+			Math.pow(Math.random(), PARTICLES_GALAXY_DEFAULT_PARAMS.randomnessPower) *
+			(Math.random() < 0.5 ? 1 : -1) *
+			PARTICLES_GALAXY_DEFAULT_PARAMS.randomness *
+			_RADIUS;
+
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] =
+			Math.cos(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS + _RANDOM_X;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = 0 + _RANDOM_Y;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] =
+			Math.sin(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS + _RANDOM_Z;
+
+		/* Colors */
+		const MIXED_COLOR = INSIDE_COLOR.clone();
+		MIXED_COLOR.lerp(
+			OUTSIDE_COLOR,
+			_RADIUS / PARTICLES_GALAXY_DEFAULT_PARAMS.radius
+		);
+
+		PARTICLES_GALAXY_CUSTOM_COLORS[_I3 + 0] = MIXED_COLOR.r;
+		PARTICLES_GALAXY_CUSTOM_COLORS[_I3 + 1] = MIXED_COLOR.g;
+		PARTICLES_GALAXY_CUSTOM_COLORS[_I3 + 2] = MIXED_COLOR.b;
+	}
+
+	particlesGalaxyBufferGeometry.setAttribute(
+		"position",
+		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_VERTICES, 3)
+	);
+
+	particlesGalaxyBufferGeometry.setAttribute(
+		"color",
+		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_COLORS, 3)
+	);
+
+	particlesGalaxyMaterial = new THREE.PointsMaterial({
+		size: PARTICLES_GALAXY_DEFAULT_PARAMS.size,
+		sizeAttenuation: true,
+		depthWrite: true,
+		blending: THREE.AdditiveBlending,
+		vertexColors: true,
+	});
+
+	particlesGalaxyCustomPoints = new THREE.Points(
+		particlesGalaxyBufferGeometry,
+		particlesGalaxyMaterial
+	);
+	PARTICLES_GALAXY_GROUP.add(particlesGalaxyCustomPoints);
+};
+
+generateParticleGalaxy();
+
+/* GUI */
+const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
+_PARTICLES_GALAXY_FOLDER_GUI.add(PARTICLES_GALAXY_GROUP, "visible");
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
+	.min(100)
+	.max(100000)
+	.step(100)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
+	.min(0.001)
+	.max(0.1)
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "radius")
+	.min(0.01)
+	.max(20)
+	.step(0.01)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "branches")
+	.min(2)
+	.max(20)
+	.step(1)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "spin")
+	.min(-5)
+	.max(5)
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomness")
+	.min(0)
+	.max(2)
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomnessPower")
+	.min(3)
+	.max(10)
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "insideColor")
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "outsideColor")
+	.onFinishChange(generateParticleGalaxy);
+/* =========== END PARTICLES_GALAXY =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -868,12 +1053,6 @@ SHADOW_GROUP.add(
 	SHADOW_PLANE_BAKED_SHADOW
 );
 
-// APP
-const APP = initThreeJs({
-	enableOrbit: true,
-	axesSizes: 5,
-});
-
 /* Scene */
 APP.scene.add(
 	CUBES_GROUP,
@@ -883,7 +1062,8 @@ APP.scene.add(
 	LIGHT_FORMS_GROUP,
 	SHADOW_GROUP,
 	HAUNTED_HOUSE_GROUP,
-	PARTICLES_GROUP
+	PARTICLES_GROUP,
+	PARTICLES_GALAXY_GROUP
 );
 
 /* Camera */
@@ -973,15 +1153,18 @@ APP.animate(() => {
 	/* Particles */
 	// PARTICLES_CUSTOM_POINTS.rotation.x = ELAPSED_TIME * 0.2;
 	// PARTICLES_CUSTOM_POINTS.rotation.y = ELAPSED_TIME * 0.12;
-	for (let i = 0; i < PARTICLES_CUSTOM_VERTICES_COUNT; i++) {
-		const I3 = i * 3;
+	if (PARTICLES_GROUP.visible) {
+		for (let i = 0; i < PARTICLES_CUSTOM_VERTICES_COUNT; i++) {
+			const I3 = i * 3;
 
-		const _X = PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3];
-		PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3 + 1] = Math.sin(
-			ELAPSED_TIME + _X
-		);
+			const _X = PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3];
+			// @ts-ignore
+			PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3 + 1] = Math.sin(
+				ELAPSED_TIME + _X
+			);
+		}
+		PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 	}
-	PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 
 	// UPDATE CONTROL
 	APP.control.update();
@@ -1102,8 +1285,8 @@ _GUI_SHADOWS_FOLDER
 	.max(1)
 	.step(0.001);
 
-const _GUI_HAUNTED_HOUSE = _GUI.addFolder("Haunted house");
-_GUI_HAUNTED_HOUSE.add(HAUNTED_HOUSE_GROUP, "visible");
+const _GUI_PARTICLES = _GUI.addFolder("Particles");
+_GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
