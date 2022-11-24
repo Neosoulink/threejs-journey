@@ -883,10 +883,11 @@ const generateParticleGalaxy = () => {
 	for (let i = 0; i < PARTICLES_GALAXY_DEFAULT_PARAMS.count; i++) {
 		const _I3 = i * 3;
 		const _RADIUS = Math.random() * PARTICLES_GALAXY_DEFAULT_PARAMS.radius;
+		const _BRANCH_ANGLES = (i % PARTICLES_GALAXY_DEFAULT_PARAMS.branches) / PARTICLES_GALAXY_DEFAULT_PARAMS.branches * Math.PI * 2;
 
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] = _RADIUS;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] = Math.cos(_BRANCH_ANGLES) * _RADIUS;
 		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = 0;
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] = 0;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] = Math.sin(_BRANCH_ANGLES) * _RADIUS;
 	}
 
 	particlesGalaxyBufferGeometry.setAttribute(
