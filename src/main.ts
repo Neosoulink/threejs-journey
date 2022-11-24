@@ -759,7 +759,7 @@ HAUNTED_HOUSE_GROUP.add(
 
 // GUI
 const _HAUNTED_HOUSE_GUI = _GUI.addFolder("Haunted house");
-_HAUNTED_HOUSE_GUI.close()
+_HAUNTED_HOUSE_GUI.close();
 _HAUNTED_HOUSE_GUI.add(HAUNTED_HOUSE_GROUP, "visible");
 _HAUNTED_HOUSE_GUI
 	.add(HAUNTED_AMBIENT_LIGHT, "intensity")
@@ -852,7 +852,8 @@ const PARTICLES_GALAXY_DEFAULT_PARAMS = {
 	count: 10000,
 	size: 0.01,
 	radius: 3,
-	branches: 3
+	branches: 3,
+	spin: 1,
 };
 
 /* GROUP */
@@ -883,11 +884,18 @@ const generateParticleGalaxy = () => {
 	for (let i = 0; i < PARTICLES_GALAXY_DEFAULT_PARAMS.count; i++) {
 		const _I3 = i * 3;
 		const _RADIUS = Math.random() * PARTICLES_GALAXY_DEFAULT_PARAMS.radius;
-		const _BRANCH_ANGLES = (i % PARTICLES_GALAXY_DEFAULT_PARAMS.branches) / PARTICLES_GALAXY_DEFAULT_PARAMS.branches * Math.PI * 2;
+		const _SPIN_ANGLE = _RADIUS * PARTICLES_GALAXY_DEFAULT_PARAMS.spin;
+		const _BRANCH_ANGLES =
+			((i % PARTICLES_GALAXY_DEFAULT_PARAMS.branches) /
+				PARTICLES_GALAXY_DEFAULT_PARAMS.branches) *
+			Math.PI *
+			2;
 
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] = Math.cos(_BRANCH_ANGLES) * _RADIUS;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 0] =
+			Math.cos(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS;
 		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = 0;
-		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] = Math.sin(_BRANCH_ANGLES) * _RADIUS;
+		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] =
+			Math.sin(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS;
 	}
 
 	particlesGalaxyBufferGeometry.setAttribute(
@@ -918,22 +926,32 @@ _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
 	.min(100)
 	.max(100000)
-	.step(100).onFinishChange(generateParticleGalaxy);
+	.step(100)
+	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
 	.min(0.001)
 	.max(0.1)
-	.step(0.001).onFinishChange(generateParticleGalaxy);
-	_PARTICLES_GALAXY_FOLDER_GUI
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "radius")
 	.min(0.01)
 	.max(20)
-	.step(0.01).onFinishChange(generateParticleGalaxy);
-	_PARTICLES_GALAXY_FOLDER_GUI
+	.step(0.01)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "branches")
 	.min(2)
 	.max(20)
-	.step(1).onFinishChange(generateParticleGalaxy);
+	.step(1)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "spin")
+	.min(-5)
+	.max(5)
+	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
 
 // ADD TO GROUPE
