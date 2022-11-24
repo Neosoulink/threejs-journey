@@ -856,6 +856,8 @@ const PARTICLES_GALAXY_DEFAULT_PARAMS = {
 	spin: 1,
 	randomness: 0.2,
 	randomnessPower: 3,
+	insideColor: "#ff6030",
+	outsideColor: "#1b3984",
 };
 
 /* GROUP */
@@ -882,10 +884,22 @@ const generateParticleGalaxy = () => {
 	const PARTICLES_GALAXY_CUSTOM_VERTICES = new Float32Array(
 		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3
 	);
+	const PARTICLES_GALAXY_CUSTOM_COLORS = new Float32Array(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3
+	);
+
+	const INSIDE_COLOR = new THREE.Color(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.insideColor
+	);
+	const OUTSIDE_COLOR = new THREE.Color(
+		PARTICLES_GALAXY_DEFAULT_PARAMS.outsideColor
+	);
+
 	/* Fill vector 3 square line */
 	for (let i = 0; i < PARTICLES_GALAXY_DEFAULT_PARAMS.count; i++) {
 		const _I3 = i * 3;
 
+		/* Positions */
 		const _RADIUS = Math.random() * PARTICLES_GALAXY_DEFAULT_PARAMS.radius;
 		const _SPIN_ANGLE = _RADIUS * PARTICLES_GALAXY_DEFAULT_PARAMS.spin;
 		const _BRANCH_ANGLES =
@@ -915,6 +929,17 @@ const generateParticleGalaxy = () => {
 		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 1] = 0 + _RANDOM_Y;
 		PARTICLES_GALAXY_CUSTOM_VERTICES[_I3 + 2] =
 			Math.sin(_BRANCH_ANGLES + _SPIN_ANGLE) * _RADIUS + _RANDOM_Z;
+
+		/* Colors */
+		const MIXED_COLOR = INSIDE_COLOR.clone();
+		MIXED_COLOR.lerp(
+			OUTSIDE_COLOR,
+			_RADIUS / PARTICLES_GALAXY_DEFAULT_PARAMS.radius
+		);
+
+		PARTICLES_GALAXY_CUSTOM_COLORS[_I3 + 0] = MIXED_COLOR.r;
+		PARTICLES_GALAXY_CUSTOM_COLORS[_I3 + 1] = MIXED_COLOR.g;
+		PARTICLES_GALAXY_CUSTOM_COLORS[_I3 + 2] = MIXED_COLOR.b;
 	}
 
 	particlesGalaxyBufferGeometry.setAttribute(
@@ -922,11 +947,17 @@ const generateParticleGalaxy = () => {
 		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_VERTICES, 3)
 	);
 
+	particlesGalaxyBufferGeometry.setAttribute(
+		"color",
+		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_COLORS, 3)
+	);
+
 	particlesGalaxyMaterial = new THREE.PointsMaterial({
 		size: PARTICLES_GALAXY_DEFAULT_PARAMS.size,
 		sizeAttenuation: true,
 		depthWrite: true,
 		blending: THREE.AdditiveBlending,
+		vertexColors: true,
 	});
 
 	particlesGalaxyCustomPoints = new THREE.Points(
@@ -982,6 +1013,12 @@ _PARTICLES_GALAXY_FOLDER_GUI
 	.min(3)
 	.max(10)
 	.step(0.001)
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "insideColor")
+	.onFinishChange(generateParticleGalaxy);
+_PARTICLES_GALAXY_FOLDER_GUI
+	.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "outsideColor")
 	.onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
 
