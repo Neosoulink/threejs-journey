@@ -862,6 +862,7 @@ const PARTICLES_GALAXY_DEFAULT_PARAMS = {
 
 /* GROUP */
 const PARTICLES_GALAXY_GROUP = new THREE.Group();
+PARTICLES_GALAXY_GROUP.visible = false;
 
 /*  */
 let particlesGalaxyBufferGeometry: null | THREE.BufferGeometry = null;
@@ -967,7 +968,9 @@ const generateParticleGalaxy = () => {
 	PARTICLES_GALAXY_GROUP.add(particlesGalaxyCustomPoints);
 };
 
-generateParticleGalaxy();
+if (PARTICLES_GALAXY_GROUP.visible) {
+	generateParticleGalaxy();
+}
 
 /* GUI */
 const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
@@ -981,6 +984,7 @@ _PARTICLES_GALAXY_FOLDER_GUI
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
 	.min(0.001)
+
 	.max(0.1)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
