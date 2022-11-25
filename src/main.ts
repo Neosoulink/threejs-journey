@@ -880,6 +880,11 @@ const generateParticleGalaxy = () => {
 		PARTICLES_GALAXY_GROUP.remove(particlesGalaxyCustomPoints);
 	}
 
+
+	if (!PARTICLES_GALAXY_GROUP.visible) {
+		return;
+	}
+
 	particlesGalaxyBufferGeometry = new THREE.BufferGeometry();
 
 	const PARTICLES_GALAXY_CUSTOM_VERTICES = new Float32Array(
