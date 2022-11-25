@@ -880,7 +880,6 @@ const generateParticleGalaxy = () => {
 		PARTICLES_GALAXY_GROUP.remove(particlesGalaxyCustomPoints);
 	}
 
-
 	if (!PARTICLES_GALAXY_GROUP.visible) {
 		return;
 	}
@@ -1033,6 +1032,33 @@ _PARTICLES_GALAXY_FOLDER_GUI
 	.onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
 
+/* =========== START RAY CASTER =========== */
+const RAY_CATER_GROUP = new THREE.Group();
+
+const RAU_CASTER_OBJECT_1 = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 16, 16),
+	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+RAU_CASTER_OBJECT_1.position.x = -2;
+
+const RAU_CASTER_OBJECT_2 = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 16, 16),
+	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+
+const RAU_CASTER_OBJECT_3 = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 16, 16),
+	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+RAU_CASTER_OBJECT_3.position.x = 2;
+
+RAY_CATER_GROUP.add(
+	RAU_CASTER_OBJECT_1,
+	RAU_CASTER_OBJECT_2,
+	RAU_CASTER_OBJECT_3
+);
+/* =========== END RAY CASTER =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -1074,7 +1100,8 @@ APP.scene.add(
 	SHADOW_GROUP,
 	HAUNTED_HOUSE_GROUP,
 	PARTICLES_GROUP,
-	PARTICLES_GALAXY_GROUP
+	PARTICLES_GALAXY_GROUP,
+	RAY_CATER_GROUP
 );
 
 /* Camera */
