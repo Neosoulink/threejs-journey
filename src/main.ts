@@ -974,7 +974,9 @@ if (PARTICLES_GALAXY_GROUP.visible) {
 
 /* GUI */
 const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
-_PARTICLES_GALAXY_FOLDER_GUI.add(PARTICLES_GALAXY_GROUP, "visible");
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_GROUP, "visible")
+	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
 	.min(100)
