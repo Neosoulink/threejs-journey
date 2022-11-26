@@ -1033,6 +1033,9 @@ _PARTICLES_GALAXY_FOLDER_GUI
 /* =========== END PARTICLES_GALAXY =========== */
 
 /* =========== START RAY CASTER =========== */
+let rayCasterCurrentIntersect: THREE.Intersection<
+	THREE.Object3D<THREE.Event>
+> | null = null;
 const RAY_CATER_GROUP = new THREE.Group();
 
 const RAY_CASTER_OBJECT_1 = new THREE.Mesh(
@@ -1236,10 +1239,24 @@ APP.animate(() => {
 		(item) => (item.material.color = new THREE.Color("#ff0000"))
 	);
 	RAY_CASTER_INSTANCE_INTERSECTS.map(
+		// @ts-ignore
 		(item) => (item.object.material.color = new THREE.Color("#0000ff"))
 	);
 
-	RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera)
+	if (RAY_CASTER_INSTANCE_INTERSECTS.length) {
+		if (rayCasterCurrentIntersect === null) {
+			// console.log("Ray intersect entered");
+		}
+		rayCasterCurrentIntersect = RAY_CASTER_INSTANCE_INTERSECTS[0];
+	} else {
+		if (rayCasterCurrentIntersect) {
+			// console.log("Ray intersect outed");
+			rayCasterCurrentIntersect.object.scale.set(1, 1, 1)
+		}
+		rayCasterCurrentIntersect = null;
+	}
+
+	RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera);
 
 	// UPDATE CONTROL
 	APP.control.update();
@@ -1399,6 +1416,12 @@ window.addEventListener("mousemove", (e) => {
 	// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
 	// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
 
-	RAY_CASTER_MOUSE.x = e.clientX / APP.sceneSizes.width * 2 - 1;
+	RAY_CASTER_MOUSE.x = (e.clientX / APP.sceneSizes.width) * 2 - 1;
 	RAY_CASTER_MOUSE.y = -(e.clientY / APP.sceneSizes.height) * 2 + 1;
+});
+
+window.addEventListener("click", () => {
+	if (rayCasterCurrentIntersect) {
+		rayCasterCurrentIntersect.object.scale.set(1.5, 1.5, 1.5);
+	}
 });
