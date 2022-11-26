@@ -1035,27 +1035,32 @@ _PARTICLES_GALAXY_FOLDER_GUI
 /* =========== START RAY CASTER =========== */
 const RAY_CATER_GROUP = new THREE.Group();
 
-const RAU_CASTER_OBJECT_1 = new THREE.Mesh(
+const RAY_CASTER_OBJECT_1 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
 	new THREE.MeshBasicMaterial({ color: "#ff0000" })
 );
-RAU_CASTER_OBJECT_1.position.x = -2;
+RAY_CASTER_OBJECT_1.position.x = -2;
 
-const RAU_CASTER_OBJECT_2 = new THREE.Mesh(
+const RAY_CASTER_OBJECT_2 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
 	new THREE.MeshBasicMaterial({ color: "#ff0000" })
 );
 
-const RAU_CASTER_OBJECT_3 = new THREE.Mesh(
+const RAY_CASTER_OBJECT_3 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
 	new THREE.MeshBasicMaterial({ color: "#ff0000" })
 );
-RAU_CASTER_OBJECT_3.position.x = 2;
+RAY_CASTER_OBJECT_3.position.x = 2;
+
+const RAY_CASTER_INSTANCE = new THREE.Raycaster(
+	new THREE.Vector3(-3, 0, 0),
+	new THREE.Vector3(10, 0, 0).normalize()
+);
 
 RAY_CATER_GROUP.add(
-	RAU_CASTER_OBJECT_1,
-	RAU_CASTER_OBJECT_2,
-	RAU_CASTER_OBJECT_3
+	RAY_CASTER_OBJECT_1,
+	RAY_CASTER_OBJECT_2,
+	RAY_CASTER_OBJECT_3
 );
 /* =========== END RAY CASTER =========== */
 
@@ -1203,6 +1208,32 @@ APP.animate(() => {
 		}
 		PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 	}
+
+	// Ray caster
+	RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
+	RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
+	RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
+
+	RAY_CASTER_INSTANCE.set(
+		new THREE.Vector3(-3, 0, 0),
+		new THREE.Vector3(1, 0, 0).normalize()
+	);
+	const _RAY_CASTER_OBJECTS_ANIMATION = [
+		RAY_CASTER_OBJECT_1,
+		RAY_CASTER_OBJECT_2,
+		RAY_CASTER_OBJECT_3,
+	];
+
+	const RAY_CASTER_INSTANCE_INTERSECTS = RAY_CASTER_INSTANCE.intersectObjects(
+		_RAY_CASTER_OBJECTS_ANIMATION
+	);
+
+	_RAY_CASTER_OBJECTS_ANIMATION.map(
+		(item) => (item.material.color = new THREE.Color("#ff0000"))
+	);
+	RAY_CASTER_INSTANCE_INTERSECTS.map(
+		(item) => (item.object.material.color = new THREE.Color("#0000ff"))
+	);
 
 	// UPDATE CONTROL
 	APP.control.update();
