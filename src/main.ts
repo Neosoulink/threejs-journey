@@ -1062,6 +1062,9 @@ RAY_CATER_GROUP.add(
 	RAY_CASTER_OBJECT_2,
 	RAY_CASTER_OBJECT_3
 );
+
+const RAY_CASTER_MOUSE = new THREE.Vector2();
+
 /* =========== END RAY CASTER =========== */
 
 // ADD TO GROUPE
@@ -1210,14 +1213,15 @@ APP.animate(() => {
 	}
 
 	// Ray caster
-	RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
-	RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
-	RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
+	// RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
+	// RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
+	// RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
 
-	RAY_CASTER_INSTANCE.set(
-		new THREE.Vector3(-3, 0, 0),
-		new THREE.Vector3(1, 0, 0).normalize()
-	);
+	// RAY_CASTER_INSTANCE.set(
+	// 	new THREE.Vector3(-3, 0, 0),
+	// 	new THREE.Vector3(1, 0, 0).normalize()
+	// );
+
 	const _RAY_CASTER_OBJECTS_ANIMATION = [
 		RAY_CASTER_OBJECT_1,
 		RAY_CASTER_OBJECT_2,
@@ -1234,6 +1238,8 @@ APP.animate(() => {
 	RAY_CASTER_INSTANCE_INTERSECTS.map(
 		(item) => (item.object.material.color = new THREE.Color("#0000ff"))
 	);
+
+	RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera)
 
 	// UPDATE CONTROL
 	APP.control.update();
@@ -1389,7 +1395,10 @@ window.addEventListener("keydown", (e) => {
 	}
 });
 
-// window.addEventListener("mousemove", (e) => {
-// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
-// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
-// });
+window.addEventListener("mousemove", (e) => {
+	// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
+	// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
+
+	RAY_CASTER_MOUSE.x = e.clientX / APP.sceneSizes.width * 2 - 1;
+	RAY_CASTER_MOUSE.y = -(e.clientY / APP.sceneSizes.height) * 2 + 1;
+});
