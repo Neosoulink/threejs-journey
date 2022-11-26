@@ -862,6 +862,7 @@ const PARTICLES_GALAXY_DEFAULT_PARAMS = {
 
 /* GROUP */
 const PARTICLES_GALAXY_GROUP = new THREE.Group();
+PARTICLES_GALAXY_GROUP.visible = false;
 
 /*  */
 let particlesGalaxyBufferGeometry: null | THREE.BufferGeometry = null;
@@ -877,6 +878,10 @@ const generateParticleGalaxy = () => {
 		particlesGalaxyBufferGeometry.dispose();
 		particlesGalaxyMaterial.dispose();
 		PARTICLES_GALAXY_GROUP.remove(particlesGalaxyCustomPoints);
+	}
+
+	if (!PARTICLES_GALAXY_GROUP.visible) {
+		return;
 	}
 
 	particlesGalaxyBufferGeometry = new THREE.BufferGeometry();
@@ -967,11 +972,15 @@ const generateParticleGalaxy = () => {
 	PARTICLES_GALAXY_GROUP.add(particlesGalaxyCustomPoints);
 };
 
-generateParticleGalaxy();
+if (PARTICLES_GALAXY_GROUP.visible) {
+	generateParticleGalaxy();
+}
 
 /* GUI */
 const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
-_PARTICLES_GALAXY_FOLDER_GUI.add(PARTICLES_GALAXY_GROUP, "visible");
+_PARTICLES_GALAXY_FOLDER_GUI
+	.add(PARTICLES_GALAXY_GROUP, "visible")
+	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
 	.min(100)
@@ -981,6 +990,7 @@ _PARTICLES_GALAXY_FOLDER_GUI
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
 	.min(0.001)
+
 	.max(0.1)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
@@ -1021,6 +1031,44 @@ _PARTICLES_GALAXY_FOLDER_GUI
 	.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "outsideColor")
 	.onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
+
+/* =========== START RAY CASTER =========== */
+let rayCasterCurrentIntersect: THREE.Intersection<
+	THREE.Object3D<THREE.Event>
+> | null = null;
+const RAY_CATER_GROUP = new THREE.Group();
+
+const RAY_CASTER_OBJECT_1 = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 16, 16),
+	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+RAY_CASTER_OBJECT_1.position.x = -2;
+
+const RAY_CASTER_OBJECT_2 = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 16, 16),
+	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+
+const RAY_CASTER_OBJECT_3 = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 16, 16),
+	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+RAY_CASTER_OBJECT_3.position.x = 2;
+
+const RAY_CASTER_INSTANCE = new THREE.Raycaster(
+	new THREE.Vector3(-3, 0, 0),
+	new THREE.Vector3(10, 0, 0).normalize()
+);
+
+RAY_CATER_GROUP.add(
+	RAY_CASTER_OBJECT_1,
+	RAY_CASTER_OBJECT_2,
+	RAY_CASTER_OBJECT_3
+);
+
+const RAY_CASTER_MOUSE = new THREE.Vector2();
+
+/* =========== END RAY CASTER =========== */
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1063,7 +1111,8 @@ APP.scene.add(
 	SHADOW_GROUP,
 	HAUNTED_HOUSE_GROUP,
 	PARTICLES_GROUP,
-	PARTICLES_GALAXY_GROUP
+	PARTICLES_GALAXY_GROUP,
+	RAY_CATER_GROUP
 );
 
 /* Camera */
@@ -1165,6 +1214,49 @@ APP.animate(() => {
 		}
 		PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
 	}
+
+	// Ray caster
+	// RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
+	// RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
+	// RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
+
+	// RAY_CASTER_INSTANCE.set(
+	// 	new THREE.Vector3(-3, 0, 0),
+	// 	new THREE.Vector3(1, 0, 0).normalize()
+	// );
+
+	const _RAY_CASTER_OBJECTS_ANIMATION = [
+		RAY_CASTER_OBJECT_1,
+		RAY_CASTER_OBJECT_2,
+		RAY_CASTER_OBJECT_3,
+	];
+
+	const RAY_CASTER_INSTANCE_INTERSECTS = RAY_CASTER_INSTANCE.intersectObjects(
+		_RAY_CASTER_OBJECTS_ANIMATION
+	);
+
+	_RAY_CASTER_OBJECTS_ANIMATION.map(
+		(item) => (item.material.color = new THREE.Color("#ff0000"))
+	);
+	RAY_CASTER_INSTANCE_INTERSECTS.map(
+		// @ts-ignore
+		(item) => (item.object.material.color = new THREE.Color("#0000ff"))
+	);
+
+	if (RAY_CASTER_INSTANCE_INTERSECTS.length) {
+		if (rayCasterCurrentIntersect === null) {
+			// console.log("Ray intersect entered");
+		}
+		rayCasterCurrentIntersect = RAY_CASTER_INSTANCE_INTERSECTS[0];
+	} else {
+		if (rayCasterCurrentIntersect) {
+			// console.log("Ray intersect outed");
+			rayCasterCurrentIntersect.object.scale.set(1, 1, 1)
+		}
+		rayCasterCurrentIntersect = null;
+	}
+
+	RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera);
 
 	// UPDATE CONTROL
 	APP.control.update();
@@ -1320,7 +1412,16 @@ window.addEventListener("keydown", (e) => {
 	}
 });
 
-// window.addEventListener("mousemove", (e) => {
-// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
-// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
-// });
+window.addEventListener("mousemove", (e) => {
+	// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
+	// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
+
+	RAY_CASTER_MOUSE.x = (e.clientX / APP.sceneSizes.width) * 2 - 1;
+	RAY_CASTER_MOUSE.y = -(e.clientY / APP.sceneSizes.height) * 2 + 1;
+});
+
+window.addEventListener("click", () => {
+	if (rayCasterCurrentIntersect) {
+		rayCasterCurrentIntersect.object.scale.set(1.5, 1.5, 1.5);
+	}
+});
