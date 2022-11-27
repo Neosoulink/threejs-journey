@@ -1082,6 +1082,7 @@ _RAY_CASTER_FOLDER_GUI.add(RAY_CASTER_GROUP, "visible");
 /* DATA */
 const SCROLL_BASED_PARAMS = {
 	materialColor: "#ffeded",
+	objectDistance: 4,
 };
 
 /* Groups */
@@ -1114,6 +1115,10 @@ const SCROLL_BASED_MESH3 = new THREE.Mesh(
 	new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
 	SCROLL_BASED_MATERIAL
 );
+
+SCROLL_BASED_MESH1.position.y = - SCROLL_BASED_PARAMS.objectDistance * 0;
+SCROLL_BASED_MESH2.position.y = - SCROLL_BASED_PARAMS.objectDistance * 1;
+SCROLL_BASED_MESH3.position.y = - SCROLL_BASED_PARAMS.objectDistance * 2;
 
 SCROLL_BASED_GROUP.add(
 	SCROLL_BASED_DIRECTIONAL_LIGHT,
