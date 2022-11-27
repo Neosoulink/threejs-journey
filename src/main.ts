@@ -52,6 +52,8 @@ import hauntedHouseNormalGrassImg from "./assets/img/textures/hauntedHouse/grass
 import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/grass/roughness.jpg";
 /* Particles */
 import particle2Img from "./assets/img/textures/particles/2.png";
+/* gradient */
+import gradient2Img from "./assets/img/textures/gradients/3.jpg";
 
 // APP
 const APP = initThreeJs({
@@ -1089,9 +1091,14 @@ const SCROLL_BASED_GROUP = new THREE.Group();
 const SCROLL_BASED_DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 1);
 SCROLL_BASED_DIRECTIONAL_LIGHT.position.set(1, 1, 0);
 
+/* Textures */
+const SCROLL_BASED_GRADIENT_TEXT = TEXTURE_LOADER.load(gradient2Img);
+SCROLL_BASED_GRADIENT_TEXT.magFilter = THREE.NearestFilter;
+
 /* Material */
 const SCROLL_BASED_MATERIAL = new THREE.MeshToonMaterial({
 	color: SCROLL_BASED_PARAMS.materialColor,
+	gradientMap: SCROLL_BASED_GRADIENT_TEXT,
 });
 
 /* Meshes */
