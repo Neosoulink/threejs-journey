@@ -1085,18 +1085,44 @@ const SCROLL_BASED_PARAMS = {
 /* Groups */
 const SCROLL_BASED_GROUP = new THREE.Group();
 
-/* Mesh */
-const SCROLL_BASED_CUBE = new THREE.Mesh(
-	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+/* Lights */
+const SCROLL_BASED_DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 1);
+SCROLL_BASED_DIRECTIONAL_LIGHT.position.set(1, 1, 0);
+
+/* Material */
+const SCROLL_BASED_MATERIAL = new THREE.MeshToonMaterial({
+	color: SCROLL_BASED_PARAMS.materialColor,
+});
+
+/* Meshes */
+const SCROLL_BASED_MESH1 = new THREE.Mesh(
+	new THREE.TorusGeometry(1, 0.4, 16, 60),
+	SCROLL_BASED_MATERIAL
+);
+const SCROLL_BASED_MESH2 = new THREE.Mesh(
+	new THREE.ConeGeometry(1, 2, 32),
+	SCROLL_BASED_MATERIAL
+);
+const SCROLL_BASED_MESH3 = new THREE.Mesh(
+	new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
+	SCROLL_BASED_MATERIAL
 );
 
-SCROLL_BASED_GROUP.add(SCROLL_BASED_CUBE);
+SCROLL_BASED_GROUP.add(
+	SCROLL_BASED_DIRECTIONAL_LIGHT,
+	SCROLL_BASED_MESH1,
+	SCROLL_BASED_MESH2,
+	SCROLL_BASED_MESH3
+);
 
 const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
 _SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
 
-_SCROLL_BASED_FOLDER_GUI.addColor(SCROLL_BASED_PARAMS, "materialColor");
+_SCROLL_BASED_FOLDER_GUI
+	.addColor(SCROLL_BASED_PARAMS, "materialColor")
+	.onChange(() =>
+		SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor)
+	);
 
 const SCROLL_BASED_DOM = document.querySelector(".scroll-based");
 if (SCROLL_BASED_GROUP.visible) {
