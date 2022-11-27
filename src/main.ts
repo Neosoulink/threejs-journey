@@ -1116,6 +1116,10 @@ const SCROLL_BASED_MESH3 = new THREE.Mesh(
 	SCROLL_BASED_MATERIAL
 );
 
+const SCROLL_BASED_MESHES_LIST = [SCROLL_BASED_MESH1,
+	SCROLL_BASED_MESH2,
+	SCROLL_BASED_MESH3]
+
 SCROLL_BASED_MESH1.position.y = - SCROLL_BASED_PARAMS.objectDistance * 0;
 SCROLL_BASED_MESH2.position.y = - SCROLL_BASED_PARAMS.objectDistance * 1;
 SCROLL_BASED_MESH3.position.y = - SCROLL_BASED_PARAMS.objectDistance * 2;
@@ -1293,16 +1297,15 @@ APP.animate(() => {
 	}
 
 	// Ray caster
-	// RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
-	// RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
-	// RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
-
-	// RAY_CASTER_INSTANCE.set(
-	// 	new THREE.Vector3(-3, 0, 0),
-	// 	new THREE.Vector3(1, 0, 0).normalize()
-	// );
-
 	if (RAY_CASTER_GROUP.visible) {
+		// RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
+		// RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
+		// RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
+
+		// RAY_CASTER_INSTANCE.set(
+		// 	new THREE.Vector3(-3, 0, 0),
+		// 	new THREE.Vector3(1, 0, 0).normalize()
+		// );
 		const _RAY_CASTER_OBJECTS_ANIMATION = [
 			RAY_CASTER_OBJECT_1,
 			RAY_CASTER_OBJECT_2,
@@ -1335,6 +1338,14 @@ APP.animate(() => {
 		}
 
 		RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera);
+	}
+
+	// SCROLL BASED
+	if(SCROLL_BASED_GROUP.visible){
+		for (const SCROLL_BASED_MESH of SCROLL_BASED_MESHES_LIST) {
+			SCROLL_BASED_MESH.rotation.y = ELAPSED_TIME * 0.1
+			SCROLL_BASED_MESH.rotation.x = ELAPSED_TIME * 0.12
+		}
 	}
 
 	// UPDATE CONTROL
