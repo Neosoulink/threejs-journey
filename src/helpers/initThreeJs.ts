@@ -57,7 +57,7 @@ export default (props?: initThreeProps) => {
 	// );
 	// console.log(ASPECT_RATIO);
 
-	renderer = new THREE.WebGL1Renderer({ antialias: true });
+	renderer = new THREE.WebGL1Renderer({ antialias: true, alpha: true });
 	renderer.setSize(SCENE_SIZES.width, SCENE_SIZES.height);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 

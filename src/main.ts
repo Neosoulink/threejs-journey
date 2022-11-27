@@ -1079,7 +1079,7 @@ _RAY_CASTER_FOLDER_GUI.add(RAY_CASTER_GROUP, "visible");
 /* =========== START SCROLL BASED ANIMATION =========== */
 /* DATA */
 const SCROLL_BASED_PARAMS = {
-	materialColor: '#ffeded'
+	materialColor: "#ffeded",
 };
 
 /* Groups */
@@ -1096,9 +1096,7 @@ SCROLL_BASED_GROUP.add(SCROLL_BASED_CUBE);
 const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
 _SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
 
-_SCROLL_BASED_FOLDER_GUI
-	.addColor(SCROLL_BASED_PARAMS, 'materialColor')
-
+_SCROLL_BASED_FOLDER_GUI.addColor(SCROLL_BASED_PARAMS, "materialColor");
 
 const SCROLL_BASED_DOM = document.querySelector(".scroll-based");
 if (SCROLL_BASED_GROUP.visible) {
@@ -1155,7 +1153,7 @@ APP.scene.add(
 /* Camera */
 APP.camera.position.x = 0;
 APP.camera.position.y = 0;
-APP.camera.position.z = 5;
+APP.camera.position.z = 4;
 
 /* Control */
 APP.control.enableDamping = true;
@@ -1168,7 +1166,9 @@ APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
 	? new THREE.Fog("#262837", 0, 15)
 	: null;
-APP.renderer.setClearColor(HAUNTED_HOUSE_GROUP.visible ? "#262837" : "#000");
+if (HAUNTED_HOUSE_GROUP.visible) {
+	APP.renderer.setClearColor("#262837");
+}
 
 /* Animate */
 APP.animate(() => {

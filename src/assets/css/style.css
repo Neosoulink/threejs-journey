@@ -8,6 +8,7 @@ html {
 	margin: 0;
 	height: 100vh;
 	width: 100vw;
+	background-color: #1e1a20;
 	overflow: hidden;
 }
 
@@ -20,7 +21,12 @@ html {
 	top: 0;
 	left: 0;
 	outline: none;
-	z-index: -1;
+	z-index: 0;
+}
+
+.scroll-based {
+	overflow: auto;.
+
 }
 
 .scroll-based-section {
