@@ -56,7 +56,7 @@ import particle2Img from "./assets/img/textures/particles/2.png";
 // APP
 const APP = initThreeJs({
 	enableOrbit: true,
-	axesSizes: 2,
+	// axesSizes: 2,
 });
 
 /* DATA */
@@ -978,6 +978,7 @@ if (PARTICLES_GALAXY_GROUP.visible) {
 
 /* GUI */
 const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
+_PARTICLES_GALAXY_FOLDER_GUI.close();
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_GROUP, "visible")
 	.onFinishChange(generateParticleGalaxy);
@@ -1036,7 +1037,8 @@ _PARTICLES_GALAXY_FOLDER_GUI
 let rayCasterCurrentIntersect: THREE.Intersection<
 	THREE.Object3D<THREE.Event>
 > | null = null;
-const RAY_CATER_GROUP = new THREE.Group();
+const RAY_CASTER_GROUP = new THREE.Group();
+RAY_CASTER_GROUP.visible = false;
 
 const RAY_CASTER_OBJECT_1 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
@@ -1060,15 +1062,49 @@ const RAY_CASTER_INSTANCE = new THREE.Raycaster(
 	new THREE.Vector3(10, 0, 0).normalize()
 );
 
-RAY_CATER_GROUP.add(
+const RAY_CASTER_MOUSE = new THREE.Vector2();
+
+RAY_CASTER_GROUP.add(
 	RAY_CASTER_OBJECT_1,
 	RAY_CASTER_OBJECT_2,
 	RAY_CASTER_OBJECT_3
 );
 
-const RAY_CASTER_MOUSE = new THREE.Vector2();
+const _RAY_CASTER_FOLDER_GUI = _GUI.addFolder("Ray caster");
+_RAY_CASTER_FOLDER_GUI.close();
+_RAY_CASTER_FOLDER_GUI.add(RAY_CASTER_GROUP, "visible");
 
 /* =========== END RAY CASTER =========== */
+
+/* =========== START SCROLL BASED ANIMATION =========== */
+/* DATA */
+const SCROLL_BASED_PARAMS = {
+	materialColor: '#ffeded'
+};
+
+/* Groups */
+const SCROLL_BASED_GROUP = new THREE.Group();
+
+/* Mesh */
+const SCROLL_BASED_CUBE = new THREE.Mesh(
+	new THREE.BoxGeometry(1, 1, 1),
+	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+);
+
+SCROLL_BASED_GROUP.add(SCROLL_BASED_CUBE);
+
+const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
+_SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
+
+_SCROLL_BASED_FOLDER_GUI
+	.addColor(SCROLL_BASED_PARAMS, 'materialColor')
+
+
+const SCROLL_BASED_DOM = document.querySelector(".scroll-based");
+if (SCROLL_BASED_GROUP.visible) {
+	SCROLL_BASED_DOM?.classList.remove("d-none");
+}
+/* =========== END SCROLL BASED ANIMATION =========== */
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1112,13 +1148,14 @@ APP.scene.add(
 	HAUNTED_HOUSE_GROUP,
 	PARTICLES_GROUP,
 	PARTICLES_GALAXY_GROUP,
-	RAY_CATER_GROUP
+	RAY_CASTER_GROUP,
+	SCROLL_BASED_GROUP
 );
 
 /* Camera */
 APP.camera.position.x = 0;
-APP.camera.position.y = 2;
-APP.camera.position.z = 10;
+APP.camera.position.y = 0;
+APP.camera.position.z = 5;
 
 /* Control */
 APP.control.enableDamping = true;
@@ -1180,24 +1217,26 @@ APP.animate(() => {
 	SHADOW_SPOT_LIGHT.shadow.camera.far = 6;
 
 	/* haunted house */
-	const GHOST1_ANGLE = ELAPSED_TIME * 0.5;
-	HAUNTED_HOUSE_GHOST1.position.x = Math.cos(GHOST1_ANGLE) * 4;
-	HAUNTED_HOUSE_GHOST1.position.z = Math.sin(GHOST1_ANGLE) * 4;
-	HAUNTED_HOUSE_GHOST1.position.y = Math.sin(ELAPSED_TIME * 3);
+	if (HAUNTED_HOUSE_GROUP.visible) {
+		const GHOST1_ANGLE = ELAPSED_TIME * 0.5;
+		HAUNTED_HOUSE_GHOST1.position.x = Math.cos(GHOST1_ANGLE) * 4;
+		HAUNTED_HOUSE_GHOST1.position.z = Math.sin(GHOST1_ANGLE) * 4;
+		HAUNTED_HOUSE_GHOST1.position.y = Math.sin(ELAPSED_TIME * 3);
 
-	const GHOST2_ANGLE = -ELAPSED_TIME * 0.32;
-	HAUNTED_HOUSE_GHOST2.position.x = Math.cos(GHOST2_ANGLE) * 5;
-	HAUNTED_HOUSE_GHOST2.position.z = Math.sin(GHOST2_ANGLE) * 5;
-	HAUNTED_HOUSE_GHOST2.position.y =
-		Math.sin(ELAPSED_TIME * 4) + Math.sin(ELAPSED_TIME * 2.5);
+		const GHOST2_ANGLE = -ELAPSED_TIME * 0.32;
+		HAUNTED_HOUSE_GHOST2.position.x = Math.cos(GHOST2_ANGLE) * 5;
+		HAUNTED_HOUSE_GHOST2.position.z = Math.sin(GHOST2_ANGLE) * 5;
+		HAUNTED_HOUSE_GHOST2.position.y =
+			Math.sin(ELAPSED_TIME * 4) + Math.sin(ELAPSED_TIME * 2.5);
 
-	const GHOST3_ANGLE = -ELAPSED_TIME * 0.18;
-	HAUNTED_HOUSE_GHOST3.position.x =
-		Math.cos(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.32));
-	HAUNTED_HOUSE_GHOST3.position.z =
-		Math.sin(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.5));
-	HAUNTED_HOUSE_GHOST3.position.y =
-		Math.sin(ELAPSED_TIME * 3) + Math.sin(ELAPSED_TIME * 2);
+		const GHOST3_ANGLE = -ELAPSED_TIME * 0.18;
+		HAUNTED_HOUSE_GHOST3.position.x =
+			Math.cos(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.32));
+		HAUNTED_HOUSE_GHOST3.position.z =
+			Math.sin(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.5));
+		HAUNTED_HOUSE_GHOST3.position.y =
+			Math.sin(ELAPSED_TIME * 3) + Math.sin(ELAPSED_TIME * 2);
+	}
 
 	/* Particles */
 	// PARTICLES_CUSTOM_POINTS.rotation.x = ELAPSED_TIME * 0.2;
@@ -1225,38 +1264,40 @@ APP.animate(() => {
 	// 	new THREE.Vector3(1, 0, 0).normalize()
 	// );
 
-	const _RAY_CASTER_OBJECTS_ANIMATION = [
-		RAY_CASTER_OBJECT_1,
-		RAY_CASTER_OBJECT_2,
-		RAY_CASTER_OBJECT_3,
-	];
+	if (RAY_CASTER_GROUP.visible) {
+		const _RAY_CASTER_OBJECTS_ANIMATION = [
+			RAY_CASTER_OBJECT_1,
+			RAY_CASTER_OBJECT_2,
+			RAY_CASTER_OBJECT_3,
+		];
 
-	const RAY_CASTER_INSTANCE_INTERSECTS = RAY_CASTER_INSTANCE.intersectObjects(
-		_RAY_CASTER_OBJECTS_ANIMATION
-	);
+		const RAY_CASTER_INSTANCE_INTERSECTS = RAY_CASTER_INSTANCE.intersectObjects(
+			_RAY_CASTER_OBJECTS_ANIMATION
+		);
 
-	_RAY_CASTER_OBJECTS_ANIMATION.map(
-		(item) => (item.material.color = new THREE.Color("#ff0000"))
-	);
-	RAY_CASTER_INSTANCE_INTERSECTS.map(
-		// @ts-ignore
-		(item) => (item.object.material.color = new THREE.Color("#0000ff"))
-	);
+		_RAY_CASTER_OBJECTS_ANIMATION.map(
+			(item) => (item.material.color = new THREE.Color("#ff0000"))
+		);
+		RAY_CASTER_INSTANCE_INTERSECTS.map(
+			// @ts-ignore
+			(item) => (item.object.material.color = new THREE.Color("#0000ff"))
+		);
 
-	if (RAY_CASTER_INSTANCE_INTERSECTS.length) {
-		if (rayCasterCurrentIntersect === null) {
-			// console.log("Ray intersect entered");
+		if (RAY_CASTER_INSTANCE_INTERSECTS.length) {
+			if (rayCasterCurrentIntersect === null) {
+				// console.log("Ray intersect entered");
+			}
+			rayCasterCurrentIntersect = RAY_CASTER_INSTANCE_INTERSECTS[0];
+		} else {
+			if (rayCasterCurrentIntersect) {
+				// console.log("Ray intersect outed");
+				rayCasterCurrentIntersect.object.scale.set(1, 1, 1);
+			}
+			rayCasterCurrentIntersect = null;
 		}
-		rayCasterCurrentIntersect = RAY_CASTER_INSTANCE_INTERSECTS[0];
-	} else {
-		if (rayCasterCurrentIntersect) {
-			// console.log("Ray intersect outed");
-			rayCasterCurrentIntersect.object.scale.set(1, 1, 1)
-		}
-		rayCasterCurrentIntersect = null;
+
+		RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera);
 	}
-
-	RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera);
 
 	// UPDATE CONTROL
 	APP.control.update();
