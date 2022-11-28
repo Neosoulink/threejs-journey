@@ -1116,13 +1116,15 @@ const SCROLL_BASED_MESH3 = new THREE.Mesh(
 	SCROLL_BASED_MATERIAL
 );
 
-const SCROLL_BASED_MESHES_LIST = [SCROLL_BASED_MESH1,
+const SCROLL_BASED_MESHES_LIST = [
+	SCROLL_BASED_MESH1,
 	SCROLL_BASED_MESH2,
-	SCROLL_BASED_MESH3]
+	SCROLL_BASED_MESH3,
+];
 
-SCROLL_BASED_MESH1.position.y = - SCROLL_BASED_PARAMS.objectDistance * 0;
-SCROLL_BASED_MESH2.position.y = - SCROLL_BASED_PARAMS.objectDistance * 1;
-SCROLL_BASED_MESH3.position.y = - SCROLL_BASED_PARAMS.objectDistance * 2;
+SCROLL_BASED_MESH1.position.y = -SCROLL_BASED_PARAMS.objectDistance * 0;
+SCROLL_BASED_MESH2.position.y = -SCROLL_BASED_PARAMS.objectDistance * 1;
+SCROLL_BASED_MESH3.position.y = -SCROLL_BASED_PARAMS.objectDistance * 2;
 
 SCROLL_BASED_GROUP.add(
 	SCROLL_BASED_DIRECTIONAL_LIGHT,
@@ -1196,6 +1198,13 @@ APP.scene.add(
 APP.camera.position.x = 0;
 APP.camera.position.y = 0;
 APP.camera.position.z = 4;
+
+if (SCROLL_BASED_GROUP.visible) {
+	APP.camera.fov = 35;
+	APP.camera.updateProjectionMatrix();
+
+	APP.camera.position.z = 6;
+}
 
 /* Control */
 APP.control.enableDamping = true;
@@ -1341,10 +1350,10 @@ APP.animate(() => {
 	}
 
 	// SCROLL BASED
-	if(SCROLL_BASED_GROUP.visible){
+	if (SCROLL_BASED_GROUP.visible) {
 		for (const SCROLL_BASED_MESH of SCROLL_BASED_MESHES_LIST) {
-			SCROLL_BASED_MESH.rotation.y = ELAPSED_TIME * 0.1
-			SCROLL_BASED_MESH.rotation.x = ELAPSED_TIME * 0.12
+			SCROLL_BASED_MESH.rotation.y = ELAPSED_TIME * 0.1;
+			SCROLL_BASED_MESH.rotation.x = ELAPSED_TIME * 0.12;
 		}
 	}
 
