@@ -15,7 +15,7 @@ export interface initThreeProps {
 // DEFS
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
-let renderer: THREE.WebGL1Renderer;
+let renderer: THREE.WebGLRenderer;
 let control: OrbitControls;
 let viewPortSize = {
 	width: window.innerWidth,
@@ -30,7 +30,7 @@ export function animate(callback: () => any = () => {}) {
 }
 
 export default (props?: initThreeProps) => {
-	const APP = document.querySelector<HTMLDivElement>("#app")!;
+	const DOM_APP = document.querySelector<HTMLCanvasElement>("canvas#app")!;
 	const SCENE_SIZES: initThreeProps["sceneSizes"] =
 		props?.sceneSizes ?? viewPortSize;
 
@@ -57,11 +57,13 @@ export default (props?: initThreeProps) => {
 	// );
 	// console.log(ASPECT_RATIO);
 
-	renderer = new THREE.WebGL1Renderer({ antialias: true, alpha: true });
+	renderer = new THREE.WebGLRenderer({
+		canvas: DOM_APP,
+		antialias: true,
+		alpha: true,
+	});
 	renderer.setSize(SCENE_SIZES.width, SCENE_SIZES.height);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-	APP.appendChild(renderer.domElement);
 
 	// ORBIT CONTROL
 	if (props?.enableOrbit) {
@@ -87,7 +89,7 @@ export default (props?: initThreeProps) => {
 	}
 
 	return {
-		canvas: APP,
+		canvas: DOM_APP,
 		scene,
 		camera,
 		renderer,
