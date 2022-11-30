@@ -1236,6 +1236,7 @@ if (HAUNTED_HOUSE_GROUP.visible) {
 }
 
 /* Animate */
+let previewsElapseTime = 0;
 APP.animate(() => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
@@ -1244,6 +1245,9 @@ APP.animate(() => {
 
 	// ANIMATION using THREE clock
 	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
+	const DELTA_TIME = ELAPSED_TIME - previewsElapseTime;
+	previewsElapseTime = ELAPSED_TIME;
+
 	CUBES_GROUP.rotation.y = Math.sin(ELAPSED_TIME);
 	CUBES_GROUP.rotation.x = Math.cos(ELAPSED_TIME);
 
@@ -1373,8 +1377,10 @@ APP.animate(() => {
 		APP.camera.position.y =
 			(-windowClientY / APP.sceneSizes.height) *
 			SCROLL_BASED_PARAMS.objectDistance;
-		SCROLL_BASED_GROUP.position.y = CURSOR_POS.y;
-		SCROLL_BASED_GROUP.position.x = -CURSOR_POS.x;
+		SCROLL_BASED_GROUP.position.x +=
+			(-CURSOR_POS.x - SCROLL_BASED_GROUP.position.x) * 5 * DELTA_TIME;
+		SCROLL_BASED_GROUP.position.y +=
+			(CURSOR_POS.y - SCROLL_BASED_GROUP.position.y) * 5 * DELTA_TIME;
 	}
 
 	// UPDATE CONTROL
