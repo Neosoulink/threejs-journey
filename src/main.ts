@@ -70,6 +70,7 @@ const CURSOR_POS = {
 	y: 0,
 };
 let windowClientY = SCROLL_BASED_DOM_BODY?.scrollTop ?? 0;
+let scrollBasedCurrentSection = 0;
 
 /* debuggers */
 const _GUI = new GUI();
@@ -1414,8 +1415,8 @@ APP.animate(() => {
 	// SCROLL BASED
 	if (SCROLL_BASED_GROUP.visible) {
 		for (const SCROLL_BASED_MESH of SCROLL_BASED_MESHES_LIST) {
-			SCROLL_BASED_MESH.rotation.y = ELAPSED_TIME * 0.1;
-			SCROLL_BASED_MESH.rotation.x = ELAPSED_TIME * 0.12;
+			SCROLL_BASED_MESH.rotation.y += DELTA_TIME * 0.1;
+			SCROLL_BASED_MESH.rotation.x += DELTA_TIME * 0.12;
 		}
 
 		APP.camera.position.y =
@@ -1594,5 +1595,21 @@ window.addEventListener("click", () => {
 if (SCROLL_BASED_GROUP.visible) {
 	SCROLL_BASED_DOM_BODY?.addEventListener("scroll", () => {
 		windowClientY = SCROLL_BASED_DOM_BODY.scrollTop;
+
+		const SCROLL_BASED_NEW_SECTION = Math.round(
+			windowClientY / APP.sceneSizes.height
+		);
+
+		if (SCROLL_BASED_NEW_SECTION != scrollBasedCurrentSection) {
+			scrollBasedCurrentSection = SCROLL_BASED_NEW_SECTION;
+
+			GSAP.to(SCROLL_BASED_MESHES_LIST[scrollBasedCurrentSection].rotation, {
+				duration: 1.5,
+				ease: "power2.inOut",
+				x: "+=6",
+				y: "+=3",
+				z: "+=1.5",
+			});
+		}
 	});
 }
