@@ -1362,7 +1362,9 @@ APP.animate(() => {
 			SCROLL_BASED_MESH.rotation.x = ELAPSED_TIME * 0.12;
 		}
 
-		APP.camera.position.y = windowClientY;
+		APP.camera.position.y =
+			(-windowClientY / APP.sceneSizes.height) *
+			SCROLL_BASED_PARAMS.objectDistance;
 	}
 
 	// UPDATE CONTROL
