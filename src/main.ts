@@ -64,6 +64,11 @@ const APP = initThreeJs({
 /* DATA */
 // let savedTime = Date.now();
 const SCROLL_BASED_DOM_BODY = document.querySelector("body.scroll-based");
+/* Cursor position*/
+const CURSOR_POS = {
+	x: 0,
+	y: 0,
+};
 let windowClientY = SCROLL_BASED_DOM_BODY?.scrollTop ?? 0;
 
 /* debuggers */
@@ -1368,6 +1373,8 @@ APP.animate(() => {
 		APP.camera.position.y =
 			(-windowClientY / APP.sceneSizes.height) *
 			SCROLL_BASED_PARAMS.objectDistance;
+		SCROLL_BASED_GROUP.position.y = CURSOR_POS.y;
+		SCROLL_BASED_GROUP.position.x = -CURSOR_POS.x;
 	}
 
 	// UPDATE CONTROL
@@ -1380,12 +1387,6 @@ APP.animate(() => {
 // GSAP
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 1, x: 1 });
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
-
-/* Cursor Animation*/
-// const CURSOR_POS = {
-// 	x: 0,
-// 	y: 0,
-// };
 
 /* DEBUGGER UI */
 _GUI.close();
@@ -1527,8 +1528,8 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("mousemove", (e) => {
-	// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
-	// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
+	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
+	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
 
 	RAY_CASTER_MOUSE.x = (e.clientX / APP.sceneSizes.width) * 2 - 1;
 	RAY_CASTER_MOUSE.y = -(e.clientY / APP.sceneSizes.height) * 2 + 1;
