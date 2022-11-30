@@ -57,15 +57,20 @@ import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 
 // APP
 const APP = initThreeJs({
-	enableOrbit: true,
+	enableOrbit: false,
 	// axesSizes: 2,
 });
 
 /* DATA */
 // let savedTime = Date.now();
+const SCROLL_BASED_DOM_BODY = document.querySelector("body.scroll-based");
+let windowClientY = SCROLL_BASED_DOM_BODY?.scrollTop ?? 0;
 
 /* debuggers */
 const _GUI = new GUI();
+
+const _GUI_CONTROLS_FOLDER = _GUI.addFolder("Controls");
+_GUI_CONTROLS_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -1200,14 +1205,15 @@ APP.camera.position.y = 0;
 APP.camera.position.z = 4;
 
 if (SCROLL_BASED_GROUP.visible) {
+	APP.camera.position.z = 6;
 	APP.camera.fov = 35;
 	APP.camera.updateProjectionMatrix();
-
-	APP.camera.position.z = 6;
 }
 
 /* Control */
-APP.control.enableDamping = true;
+if (APP?.control?.enabled) {
+	APP.control.enableDamping = true;
+}
 
 /* Renderer */
 APP.renderer.shadowMap.enabled = true;
@@ -1355,10 +1361,14 @@ APP.animate(() => {
 			SCROLL_BASED_MESH.rotation.y = ELAPSED_TIME * 0.1;
 			SCROLL_BASED_MESH.rotation.x = ELAPSED_TIME * 0.12;
 		}
+
+		APP.camera.position.y = windowClientY;
 	}
 
 	// UPDATE CONTROL
-	APP.control.update();
+	if (APP?.control?.enabled) {
+		APP.control.update();
+	}
 });
 
 /* ANIMATIONS */
@@ -1524,3 +1534,9 @@ window.addEventListener("click", () => {
 		rayCasterCurrentIntersect.object.scale.set(1.5, 1.5, 1.5);
 	}
 });
+
+if (SCROLL_BASED_GROUP.visible) {
+	SCROLL_BASED_DOM_BODY?.addEventListener("scroll", () => {
+		windowClientY = SCROLL_BASED_DOM_BODY.scrollTop;
+	});
+}

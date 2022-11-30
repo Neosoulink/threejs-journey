@@ -16,7 +16,6 @@ export interface initThreeProps {
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;
-let control: OrbitControls;
 let viewPortSize = {
 	width: window.innerWidth,
 	height: window.innerHeight,
@@ -66,9 +65,8 @@ export default (props?: initThreeProps) => {
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 	// ORBIT CONTROL
-	if (props?.enableOrbit) {
-		control = new OrbitControls(camera, renderer.domElement);
-	}
+	const ORBIT_CONTROL = new OrbitControls(camera, renderer.domElement);
+	ORBIT_CONTROL.enabled = !!props?.enableOrbit;
 
 	if (typeof props?.axesSizes === "number") {
 		const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
@@ -95,6 +93,6 @@ export default (props?: initThreeProps) => {
 		renderer,
 		animate,
 		sceneSizes: SCENE_SIZES,
-		control,
+		control: ORBIT_CONTROL,
 	};
 };
