@@ -8,7 +8,6 @@ html {
 	margin: 0;
 	height: 100vh;
 	width: 100vw;
-	background-color: #1e1a20;
 	overflow: hidden;
 }
 
@@ -21,19 +20,18 @@ canvas#app {
 	top: 0;
 	left: 0;
 	outline: none;
-	z-index: 0;
+	background-color: #1e1a20;
+	z-index: -1;
 }
 
 .scroll-based {
 	overflow: auto;
-
 }
 
 .scroll-based-section {
 	display: flex;
 	align-items: center;
 	height: 100vh;
-	position: relative;
 	font-family: 'Cabin', sans-serif;
 	color: #ffeded;
 	text-transform: uppercase;
