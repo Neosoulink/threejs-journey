@@ -1092,7 +1092,7 @@ _RAY_CASTER_FOLDER_GUI.add(RAY_CASTER_GROUP, "visible");
 /* DATA */
 const SCROLL_BASED_PARAMS = {
 	materialColor: "#ffeded",
-	objectDistance: 4,
+	objectsDistance: 4,
 };
 
 /* Groups */
@@ -1132,18 +1132,55 @@ const SCROLL_BASED_MESHES_LIST = [
 	SCROLL_BASED_MESH3,
 ];
 
-SCROLL_BASED_MESH1.position.y = -SCROLL_BASED_PARAMS.objectDistance * 0;
-SCROLL_BASED_MESH2.position.y = -SCROLL_BASED_PARAMS.objectDistance * 1;
-SCROLL_BASED_MESH3.position.y = -SCROLL_BASED_PARAMS.objectDistance * 2;
+SCROLL_BASED_MESH1.position.y = -SCROLL_BASED_PARAMS.objectsDistance * 0;
+SCROLL_BASED_MESH2.position.y = -SCROLL_BASED_PARAMS.objectsDistance * 1;
+SCROLL_BASED_MESH3.position.y = -SCROLL_BASED_PARAMS.objectsDistance * 2;
 SCROLL_BASED_MESH1.position.x = 2;
 SCROLL_BASED_MESH2.position.x = -2;
 SCROLL_BASED_MESH3.position.x = 2;
+
+/**
+ * Particles
+ */
+// Geometry
+const SCROLL_BASED_PARTICLES_COUNT = 200;
+const SCROLL_BASED_PARTICLES_POSITIONS = new Float32Array(
+	SCROLL_BASED_PARTICLES_COUNT * 3
+);
+
+for (let i = 0; i < SCROLL_BASED_PARTICLES_COUNT; i++) {
+	SCROLL_BASED_PARTICLES_POSITIONS[i * 3 + 0] = (Math.random() - 0.5) * 10;
+	SCROLL_BASED_PARTICLES_POSITIONS[i * 3 + 1] =
+		SCROLL_BASED_PARAMS.objectsDistance * 0.5 -
+		Math.random() *
+			SCROLL_BASED_PARAMS.objectsDistance *
+			SCROLL_BASED_MESHES_LIST.length;
+	SCROLL_BASED_PARTICLES_POSITIONS[i * 3 + 2] = (Math.random() - 0.5) * 10;
+}
+
+const SCROLL_BASED_PARTICLES_GEOMETRY = new THREE.BufferGeometry();
+SCROLL_BASED_PARTICLES_GEOMETRY.setAttribute(
+	"position",
+	new THREE.BufferAttribute(SCROLL_BASED_PARTICLES_POSITIONS, 3)
+);
+
+const SCROLL_BASED_PARTICLES_MATERIAL = new THREE.PointsMaterial({
+	color: SCROLL_BASED_PARAMS.materialColor,
+	sizeAttenuation: true,
+	size: 0.03,
+});
+
+const SCROLL_BASED_PARTICLES_POINTS = new THREE.Points(
+	SCROLL_BASED_PARTICLES_GEOMETRY,
+	SCROLL_BASED_PARTICLES_MATERIAL
+);
 
 SCROLL_BASED_GROUP.add(
 	SCROLL_BASED_DIRECTIONAL_LIGHT,
 	SCROLL_BASED_MESH1,
 	SCROLL_BASED_MESH2,
-	SCROLL_BASED_MESH3
+	SCROLL_BASED_MESH3,
+	SCROLL_BASED_PARTICLES_POINTS
 );
 
 const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
@@ -1151,9 +1188,12 @@ _SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
 
 _SCROLL_BASED_FOLDER_GUI
 	.addColor(SCROLL_BASED_PARAMS, "materialColor")
-	.onChange(() =>
-		SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor)
-	);
+	.onChange(() => {
+		SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor);
+		SCROLL_BASED_PARTICLES_MATERIAL.color.set(
+			SCROLL_BASED_PARAMS.materialColor
+		);
+	});
 
 const SCROLL_BASED_DOM = document.querySelector(".scroll-based");
 if (SCROLL_BASED_GROUP.visible) {
@@ -1192,8 +1232,17 @@ SHADOW_GROUP.add(
 	SHADOW_PLANE_BAKED_SHADOW
 );
 
+/* Camera */
+APP.camera.position.x = 0;
+APP.camera.position.y = 0;
+APP.camera.position.z = 4;
+
+const GROUP_APP_CAMERA = new THREE.Group();
+GROUP_APP_CAMERA.add(APP.camera);
+
 /* Scene */
 APP.scene.add(
+	GROUP_APP_CAMERA,
 	CUBES_GROUP,
 	TRIANGLE_MESH,
 	MESH_NEW_MATERIAL_GROUP,
@@ -1206,11 +1255,6 @@ APP.scene.add(
 	RAY_CASTER_GROUP,
 	SCROLL_BASED_GROUP
 );
-
-/* Camera */
-APP.camera.position.x = 0;
-APP.camera.position.y = 0;
-APP.camera.position.z = 4;
 
 if (SCROLL_BASED_GROUP.visible) {
 	APP.camera.position.z = 6;
@@ -1376,11 +1420,11 @@ APP.animate(() => {
 
 		APP.camera.position.y =
 			(-windowClientY / APP.sceneSizes.height) *
-			SCROLL_BASED_PARAMS.objectDistance;
-		SCROLL_BASED_GROUP.position.x +=
-			(-CURSOR_POS.x * 0.5 - SCROLL_BASED_GROUP.position.x) * 5 * DELTA_TIME;
-		SCROLL_BASED_GROUP.position.y +=
-			(CURSOR_POS.y * 0.5 - SCROLL_BASED_GROUP.position.y) * 5 * DELTA_TIME;
+			SCROLL_BASED_PARAMS.objectsDistance;
+		GROUP_APP_CAMERA.position.x +=
+			(CURSOR_POS.x * 0.5 - GROUP_APP_CAMERA.position.x) * 5 * DELTA_TIME;
+		GROUP_APP_CAMERA.position.y +=
+			(-CURSOR_POS.y * 0.5 - GROUP_APP_CAMERA.position.y) * 5 * DELTA_TIME;
 	}
 
 	// UPDATE CONTROL
