@@ -52,18 +52,31 @@ import hauntedHouseNormalGrassImg from "./assets/img/textures/hauntedHouse/grass
 import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/grass/roughness.jpg";
 /* Particles */
 import particle2Img from "./assets/img/textures/particles/2.png";
+/* gradient */
+import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 
 // APP
 const APP = initThreeJs({
-	enableOrbit: true,
-	axesSizes: 2,
+	enableOrbit: false,
+	// axesSizes: 2,
 });
 
 /* DATA */
 // let savedTime = Date.now();
+const SCROLL_BASED_DOM_BODY = document.querySelector("body.scroll-based");
+/* Cursor position*/
+const CURSOR_POS = {
+	x: 0,
+	y: 0,
+};
+let windowClientY = SCROLL_BASED_DOM_BODY?.scrollTop ?? 0;
+let scrollBasedCurrentSection = 0;
 
 /* debuggers */
 const _GUI = new GUI();
+
+const _GUI_CONTROLS_FOLDER = _GUI.addFolder("Controls");
+_GUI_CONTROLS_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -978,6 +991,7 @@ if (PARTICLES_GALAXY_GROUP.visible) {
 
 /* GUI */
 const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
+_PARTICLES_GALAXY_FOLDER_GUI.close();
 _PARTICLES_GALAXY_FOLDER_GUI
 	.add(PARTICLES_GALAXY_GROUP, "visible")
 	.onFinishChange(generateParticleGalaxy);
@@ -1036,7 +1050,8 @@ _PARTICLES_GALAXY_FOLDER_GUI
 let rayCasterCurrentIntersect: THREE.Intersection<
 	THREE.Object3D<THREE.Event>
 > | null = null;
-const RAY_CATER_GROUP = new THREE.Group();
+const RAY_CASTER_GROUP = new THREE.Group();
+RAY_CASTER_GROUP.visible = false;
 
 const RAY_CASTER_OBJECT_1 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
@@ -1060,15 +1075,132 @@ const RAY_CASTER_INSTANCE = new THREE.Raycaster(
 	new THREE.Vector3(10, 0, 0).normalize()
 );
 
-RAY_CATER_GROUP.add(
+const RAY_CASTER_MOUSE = new THREE.Vector2();
+
+RAY_CASTER_GROUP.add(
 	RAY_CASTER_OBJECT_1,
 	RAY_CASTER_OBJECT_2,
 	RAY_CASTER_OBJECT_3
 );
 
-const RAY_CASTER_MOUSE = new THREE.Vector2();
+const _RAY_CASTER_FOLDER_GUI = _GUI.addFolder("Ray caster");
+_RAY_CASTER_FOLDER_GUI.close();
+_RAY_CASTER_FOLDER_GUI.add(RAY_CASTER_GROUP, "visible");
 
 /* =========== END RAY CASTER =========== */
+
+/* =========== START SCROLL BASED ANIMATION =========== */
+/* DATA */
+const SCROLL_BASED_PARAMS = {
+	materialColor: "#ffeded",
+	objectsDistance: 4,
+};
+
+/* Groups */
+const SCROLL_BASED_GROUP = new THREE.Group();
+
+/* Lights */
+const SCROLL_BASED_DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 1);
+SCROLL_BASED_DIRECTIONAL_LIGHT.position.set(1, 1, 0);
+
+/* Textures */
+const SCROLL_BASED_GRADIENT_TEXTURE = TEXTURE_LOADER.load(gradient3Img);
+SCROLL_BASED_GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
+
+/* Material */
+const SCROLL_BASED_MATERIAL = new THREE.MeshToonMaterial({
+	color: SCROLL_BASED_PARAMS.materialColor,
+	gradientMap: SCROLL_BASED_GRADIENT_TEXTURE,
+});
+
+/* Meshes */
+const SCROLL_BASED_MESH1 = new THREE.Mesh(
+	new THREE.TorusGeometry(1, 0.4, 16, 60),
+	SCROLL_BASED_MATERIAL
+);
+const SCROLL_BASED_MESH2 = new THREE.Mesh(
+	new THREE.ConeGeometry(1, 2, 32),
+	SCROLL_BASED_MATERIAL
+);
+const SCROLL_BASED_MESH3 = new THREE.Mesh(
+	new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
+	SCROLL_BASED_MATERIAL
+);
+
+const SCROLL_BASED_MESHES_LIST = [
+	SCROLL_BASED_MESH1,
+	SCROLL_BASED_MESH2,
+	SCROLL_BASED_MESH3,
+];
+
+SCROLL_BASED_MESH1.position.y = -SCROLL_BASED_PARAMS.objectsDistance * 0;
+SCROLL_BASED_MESH2.position.y = -SCROLL_BASED_PARAMS.objectsDistance * 1;
+SCROLL_BASED_MESH3.position.y = -SCROLL_BASED_PARAMS.objectsDistance * 2;
+SCROLL_BASED_MESH1.position.x = 2;
+SCROLL_BASED_MESH2.position.x = -2;
+SCROLL_BASED_MESH3.position.x = 2;
+
+/**
+ * Particles
+ */
+// Geometry
+const SCROLL_BASED_PARTICLES_COUNT = 200;
+const SCROLL_BASED_PARTICLES_POSITIONS = new Float32Array(
+	SCROLL_BASED_PARTICLES_COUNT * 3
+);
+
+for (let i = 0; i < SCROLL_BASED_PARTICLES_COUNT; i++) {
+	SCROLL_BASED_PARTICLES_POSITIONS[i * 3 + 0] = (Math.random() - 0.5) * 10;
+	SCROLL_BASED_PARTICLES_POSITIONS[i * 3 + 1] =
+		SCROLL_BASED_PARAMS.objectsDistance * 0.5 -
+		Math.random() *
+			SCROLL_BASED_PARAMS.objectsDistance *
+			SCROLL_BASED_MESHES_LIST.length;
+	SCROLL_BASED_PARTICLES_POSITIONS[i * 3 + 2] = (Math.random() - 0.5) * 10;
+}
+
+const SCROLL_BASED_PARTICLES_GEOMETRY = new THREE.BufferGeometry();
+SCROLL_BASED_PARTICLES_GEOMETRY.setAttribute(
+	"position",
+	new THREE.BufferAttribute(SCROLL_BASED_PARTICLES_POSITIONS, 3)
+);
+
+const SCROLL_BASED_PARTICLES_MATERIAL = new THREE.PointsMaterial({
+	color: SCROLL_BASED_PARAMS.materialColor,
+	sizeAttenuation: true,
+	size: 0.03,
+});
+
+const SCROLL_BASED_PARTICLES_POINTS = new THREE.Points(
+	SCROLL_BASED_PARTICLES_GEOMETRY,
+	SCROLL_BASED_PARTICLES_MATERIAL
+);
+
+SCROLL_BASED_GROUP.add(
+	SCROLL_BASED_DIRECTIONAL_LIGHT,
+	SCROLL_BASED_MESH1,
+	SCROLL_BASED_MESH2,
+	SCROLL_BASED_MESH3,
+	SCROLL_BASED_PARTICLES_POINTS
+);
+
+const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
+_SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
+
+_SCROLL_BASED_FOLDER_GUI
+	.addColor(SCROLL_BASED_PARAMS, "materialColor")
+	.onChange(() => {
+		SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor);
+		SCROLL_BASED_PARTICLES_MATERIAL.color.set(
+			SCROLL_BASED_PARAMS.materialColor
+		);
+	});
+
+const SCROLL_BASED_DOM = document.querySelector(".scroll-based");
+if (SCROLL_BASED_GROUP.visible) {
+	SCROLL_BASED_DOM?.classList.remove("d-none");
+}
+/* =========== END SCROLL BASED ANIMATION =========== */
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1101,8 +1233,17 @@ SHADOW_GROUP.add(
 	SHADOW_PLANE_BAKED_SHADOW
 );
 
+/* Camera */
+APP.camera.position.x = 0;
+APP.camera.position.y = 0;
+APP.camera.position.z = 4;
+
+const GROUP_APP_CAMERA = new THREE.Group();
+GROUP_APP_CAMERA.add(APP.camera);
+
 /* Scene */
 APP.scene.add(
+	GROUP_APP_CAMERA,
 	CUBES_GROUP,
 	TRIANGLE_MESH,
 	MESH_NEW_MATERIAL_GROUP,
@@ -1112,16 +1253,20 @@ APP.scene.add(
 	HAUNTED_HOUSE_GROUP,
 	PARTICLES_GROUP,
 	PARTICLES_GALAXY_GROUP,
-	RAY_CATER_GROUP
+	RAY_CASTER_GROUP,
+	SCROLL_BASED_GROUP
 );
 
-/* Camera */
-APP.camera.position.x = 0;
-APP.camera.position.y = 2;
-APP.camera.position.z = 10;
+if (SCROLL_BASED_GROUP.visible) {
+	APP.camera.position.z = 6;
+	APP.camera.fov = 35;
+	APP.camera.updateProjectionMatrix();
+}
 
 /* Control */
-APP.control.enableDamping = true;
+if (APP?.control?.enabled) {
+	APP.control.enableDamping = true;
+}
 
 /* Renderer */
 APP.renderer.shadowMap.enabled = true;
@@ -1131,9 +1276,12 @@ APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
 	? new THREE.Fog("#262837", 0, 15)
 	: null;
-APP.renderer.setClearColor(HAUNTED_HOUSE_GROUP.visible ? "#262837" : "#000");
+if (HAUNTED_HOUSE_GROUP.visible) {
+	APP.renderer.setClearColor("#262837");
+}
 
 /* Animate */
+let previewsElapseTime = 0;
 APP.animate(() => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
@@ -1142,6 +1290,9 @@ APP.animate(() => {
 
 	// ANIMATION using THREE clock
 	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
+	const DELTA_TIME = ELAPSED_TIME - previewsElapseTime;
+	previewsElapseTime = ELAPSED_TIME;
+
 	CUBES_GROUP.rotation.y = Math.sin(ELAPSED_TIME);
 	CUBES_GROUP.rotation.x = Math.cos(ELAPSED_TIME);
 
@@ -1180,24 +1331,26 @@ APP.animate(() => {
 	SHADOW_SPOT_LIGHT.shadow.camera.far = 6;
 
 	/* haunted house */
-	const GHOST1_ANGLE = ELAPSED_TIME * 0.5;
-	HAUNTED_HOUSE_GHOST1.position.x = Math.cos(GHOST1_ANGLE) * 4;
-	HAUNTED_HOUSE_GHOST1.position.z = Math.sin(GHOST1_ANGLE) * 4;
-	HAUNTED_HOUSE_GHOST1.position.y = Math.sin(ELAPSED_TIME * 3);
+	if (HAUNTED_HOUSE_GROUP.visible) {
+		const GHOST1_ANGLE = ELAPSED_TIME * 0.5;
+		HAUNTED_HOUSE_GHOST1.position.x = Math.cos(GHOST1_ANGLE) * 4;
+		HAUNTED_HOUSE_GHOST1.position.z = Math.sin(GHOST1_ANGLE) * 4;
+		HAUNTED_HOUSE_GHOST1.position.y = Math.sin(ELAPSED_TIME * 3);
 
-	const GHOST2_ANGLE = -ELAPSED_TIME * 0.32;
-	HAUNTED_HOUSE_GHOST2.position.x = Math.cos(GHOST2_ANGLE) * 5;
-	HAUNTED_HOUSE_GHOST2.position.z = Math.sin(GHOST2_ANGLE) * 5;
-	HAUNTED_HOUSE_GHOST2.position.y =
-		Math.sin(ELAPSED_TIME * 4) + Math.sin(ELAPSED_TIME * 2.5);
+		const GHOST2_ANGLE = -ELAPSED_TIME * 0.32;
+		HAUNTED_HOUSE_GHOST2.position.x = Math.cos(GHOST2_ANGLE) * 5;
+		HAUNTED_HOUSE_GHOST2.position.z = Math.sin(GHOST2_ANGLE) * 5;
+		HAUNTED_HOUSE_GHOST2.position.y =
+			Math.sin(ELAPSED_TIME * 4) + Math.sin(ELAPSED_TIME * 2.5);
 
-	const GHOST3_ANGLE = -ELAPSED_TIME * 0.18;
-	HAUNTED_HOUSE_GHOST3.position.x =
-		Math.cos(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.32));
-	HAUNTED_HOUSE_GHOST3.position.z =
-		Math.sin(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.5));
-	HAUNTED_HOUSE_GHOST3.position.y =
-		Math.sin(ELAPSED_TIME * 3) + Math.sin(ELAPSED_TIME * 2);
+		const GHOST3_ANGLE = -ELAPSED_TIME * 0.18;
+		HAUNTED_HOUSE_GHOST3.position.x =
+			Math.cos(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.32));
+		HAUNTED_HOUSE_GHOST3.position.z =
+			Math.sin(GHOST3_ANGLE) * (7 + Math.sin(ELAPSED_TIME * 0.5));
+		HAUNTED_HOUSE_GHOST3.position.y =
+			Math.sin(ELAPSED_TIME * 3) + Math.sin(ELAPSED_TIME * 2);
+	}
 
 	/* Particles */
 	// PARTICLES_CUSTOM_POINTS.rotation.x = ELAPSED_TIME * 0.2;
@@ -1216,62 +1369,75 @@ APP.animate(() => {
 	}
 
 	// Ray caster
-	// RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
-	// RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
-	// RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
+	if (RAY_CASTER_GROUP.visible) {
+		// RAY_CASTER_OBJECT_1.position.y = Math.sin(ELAPSED_TIME * 0.3) * 1.5;
+		// RAY_CASTER_OBJECT_2.position.y = Math.sin(ELAPSED_TIME * 0.8) * 1.5;
+		// RAY_CASTER_OBJECT_3.position.y = Math.sin(ELAPSED_TIME * 1.4) * 1.5;
 
-	// RAY_CASTER_INSTANCE.set(
-	// 	new THREE.Vector3(-3, 0, 0),
-	// 	new THREE.Vector3(1, 0, 0).normalize()
-	// );
+		// RAY_CASTER_INSTANCE.set(
+		// 	new THREE.Vector3(-3, 0, 0),
+		// 	new THREE.Vector3(1, 0, 0).normalize()
+		// );
+		const _RAY_CASTER_OBJECTS_ANIMATION = [
+			RAY_CASTER_OBJECT_1,
+			RAY_CASTER_OBJECT_2,
+			RAY_CASTER_OBJECT_3,
+		];
 
-	const _RAY_CASTER_OBJECTS_ANIMATION = [
-		RAY_CASTER_OBJECT_1,
-		RAY_CASTER_OBJECT_2,
-		RAY_CASTER_OBJECT_3,
-	];
+		const RAY_CASTER_INSTANCE_INTERSECTS = RAY_CASTER_INSTANCE.intersectObjects(
+			_RAY_CASTER_OBJECTS_ANIMATION
+		);
 
-	const RAY_CASTER_INSTANCE_INTERSECTS = RAY_CASTER_INSTANCE.intersectObjects(
-		_RAY_CASTER_OBJECTS_ANIMATION
-	);
+		_RAY_CASTER_OBJECTS_ANIMATION.map(
+			(item) => (item.material.color = new THREE.Color("#ff0000"))
+		);
+		RAY_CASTER_INSTANCE_INTERSECTS.map(
+			// @ts-ignore
+			(item) => (item.object.material.color = new THREE.Color("#0000ff"))
+		);
 
-	_RAY_CASTER_OBJECTS_ANIMATION.map(
-		(item) => (item.material.color = new THREE.Color("#ff0000"))
-	);
-	RAY_CASTER_INSTANCE_INTERSECTS.map(
-		// @ts-ignore
-		(item) => (item.object.material.color = new THREE.Color("#0000ff"))
-	);
-
-	if (RAY_CASTER_INSTANCE_INTERSECTS.length) {
-		if (rayCasterCurrentIntersect === null) {
-			// console.log("Ray intersect entered");
+		if (RAY_CASTER_INSTANCE_INTERSECTS.length) {
+			if (rayCasterCurrentIntersect === null) {
+				// console.log("Ray intersect entered");
+			}
+			rayCasterCurrentIntersect = RAY_CASTER_INSTANCE_INTERSECTS[0];
+		} else {
+			if (rayCasterCurrentIntersect) {
+				// console.log("Ray intersect outed");
+				rayCasterCurrentIntersect.object.scale.set(1, 1, 1);
+			}
+			rayCasterCurrentIntersect = null;
 		}
-		rayCasterCurrentIntersect = RAY_CASTER_INSTANCE_INTERSECTS[0];
-	} else {
-		if (rayCasterCurrentIntersect) {
-			// console.log("Ray intersect outed");
-			rayCasterCurrentIntersect.object.scale.set(1, 1, 1)
-		}
-		rayCasterCurrentIntersect = null;
+
+		RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera);
 	}
 
-	RAY_CASTER_INSTANCE.setFromCamera(RAY_CASTER_MOUSE, APP.camera);
+	// SCROLL BASED
+	if (SCROLL_BASED_GROUP.visible) {
+		for (const SCROLL_BASED_MESH of SCROLL_BASED_MESHES_LIST) {
+			SCROLL_BASED_MESH.rotation.y += DELTA_TIME * 0.1;
+			SCROLL_BASED_MESH.rotation.x += DELTA_TIME * 0.12;
+		}
+
+		APP.camera.position.y =
+			(-windowClientY / APP.sceneSizes.height) *
+			SCROLL_BASED_PARAMS.objectsDistance;
+		GROUP_APP_CAMERA.position.x +=
+			(CURSOR_POS.x * 0.5 - GROUP_APP_CAMERA.position.x) * 5 * DELTA_TIME;
+		GROUP_APP_CAMERA.position.y +=
+			(-CURSOR_POS.y * 0.5 - GROUP_APP_CAMERA.position.y) * 5 * DELTA_TIME;
+	}
 
 	// UPDATE CONTROL
-	APP.control.update();
+	if (APP?.control?.enabled) {
+		APP.control.update();
+	}
 });
 
 /* ANIMATIONS */
 // GSAP
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 1, x: 1 });
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
-
-/* Cursor Animation*/
-// const CURSOR_POS = {
-// 	x: 0,
-// 	y: 0,
-// };
 
 /* DEBUGGER UI */
 _GUI.close();
@@ -1413,8 +1579,8 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("mousemove", (e) => {
-	// 	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
-	// 	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
+	CURSOR_POS.x = e.clientX / APP.sceneSizes.width - 0.5;
+	CURSOR_POS.y = e.clientY / APP.sceneSizes.height - 0.5;
 
 	RAY_CASTER_MOUSE.x = (e.clientX / APP.sceneSizes.width) * 2 - 1;
 	RAY_CASTER_MOUSE.y = -(e.clientY / APP.sceneSizes.height) * 2 + 1;
@@ -1425,3 +1591,25 @@ window.addEventListener("click", () => {
 		rayCasterCurrentIntersect.object.scale.set(1.5, 1.5, 1.5);
 	}
 });
+
+if (SCROLL_BASED_GROUP.visible) {
+	SCROLL_BASED_DOM_BODY?.addEventListener("scroll", () => {
+		windowClientY = SCROLL_BASED_DOM_BODY.scrollTop;
+
+		const SCROLL_BASED_NEW_SECTION = Math.round(
+			windowClientY / APP.sceneSizes.height
+		);
+
+		if (SCROLL_BASED_NEW_SECTION != scrollBasedCurrentSection) {
+			scrollBasedCurrentSection = SCROLL_BASED_NEW_SECTION;
+
+			GSAP.to(SCROLL_BASED_MESHES_LIST[scrollBasedCurrentSection].rotation, {
+				duration: 1.5,
+				ease: "power2.inOut",
+				x: "+=6",
+				y: "+=3",
+				z: "+=1.5",
+			});
+		}
+	});
+}

@@ -15,8 +15,7 @@ export interface initThreeProps {
 // DEFS
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
-let renderer: THREE.WebGL1Renderer;
-let control: OrbitControls;
+let renderer: THREE.WebGLRenderer;
 let viewPortSize = {
 	width: window.innerWidth,
 	height: window.innerHeight,
@@ -30,7 +29,7 @@ export function animate(callback: () => any = () => {}) {
 }
 
 export default (props?: initThreeProps) => {
-	const APP = document.querySelector<HTMLDivElement>("#app")!;
+	const DOM_APP = document.querySelector<HTMLCanvasElement>("canvas#app")!;
 	const SCENE_SIZES: initThreeProps["sceneSizes"] =
 		props?.sceneSizes ?? viewPortSize;
 
@@ -57,16 +56,17 @@ export default (props?: initThreeProps) => {
 	// );
 	// console.log(ASPECT_RATIO);
 
-	renderer = new THREE.WebGL1Renderer({ antialias: true });
+	renderer = new THREE.WebGLRenderer({
+		canvas: DOM_APP,
+		antialias: true,
+		alpha: true,
+	});
 	renderer.setSize(SCENE_SIZES.width, SCENE_SIZES.height);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-	APP.appendChild(renderer.domElement);
-
 	// ORBIT CONTROL
-	if (props?.enableOrbit) {
-		control = new OrbitControls(camera, renderer.domElement);
-	}
+	const ORBIT_CONTROL = new OrbitControls(camera, renderer.domElement);
+	ORBIT_CONTROL.enabled = !!props?.enableOrbit;
 
 	if (typeof props?.axesSizes === "number") {
 		const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
@@ -87,12 +87,12 @@ export default (props?: initThreeProps) => {
 	}
 
 	return {
-		canvas: APP,
+		canvas: DOM_APP,
 		scene,
 		camera,
 		renderer,
 		animate,
 		sceneSizes: SCENE_SIZES,
-		control,
+		control: ORBIT_CONTROL,
 	};
 };
