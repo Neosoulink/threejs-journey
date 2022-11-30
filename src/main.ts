@@ -1378,9 +1378,9 @@ APP.animate(() => {
 			(-windowClientY / APP.sceneSizes.height) *
 			SCROLL_BASED_PARAMS.objectDistance;
 		SCROLL_BASED_GROUP.position.x +=
-			(-CURSOR_POS.x - SCROLL_BASED_GROUP.position.x) * 5 * DELTA_TIME;
+			(-CURSOR_POS.x * 0.5 - SCROLL_BASED_GROUP.position.x) * 5 * DELTA_TIME;
 		SCROLL_BASED_GROUP.position.y +=
-			(CURSOR_POS.y - SCROLL_BASED_GROUP.position.y) * 5 * DELTA_TIME;
+			(CURSOR_POS.y * 0.5 - SCROLL_BASED_GROUP.position.y) * 5 * DELTA_TIME;
 	}
 
 	// UPDATE CONTROL
