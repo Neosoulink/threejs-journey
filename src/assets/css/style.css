@@ -12,7 +12,7 @@ html {
 }
 
 .d-none {
-	display: none;
+	display: none !important;
 }
 
 canvas#app {
@@ -21,6 +21,9 @@ canvas#app {
 	left: 0;
 	outline: none;
 	background-color: #1e1a20;
+}
+
+canvas#app.scroll-based {
 	z-index: -1;
 }
 
@@ -38,6 +41,7 @@ canvas#app {
 	font-size: 7vmin;
 	padding-left: 10%;
 	padding-right: 10%;
+	background-color: transparent;
 }
 
 section.scroll-based-section:nth-child(odd) {

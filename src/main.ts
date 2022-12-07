@@ -57,8 +57,8 @@ import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 
 // APP
 const APP = initThreeJs({
-	enableOrbit: false,
-	// axesSizes: 2,
+	enableOrbit: true,
+	axesSizes: 2,
 });
 
 /* DATA */
@@ -1098,6 +1098,7 @@ const SCROLL_BASED_PARAMS = {
 
 /* Groups */
 const SCROLL_BASED_GROUP = new THREE.Group();
+SCROLL_BASED_GROUP.visible = false;
 
 /* Lights */
 const SCROLL_BASED_DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 1);
@@ -1196,10 +1197,64 @@ _SCROLL_BASED_FOLDER_GUI
 		);
 	});
 
-const SCROLL_BASED_DOM = document.querySelector(".scroll-based");
 if (SCROLL_BASED_GROUP.visible) {
-	SCROLL_BASED_DOM?.classList.remove("d-none");
+	document
+		.querySelectorAll(".scroll-based-section")
+		.forEach((el) => el.classList.remove("d-none"));
+	document.getElementById("app")?.classList.add("scroll-based");
 }
+/* =========== END SCROLL BASED ANIMATION =========== */
+
+/* =========== START PHYSIC =========== */
+/* Groups */
+const PHYSICS_GROUP = new THREE.Group();
+
+/* Test sphere */
+const PHYSIC_SPHERE = new THREE.Mesh(
+	new THREE.SphereGeometry(0.5, 32, 32),
+	new THREE.MeshStandardMaterial({
+		metalness: 0.3,
+		roughness: 0.4,
+		envMap: ENVIRONMENT_MAP_TEXTURE,
+		envMapIntensity: 0.5,
+	})
+);
+PHYSIC_SPHERE.castShadow = true;
+PHYSIC_SPHERE.position.y = 0.5;
+
+/* Floor */
+const PHYSICS_FLOOR = new THREE.Mesh(
+	new THREE.PlaneGeometry(10, 10),
+	new THREE.MeshStandardMaterial({
+		color: "#777777",
+		metalness: 0.3,
+		roughness: 0.4,
+		envMap: ENVIRONMENT_MAP_TEXTURE,
+		envMapIntensity: 0.5,
+	})
+);
+PHYSICS_FLOOR.receiveShadow = true;
+PHYSICS_FLOOR.rotation.x = -Math.PI * 0.5;
+
+/* Lights */
+const PHYSICS_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.7);
+
+const PHYSICS_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.2);
+PHYSICS_DIRECTIONAL_LIGHT.castShadow = true;
+PHYSICS_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
+PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
+PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
+PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
+PHYSICS_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+
+PHYSICS_GROUP.add(
+	PHYSIC_SPHERE,
+	PHYSICS_FLOOR,
+	PHYSICS_AMBIENT_LIGHT,
+	PHYSICS_DIRECTIONAL_LIGHT
+);
 /* =========== END SCROLL BASED ANIMATION =========== */
 
 // ADD TO GROUPE
@@ -1234,9 +1289,7 @@ SHADOW_GROUP.add(
 );
 
 /* Camera */
-APP.camera.position.x = 0;
-APP.camera.position.y = 0;
-APP.camera.position.z = 4;
+APP.camera.position.set(-3, 3, 3);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1254,7 +1307,8 @@ APP.scene.add(
 	PARTICLES_GROUP,
 	PARTICLES_GALAXY_GROUP,
 	RAY_CASTER_GROUP,
-	SCROLL_BASED_GROUP
+	SCROLL_BASED_GROUP,
+	PHYSICS_GROUP
 );
 
 if (SCROLL_BASED_GROUP.visible) {
