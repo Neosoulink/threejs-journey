@@ -4,6 +4,7 @@ import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
+import Cannon from "cannon";
 
 /* HELPERS */
 import initThreeJs from "./helpers/initThreeJs";
@@ -1205,12 +1206,23 @@ if (SCROLL_BASED_GROUP.visible) {
 }
 /* =========== END SCROLL BASED ANIMATION =========== */
 
-/* =========== START PHYSIC =========== */
+/* =========== START PHYSICS WORLD =========== */
 /* Groups */
-const PHYSICS_GROUP = new THREE.Group();
+const PHYSICS_WORLD_GROUP = new THREE.Group();
+/* Physics */
+const PHYSICS_WORLD_INSTANCE = new Cannon.World();
+
+const PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE = new Cannon.Sphere(0.5);
+const PHYSICS_WORLD_SPHERE_PHYSIC_BODY = new Cannon.Body({
+	mass: 1,
+	position: new Cannon.Vec3(0, 3, 0),
+	shape: PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE,
+});
+
+PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_SPHERE_PHYSIC_BODY);
 
 /* Test sphere */
-const PHYSIC_SPHERE = new THREE.Mesh(
+const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 32, 32),
 	new THREE.MeshStandardMaterial({
 		metalness: 0.3,
@@ -1219,11 +1231,11 @@ const PHYSIC_SPHERE = new THREE.Mesh(
 		envMapIntensity: 0.5,
 	})
 );
-PHYSIC_SPHERE.castShadow = true;
-PHYSIC_SPHERE.position.y = 0.5;
+PHYSICS_WORLD_SPHERE.castShadow = true;
+PHYSICS_WORLD_SPHERE.position.y = 0.5;
 
 /* Floor */
-const PHYSICS_FLOOR = new THREE.Mesh(
+const PHYSICS_WORLD_FLOOR = new THREE.Mesh(
 	new THREE.PlaneGeometry(10, 10),
 	new THREE.MeshStandardMaterial({
 		color: "#777777",
@@ -1233,29 +1245,32 @@ const PHYSICS_FLOOR = new THREE.Mesh(
 		envMapIntensity: 0.5,
 	})
 );
-PHYSICS_FLOOR.receiveShadow = true;
-PHYSICS_FLOOR.rotation.x = -Math.PI * 0.5;
+PHYSICS_WORLD_FLOOR.receiveShadow = true;
+PHYSICS_WORLD_FLOOR.rotation.x = -Math.PI * 0.5;
 
 /* Lights */
-const PHYSICS_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.7);
+const PHYSICS_WORLD_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.7);
 
-const PHYSICS_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.2);
-PHYSICS_DIRECTIONAL_LIGHT.castShadow = true;
-PHYSICS_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
-PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
-PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
-PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
-PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
-PHYSICS_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
-PHYSICS_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
-
-PHYSICS_GROUP.add(
-	PHYSIC_SPHERE,
-	PHYSICS_FLOOR,
-	PHYSICS_AMBIENT_LIGHT,
-	PHYSICS_DIRECTIONAL_LIGHT
+const PHYSICS_WORLD_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(
+	0xffffff,
+	0.2
 );
-/* =========== END SCROLL BASED ANIMATION =========== */
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.castShadow = true;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+
+PHYSICS_WORLD_GROUP.add(
+	PHYSICS_WORLD_SPHERE,
+	PHYSICS_WORLD_FLOOR,
+	PHYSICS_WORLD_AMBIENT_LIGHT,
+	PHYSICS_WORLD_DIRECTIONAL_LIGHT
+);
+/* =========== END PHYSICS WORLD =========== */
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1308,7 +1323,7 @@ APP.scene.add(
 	PARTICLES_GALAXY_GROUP,
 	RAY_CASTER_GROUP,
 	SCROLL_BASED_GROUP,
-	PHYSICS_GROUP
+	PHYSICS_WORLD_GROUP
 );
 
 if (SCROLL_BASED_GROUP.visible) {
