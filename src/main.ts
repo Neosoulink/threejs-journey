@@ -1337,6 +1337,7 @@ const PHYSIC_WORLD_CREATED_BOXES: {
 }[] = [];
 const physicWorldPlayTocSound = (collision: any) => {
 	if (collision.contact.getImpactVelocityAlongNormal() > 1.5) {
+		PHYSIC_WORLD_TOC_SOUND.volume = Math.random();
 		PHYSIC_WORLD_TOC_SOUND.currentTime = 0;
 		PHYSIC_WORLD_TOC_SOUND.play();
 	}
