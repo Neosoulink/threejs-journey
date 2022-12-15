@@ -1257,16 +1257,21 @@ PHYSICS_WORLD_INSTANCE.defaultContactMaterial =
 // PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_SPHERE_PHYSIC_BODY);
 PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_FLOOR_PHYSIC_BODY);
 
+/* Geometries */
+const PHYSIC_WORLD_SPHERE_GEOMETRY = new THREE.SphereGeometry(1, 20, 20);
+
+/* Materials */
+const PHYSIC_WORLD_SPHERE_MATERIAL = new THREE.MeshStandardMaterial({
+	metalness: 0.3,
+	roughness: 0.4,
+	envMap: ENVIRONMENT_MAP_TEXTURE,
+	envMapIntensity: 0.5,
+});
 /* Meshes */
 /* Sphere */
 // const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
 // 	new THREE.SphereGeometry(0.5, 32, 32),
-// 	new THREE.MeshStandardMaterial({
-// 		metalness: 0.3,
-// 		roughness: 0.4,
-// 		envMap: ENVIRONMENT_MAP_TEXTURE,
-// 		envMapIntensity: 0.5,
-// 	})
+// 	PHYSIC_WORLD_SPHERE_MATERIAL
 // );
 // PHYSICS_WORLD_SPHERE.castShadow = true;
 // PHYSICS_WORLD_SPHERE.position.y = 0.5;
@@ -1316,14 +1321,10 @@ const physicWorldCreateSphere = (
 ) => {
 	/* Mesh */
 	const _SPHERE_MESH = new THREE.Mesh(
-		new THREE.SphereGeometry(radius),
-		new THREE.MeshStandardMaterial({
-			metalness: 0.3,
-			roughness: 0.4,
-			envMap: ENVIRONMENT_MAP_TEXTURE,
-			envMapIntensity: 0.5,
-		})
+		PHYSIC_WORLD_SPHERE_GEOMETRY,
+		PHYSIC_WORLD_SPHERE_MATERIAL
 	);
+	_SPHERE_MESH.scale.set(radius, radius, radius);
 	_SPHERE_MESH.castShadow = true;
 	_SPHERE_MESH.position.x = position.x;
 	_SPHERE_MESH.position.y = position.y;
