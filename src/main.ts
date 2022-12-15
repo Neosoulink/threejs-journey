@@ -1209,8 +1209,10 @@ if (SCROLL_BASED_GROUP.visible) {
 /* =========== START PHYSICS WORLD =========== */
 /* Groups */
 const PHYSICS_WORLD_GROUP = new THREE.Group();
-/* Physics */
+
+/* World */
 const PHYSICS_WORLD_INSTANCE = new Cannon.World();
+PHYSICS_WORLD_INSTANCE.gravity.set(0, -9.82, 0);
 
 const PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE = new Cannon.Sphere(0.5);
 const PHYSICS_WORLD_SPHERE_PHYSIC_BODY = new Cannon.Body({
@@ -1219,7 +1221,17 @@ const PHYSICS_WORLD_SPHERE_PHYSIC_BODY = new Cannon.Body({
 	shape: PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE,
 });
 
+const PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE = new Cannon.Plane();
+const PHYSICS_WORLD_FLOOR_PHYSIC_BODY = new Cannon.Body();
+PHYSICS_WORLD_FLOOR_PHYSIC_BODY.quaternion.setFromAxisAngle(
+	new Cannon.Vec3(-1, 0, 0),
+	Math.PI * 0.5
+);
+PHYSICS_WORLD_FLOOR_PHYSIC_BODY.mass = 0;
+PHYSICS_WORLD_FLOOR_PHYSIC_BODY.addShape(PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE);
+
 PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_SPHERE_PHYSIC_BODY);
+PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_FLOOR_PHYSIC_BODY);
 
 /* Test sphere */
 const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
@@ -1501,6 +1513,16 @@ APP.animate(() => {
 	if (APP?.control?.enabled) {
 		APP.control.update();
 	}
+
+	/* Physics world */
+	PHYSICS_WORLD_INSTANCE.step(1 / 60, DELTA_TIME, 3);
+	PHYSICS_WORLD_SPHERE.position.set(
+		PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.x,
+		PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y,
+		PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.z
+	);
+
+	// console.log(PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y);
 });
 
 /* ANIMATIONS */
