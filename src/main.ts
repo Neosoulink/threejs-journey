@@ -72,12 +72,18 @@ const CURSOR_POS = {
 };
 let windowClientY = SCROLL_BASED_DOM_BODY?.scrollTop ?? 0;
 let scrollBasedCurrentSection = 0;
+const APP_CONFIG = {
+	enableDblClickFullScreen: true,
+};
 
 /* debuggers */
 const _GUI = new GUI();
 
-const _GUI_CONTROLS_FOLDER = _GUI.addFolder("Controls");
-_GUI_CONTROLS_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
+const _GUI_MAIN_FOLDER = _GUI.addFolder("Main");
+_GUI_MAIN_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
+_GUI_MAIN_FOLDER
+	.add(APP_CONFIG, "enableDblClickFullScreen")
+	.name("enable dblclick FullScreen");
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -1792,25 +1798,27 @@ _GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
-	const fullscreenElement =
-		// @ts-ignore: Safari fix ಥ‿ಥ
-		document.fullscreenElement || document.webkitFullscreenElement;
+	if (APP_CONFIG.enableDblClickFullScreen) {
+		const fullscreenElement =
+			// @ts-ignore: Safari fix ಥ‿ಥ
+			document.fullscreenElement || document.webkitFullscreenElement;
 
-	if (!fullscreenElement) {
-		if (APP.canvas.requestFullscreen) {
-			APP.canvas.requestFullscreen();
-			// @ts-ignore: Safari fix ಥ‿ಥ
-		} else if (APP.canvas.webkitRequestFullscreen) {
-			// @ts-ignore: Safari fix ಥ‿ಥ
-			APP.canvas.webkitRequestFullscreen();
-		}
-	} else {
-		if (document.exitFullscreen) {
-			document.exitFullscreen();
-			// @ts-ignore: Safari fix ಥ‿ಥ
-		} else if (document.webkitExitFullscreen) {
-			// @ts-ignore: Safari fix ಥ‿ಥ
-			document.webkitExitFullscreen();
+		if (!fullscreenElement) {
+			if (APP.canvas.requestFullscreen) {
+				APP.canvas.requestFullscreen();
+				// @ts-ignore: Safari fix ಥ‿ಥ
+			} else if (APP.canvas.webkitRequestFullscreen) {
+				// @ts-ignore: Safari fix ಥ‿ಥ
+				APP.canvas.webkitRequestFullscreen();
+			}
+		} else {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+				// @ts-ignore: Safari fix ಥ‿ಥ
+			} else if (document.webkitExitFullscreen) {
+				// @ts-ignore: Safari fix ಥ‿ಥ
+				document.webkitExitFullscreen();
+			}
 		}
 	}
 });
