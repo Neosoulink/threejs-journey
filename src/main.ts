@@ -55,6 +55,8 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
+/* Sounds */
+import tocSound from "./assets/sounds/hit.mp3";
 
 // APP
 const APP = initThreeJs({
@@ -1213,6 +1215,9 @@ if (SCROLL_BASED_GROUP.visible) {
 /* =========== END SCROLL BASED ANIMATION =========== */
 
 /* =========== START PHYSICS WORLD =========== */
+/* Sounds */
+const PHYSIC_WORLD_TOC_SOUND = new Audio(tocSound);
+
 /* Groups */
 const PHYSICS_WORLD_GROUP = new THREE.Group();
 
@@ -1330,6 +1335,12 @@ const PHYSIC_WORLD_CREATED_BOXES: {
 	mesh: THREE.Mesh;
 	body: Cannon.Body;
 }[] = [];
+const physicWorldPlayTocSound = (collision: any) => {
+	if (collision.contact.getImpactVelocityAlongNormal() > 1.5) {
+		PHYSIC_WORLD_TOC_SOUND.currentTime = 0;
+		PHYSIC_WORLD_TOC_SOUND.play();
+	}
+};
 const physicWorldCreateSphere = (
 	radius: number,
 	position: { x: number; y: number; z: number }
@@ -1360,7 +1371,6 @@ const physicWorldCreateSphere = (
 		body: _PHYSIC_SPHERE_BODY,
 	});
 };
-
 const physicWorldCreateBox = (
 	radius: number,
 	position: { x: number; y: number; z: number }
@@ -1383,6 +1393,7 @@ const physicWorldCreateBox = (
 		position: new Vec3(position.x, position.y, position.z),
 	});
 
+	_PHYSIC_SPHERE_BODY.addEventListener("collide", physicWorldPlayTocSound);
 	PHYSICS_WORLD_GROUP.add(_BOX_MESH);
 	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
 
