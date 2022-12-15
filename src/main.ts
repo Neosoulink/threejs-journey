@@ -4,7 +4,7 @@ import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
-import Cannon from "cannon";
+import Cannon, { Vec3 } from "cannon";
 
 /* HELPERS */
 import initThreeJs from "./helpers/initThreeJs";
@@ -1214,7 +1214,7 @@ const PHYSICS_WORLD_GROUP = new THREE.Group();
 const PHYSICS_WORLD_INSTANCE = new Cannon.World();
 PHYSICS_WORLD_INSTANCE.gravity.set(0, -9.82, 0);
 
-/* Materials */
+/* Physic Materials */
 const PHYSICS_WORLD_DEFAULT_MATERIAL = new Cannon.Material("default");
 
 const PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL = new Cannon.ContactMaterial(
@@ -1227,12 +1227,12 @@ const PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL = new Cannon.ContactMaterial(
 );
 
 /* Objects */
-const PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE = new Cannon.Sphere(0.5);
-const PHYSICS_WORLD_SPHERE_PHYSIC_BODY = new Cannon.Body({
-	mass: 1,
-	position: new Cannon.Vec3(0, 3, 0),
-	shape: PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE,
-});
+// const PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE = new Cannon.Sphere(0.5);
+// const PHYSICS_WORLD_SPHERE_PHYSIC_BODY = new Cannon.Body({
+// 	mass: 1,
+// 	position: new Cannon.Vec3(0, 3, 0),
+// 	shape: PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE,
+// });
 
 const PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE = new Cannon.Plane();
 const PHYSICS_WORLD_FLOOR_PHYSIC_BODY = new Cannon.Body();
@@ -1244,31 +1244,32 @@ PHYSICS_WORLD_FLOOR_PHYSIC_BODY.mass = 0;
 PHYSICS_WORLD_FLOOR_PHYSIC_BODY.addShape(PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE);
 
 /* Forces */
-PHYSICS_WORLD_SPHERE_PHYSIC_BODY.applyLocalForce(
-	new Cannon.Vec3(150, 0, 0),
-	new Cannon.Vec3(0, 0, 0)
-);
+// PHYSICS_WORLD_SPHERE_PHYSIC_BODY.applyLocalForce(
+// 	new Cannon.Vec3(150, 0, 0),
+// 	new Cannon.Vec3(0, 0, 0)
+// );
 
 PHYSICS_WORLD_INSTANCE.addContactMaterial(
 	PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL
 );
 PHYSICS_WORLD_INSTANCE.defaultContactMaterial =
 	PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL;
-PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_SPHERE_PHYSIC_BODY);
+// PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_SPHERE_PHYSIC_BODY);
 PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_FLOOR_PHYSIC_BODY);
 
-/* Test sphere */
-const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
-	new THREE.SphereGeometry(0.5, 32, 32),
-	new THREE.MeshStandardMaterial({
-		metalness: 0.3,
-		roughness: 0.4,
-		envMap: ENVIRONMENT_MAP_TEXTURE,
-		envMapIntensity: 0.5,
-	})
-);
-PHYSICS_WORLD_SPHERE.castShadow = true;
-PHYSICS_WORLD_SPHERE.position.y = 0.5;
+/* Meshes */
+/* Sphere */
+// const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
+// 	new THREE.SphereGeometry(0.5, 32, 32),
+// 	new THREE.MeshStandardMaterial({
+// 		metalness: 0.3,
+// 		roughness: 0.4,
+// 		envMap: ENVIRONMENT_MAP_TEXTURE,
+// 		envMapIntensity: 0.5,
+// 	})
+// );
+// PHYSICS_WORLD_SPHERE.castShadow = true;
+// PHYSICS_WORLD_SPHERE.position.y = 0.5;
 
 /* Floor */
 const PHYSICS_WORLD_FLOOR = new THREE.Mesh(
@@ -1286,7 +1287,6 @@ PHYSICS_WORLD_FLOOR.rotation.x = -Math.PI * 0.5;
 
 /* Lights */
 const PHYSICS_WORLD_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.7);
-
 const PHYSICS_WORLD_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(
 	0xffffff,
 	0.2
@@ -1301,11 +1301,51 @@ PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
 PHYSICS_WORLD_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
 
 PHYSICS_WORLD_GROUP.add(
-	PHYSICS_WORLD_SPHERE,
+	// PHYSICS_WORLD_SPHERE,
 	PHYSICS_WORLD_FLOOR,
 	PHYSICS_WORLD_AMBIENT_LIGHT,
 	PHYSICS_WORLD_DIRECTIONAL_LIGHT
 );
+
+/* Utils */
+const PHYSIC_WORLD_CREATED_SPHERES: { mesh: THREE.Mesh; body: Cannon.Body }[] =
+	[];
+const physicWorldCreateSphere = (
+	radius: number,
+	position: { x: number; y: number; z: number }
+) => {
+	/* Mesh */
+	const _SPHERE_MESH = new THREE.Mesh(
+		new THREE.SphereGeometry(radius),
+		new THREE.MeshStandardMaterial({
+			metalness: 0.3,
+			roughness: 0.4,
+			envMap: ENVIRONMENT_MAP_TEXTURE,
+			envMapIntensity: 0.5,
+		})
+	);
+	_SPHERE_MESH.castShadow = true;
+	_SPHERE_MESH.position.x = position.x;
+	_SPHERE_MESH.position.y = position.y;
+	_SPHERE_MESH.position.z = position.z;
+
+	/* Physic body */
+	const _PHYSIC_SPHERE_BODY = new Cannon.Body({
+		mass: 1,
+		shape: new Cannon.Sphere(radius),
+		position: new Vec3(position.x, position.y, position.z),
+	});
+
+	PHYSICS_WORLD_GROUP.add(_SPHERE_MESH);
+	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
+
+	PHYSIC_WORLD_CREATED_SPHERES.push({
+		mesh: _SPHERE_MESH,
+		body: _PHYSIC_SPHERE_BODY,
+	});
+};
+
+physicWorldCreateSphere(0.5, { x: 0, y: 2.5, z: 0 });
 /* =========== END PHYSICS WORLD =========== */
 
 // ADD TO GROUPE
@@ -1539,16 +1579,23 @@ APP.animate(() => {
 	}
 
 	/* Physics world */
-	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.applyForce(
-		new Cannon.Vec3(-0.5, 0, 0),
-		PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position
-	);
+	// PHYSICS_WORLD_SPHERE_PHYSIC_BODY.applyForce(
+	// 	new Cannon.Vec3(-0.5, 0, 0),
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position
+	// );
 	PHYSICS_WORLD_INSTANCE.step(1 / 60, DELTA_TIME, 3);
-	PHYSICS_WORLD_SPHERE.position.set(
-		PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.x,
-		PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y,
-		PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.z
-	);
+	// PHYSICS_WORLD_SPHERE.position.set(
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.x,
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y,
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.z
+	// );
+	PHYSIC_WORLD_CREATED_SPHERES.forEach((item) => {
+		item.mesh.position.set(
+			item.body.position.x,
+			item.body.position.y,
+			item.body.position.z
+		);
+	});
 
 	// console.log(PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y);
 });
