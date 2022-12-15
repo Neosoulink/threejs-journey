@@ -4,6 +4,7 @@ import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
+import Cannon, { Vec3 } from "cannon";
 
 /* HELPERS */
 import initThreeJs from "./helpers/initThreeJs";
@@ -54,11 +55,13 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
+/* Sounds */
+import tocSound from "./assets/sounds/hit.mp3";
 
 // APP
 const APP = initThreeJs({
-	enableOrbit: false,
-	// axesSizes: 2,
+	enableOrbit: true,
+	axesSizes: 2,
 });
 
 /* DATA */
@@ -71,12 +74,18 @@ const CURSOR_POS = {
 };
 let windowClientY = SCROLL_BASED_DOM_BODY?.scrollTop ?? 0;
 let scrollBasedCurrentSection = 0;
+const APP_CONFIG = {
+	enableDblClickFullScreen: true,
+};
 
 /* debuggers */
 const _GUI = new GUI();
 
-const _GUI_CONTROLS_FOLDER = _GUI.addFolder("Controls");
-_GUI_CONTROLS_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
+const _GUI_MAIN_FOLDER = _GUI.addFolder("Main");
+_GUI_MAIN_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
+_GUI_MAIN_FOLDER
+	.add(APP_CONFIG, "enableDblClickFullScreen")
+	.name("enable dblclick FullScreen");
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -1098,6 +1107,7 @@ const SCROLL_BASED_PARAMS = {
 
 /* Groups */
 const SCROLL_BASED_GROUP = new THREE.Group();
+SCROLL_BASED_GROUP.visible = false;
 
 /* Lights */
 const SCROLL_BASED_DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 1);
@@ -1196,11 +1206,251 @@ _SCROLL_BASED_FOLDER_GUI
 		);
 	});
 
-const SCROLL_BASED_DOM = document.querySelector(".scroll-based");
 if (SCROLL_BASED_GROUP.visible) {
-	SCROLL_BASED_DOM?.classList.remove("d-none");
+	document
+		.querySelectorAll(".scroll-based-section")
+		.forEach((el) => el.classList.remove("d-none"));
+	document.getElementById("app")?.classList.add("scroll-based");
 }
 /* =========== END SCROLL BASED ANIMATION =========== */
+
+/* =========== START PHYSICS WORLD =========== */
+/* Sounds */
+const PHYSIC_WORLD_TOC_SOUND = new Audio(tocSound);
+
+/* Groups */
+const PHYSICS_WORLD_GROUP = new THREE.Group();
+
+/* World */
+const PHYSICS_WORLD_INSTANCE = new Cannon.World();
+PHYSICS_WORLD_INSTANCE.broadphase = new Cannon.SAPBroadphase(
+	PHYSICS_WORLD_INSTANCE
+);
+PHYSICS_WORLD_INSTANCE.allowSleep = true;
+PHYSICS_WORLD_INSTANCE.gravity.set(0, -9.82, 0);
+
+/* Physic Materials */
+const PHYSICS_WORLD_DEFAULT_MATERIAL = new Cannon.Material("default");
+
+const PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL = new Cannon.ContactMaterial(
+	PHYSICS_WORLD_DEFAULT_MATERIAL,
+	PHYSICS_WORLD_DEFAULT_MATERIAL,
+	{
+		friction: 0.1,
+		restitution: 0.7,
+	}
+);
+
+/* Objects */
+// const PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE = new Cannon.Sphere(0.5);
+// const PHYSICS_WORLD_SPHERE_PHYSIC_BODY = new Cannon.Body({
+// 	mass: 1,
+// 	position: new Cannon.Vec3(0, 3, 0),
+// 	shape: PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE,
+// });
+
+const PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE = new Cannon.Plane();
+const PHYSICS_WORLD_FLOOR_PHYSIC_BODY = new Cannon.Body();
+PHYSICS_WORLD_FLOOR_PHYSIC_BODY.quaternion.setFromAxisAngle(
+	new Cannon.Vec3(-1, 0, 0),
+	Math.PI * 0.5
+);
+PHYSICS_WORLD_FLOOR_PHYSIC_BODY.mass = 0;
+PHYSICS_WORLD_FLOOR_PHYSIC_BODY.addShape(PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE);
+
+/* Forces */
+// PHYSICS_WORLD_SPHERE_PHYSIC_BODY.applyLocalForce(
+// 	new Cannon.Vec3(150, 0, 0),
+// 	new Cannon.Vec3(0, 0, 0)
+// );
+
+PHYSICS_WORLD_INSTANCE.addContactMaterial(
+	PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL
+);
+PHYSICS_WORLD_INSTANCE.defaultContactMaterial =
+	PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL;
+// PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_SPHERE_PHYSIC_BODY);
+PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_FLOOR_PHYSIC_BODY);
+
+/* Geometries */
+const PHYSIC_WORLD_SPHERE_GEOMETRY = new THREE.SphereGeometry(1, 20, 20);
+const PHYSIC_WORLD_BOX_GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
+
+/* Materials */
+const PHYSIC_WORLD_DEFAULT_MATERIAL = new THREE.MeshStandardMaterial({
+	metalness: 0.3,
+	roughness: 0.4,
+	envMap: ENVIRONMENT_MAP_TEXTURE,
+	envMapIntensity: 0.5,
+});
+/* Meshes */
+/* Sphere */
+// const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
+// 	new THREE.SphereGeometry(0.5, 32, 32),
+// 	PHYSIC_WORLD_DEFAULT_MATERIAL
+// );
+// PHYSICS_WORLD_SPHERE.castShadow = true;
+// PHYSICS_WORLD_SPHERE.position.y = 0.5;
+
+/* Floor */
+const PHYSICS_WORLD_FLOOR = new THREE.Mesh(
+	new THREE.PlaneGeometry(10, 10),
+	new THREE.MeshStandardMaterial({
+		color: "#777777",
+		metalness: 0.3,
+		roughness: 0.4,
+		envMap: ENVIRONMENT_MAP_TEXTURE,
+		envMapIntensity: 0.5,
+	})
+);
+PHYSICS_WORLD_FLOOR.receiveShadow = true;
+PHYSICS_WORLD_FLOOR.rotation.x = -Math.PI * 0.5;
+
+/* Lights */
+const PHYSICS_WORLD_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.7);
+const PHYSICS_WORLD_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(
+	0xffffff,
+	0.2
+);
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.castShadow = true;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
+PHYSICS_WORLD_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+
+PHYSICS_WORLD_GROUP.add(
+	// PHYSICS_WORLD_SPHERE,
+	PHYSICS_WORLD_FLOOR,
+	PHYSICS_WORLD_AMBIENT_LIGHT,
+	PHYSICS_WORLD_DIRECTIONAL_LIGHT
+);
+
+/* Utils */
+const PHYSIC_WORLD_CREATED_SPHERES: { mesh: THREE.Mesh; body: Cannon.Body }[] =
+	[];
+const PHYSIC_WORLD_CREATED_BOXES: {
+	mesh: THREE.Mesh;
+	body: Cannon.Body;
+}[] = [];
+const physicWorldPlayTocSound = (collision: any) => {
+	if (collision.contact.getImpactVelocityAlongNormal() > 1.5) {
+		PHYSIC_WORLD_TOC_SOUND.volume = Math.random();
+		PHYSIC_WORLD_TOC_SOUND.currentTime = 0;
+		PHYSIC_WORLD_TOC_SOUND.play();
+	}
+};
+const physicWorldCreateSphere = (
+	radius: number,
+	position: { x: number; y: number; z: number }
+) => {
+	/* Mesh */
+	const _SPHERE_MESH = new THREE.Mesh(
+		PHYSIC_WORLD_SPHERE_GEOMETRY,
+		PHYSIC_WORLD_DEFAULT_MATERIAL
+	);
+	_SPHERE_MESH.scale.set(radius, radius, radius);
+	_SPHERE_MESH.castShadow = true;
+	_SPHERE_MESH.position.x = position.x;
+	_SPHERE_MESH.position.y = position.y;
+	_SPHERE_MESH.position.z = position.z;
+
+	/* Physic body */
+	const _PHYSIC_SPHERE_BODY = new Cannon.Body({
+		mass: 1,
+		shape: new Cannon.Sphere(radius),
+		position: new Vec3(position.x, position.y, position.z),
+	});
+
+	_PHYSIC_SPHERE_BODY.addEventListener("collide", physicWorldPlayTocSound);
+	PHYSICS_WORLD_GROUP.add(_SPHERE_MESH);
+	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
+
+	PHYSIC_WORLD_CREATED_SPHERES.push({
+		mesh: _SPHERE_MESH,
+		body: _PHYSIC_SPHERE_BODY,
+	});
+};
+const physicWorldCreateBox = (
+	radius: number,
+	position: { x: number; y: number; z: number }
+) => {
+	/* Mesh */
+	const _BOX_MESH = new THREE.Mesh(
+		PHYSIC_WORLD_BOX_GEOMETRY,
+		PHYSIC_WORLD_DEFAULT_MATERIAL
+	);
+	_BOX_MESH.scale.set(radius, radius, radius);
+	_BOX_MESH.castShadow = true;
+	_BOX_MESH.position.x = position.x;
+	_BOX_MESH.position.y = position.y;
+	_BOX_MESH.position.z = position.z;
+
+	/* Physic body */
+	const _PHYSIC_SPHERE_BODY = new Cannon.Body({
+		mass: 1,
+		shape: new Cannon.Box(new Cannon.Vec3(radius / 2, radius / 2, radius / 2)),
+		position: new Vec3(position.x, position.y, position.z),
+	});
+
+	_PHYSIC_SPHERE_BODY.addEventListener("collide", physicWorldPlayTocSound);
+	PHYSICS_WORLD_GROUP.add(_BOX_MESH);
+	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
+
+	PHYSIC_WORLD_CREATED_BOXES.push({
+		mesh: _BOX_MESH,
+		body: _PHYSIC_SPHERE_BODY,
+	});
+};
+
+const PHYSIC_WORLD_GUI_OPTIONS = {
+	createSphere: () =>
+		physicWorldCreateSphere(Math.random() * 0.5, {
+			x: (Math.random() - 0.5) * 3,
+			y: 2.5,
+			z: (Math.random() - 0.5) * 3,
+		}),
+
+	createBox: () =>
+		physicWorldCreateBox(Math.random() * 0.5, {
+			x: (Math.random() - 0.5) * 3,
+			y: 2.5,
+			z: (Math.random() - 0.5) * 3,
+		}),
+	reset: () => {
+		PHYSIC_WORLD_CREATED_SPHERES.forEach((item) => {
+			item.body.removeEventListener("collide", physicWorldPlayTocSound);
+			PHYSICS_WORLD_INSTANCE.remove(item.body);
+
+			PHYSICS_WORLD_GROUP.remove(item.mesh);
+		});
+
+		PHYSIC_WORLD_CREATED_BOXES.forEach((item) => {
+			item.body.removeEventListener("collide", physicWorldPlayTocSound);
+			PHYSICS_WORLD_INSTANCE.remove(item.body);
+
+			PHYSICS_WORLD_GROUP.remove(item.mesh);
+		});
+
+		PHYSIC_WORLD_CREATED_SPHERES.splice(0, PHYSIC_WORLD_CREATED_SPHERES.length);
+		PHYSIC_WORLD_CREATED_BOXES.splice(0, PHYSIC_WORLD_CREATED_BOXES.length);
+	},
+};
+
+const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
+// _GUI_PHYSIC_WORLD.close();
+_GUI_PHYSIC_WORLD
+	.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
+	.name("Create random sphere");
+_GUI_PHYSIC_WORLD
+	.add(PHYSIC_WORLD_GUI_OPTIONS, "createBox")
+	.name("Create random box");
+_GUI_PHYSIC_WORLD
+	.add(PHYSIC_WORLD_GUI_OPTIONS, "reset")
+	.name("Reset created objects");
+/* =========== END PHYSICS WORLD =========== */
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1234,9 +1484,7 @@ SHADOW_GROUP.add(
 );
 
 /* Camera */
-APP.camera.position.x = 0;
-APP.camera.position.y = 0;
-APP.camera.position.z = 4;
+APP.camera.position.set(-3, 3, 3);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1254,7 +1502,8 @@ APP.scene.add(
 	PARTICLES_GROUP,
 	PARTICLES_GALAXY_GROUP,
 	RAY_CASTER_GROUP,
-	SCROLL_BASED_GROUP
+	SCROLL_BASED_GROUP,
+	PHYSICS_WORLD_GROUP
 );
 
 if (SCROLL_BASED_GROUP.visible) {
@@ -1432,6 +1681,40 @@ APP.animate(() => {
 	if (APP?.control?.enabled) {
 		APP.control.update();
 	}
+
+	/* Physics world */
+	// PHYSICS_WORLD_SPHERE_PHYSIC_BODY.applyForce(
+	// 	new Cannon.Vec3(-0.5, 0, 0),
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position
+	// );
+	PHYSICS_WORLD_INSTANCE.step(1 / 60, DELTA_TIME, 3);
+	// PHYSICS_WORLD_SPHERE.position.set(
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.x,
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y,
+	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.z
+	// );
+	PHYSIC_WORLD_CREATED_SPHERES.forEach((item) => {
+		item.mesh.position.set(
+			item.body.position.x,
+			item.body.position.y,
+			item.body.position.z
+		);
+	});
+	PHYSIC_WORLD_CREATED_BOXES.forEach((item) => {
+		item.mesh.position.set(
+			item.body.position.x,
+			item.body.position.y,
+			item.body.position.z
+		);
+		item.mesh.quaternion.set(
+			item.body.quaternion.x,
+			item.body.quaternion.y,
+			item.body.quaternion.z,
+			item.body.quaternion.w
+		);
+	});
+
+	// console.log(PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y);
 });
 
 /* ANIMATIONS */
@@ -1548,25 +1831,27 @@ _GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
-	const fullscreenElement =
-		// @ts-ignore: Safari fix ಥ‿ಥ
-		document.fullscreenElement || document.webkitFullscreenElement;
+	if (APP_CONFIG.enableDblClickFullScreen) {
+		const fullscreenElement =
+			// @ts-ignore: Safari fix ಥ‿ಥ
+			document.fullscreenElement || document.webkitFullscreenElement;
 
-	if (!fullscreenElement) {
-		if (APP.canvas.requestFullscreen) {
-			APP.canvas.requestFullscreen();
-			// @ts-ignore: Safari fix ಥ‿ಥ
-		} else if (APP.canvas.webkitRequestFullscreen) {
-			// @ts-ignore: Safari fix ಥ‿ಥ
-			APP.canvas.webkitRequestFullscreen();
-		}
-	} else {
-		if (document.exitFullscreen) {
-			document.exitFullscreen();
-			// @ts-ignore: Safari fix ಥ‿ಥ
-		} else if (document.webkitExitFullscreen) {
-			// @ts-ignore: Safari fix ಥ‿ಥ
-			document.webkitExitFullscreen();
+		if (!fullscreenElement) {
+			if (APP.canvas.requestFullscreen) {
+				APP.canvas.requestFullscreen();
+				// @ts-ignore: Safari fix ಥ‿ಥ
+			} else if (APP.canvas.webkitRequestFullscreen) {
+				// @ts-ignore: Safari fix ಥ‿ಥ
+				APP.canvas.webkitRequestFullscreen();
+			}
+		} else {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+				// @ts-ignore: Safari fix ಥ‿ಥ
+			} else if (document.webkitExitFullscreen) {
+				// @ts-ignore: Safari fix ಥ‿ಥ
+				document.webkitExitFullscreen();
+			}
 		}
 	}
 });
