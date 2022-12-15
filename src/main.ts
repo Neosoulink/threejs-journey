@@ -1345,7 +1345,21 @@ const physicWorldCreateSphere = (
 	});
 };
 
-physicWorldCreateSphere(0.5, { x: 0, y: 2.5, z: 0 });
+const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
+// _GUI_PHYSIC_WORLD.close();
+_GUI_PHYSIC_WORLD
+	.add(
+		{
+			function: () =>
+				physicWorldCreateSphere(Math.random() * 0.5, {
+					x: (Math.random() - 0.5) * 3,
+					y: 2.5,
+					z: (Math.random() - 0.5) * 3,
+				}),
+		},
+		"function"
+	)
+	.name("Create random sphere");
 /* =========== END PHYSICS WORLD =========== */
 
 // ADD TO GROUPE
