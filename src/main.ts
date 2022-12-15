@@ -1405,35 +1405,51 @@ const physicWorldCreateBox = (
 	});
 };
 
+const PHYSIC_WORLD_GUI_OPTIONS = {
+	createSphere: () =>
+		physicWorldCreateSphere(Math.random() * 0.5, {
+			x: (Math.random() - 0.5) * 3,
+			y: 2.5,
+			z: (Math.random() - 0.5) * 3,
+		}),
+
+	createBox: () =>
+		physicWorldCreateBox(Math.random() * 0.5, {
+			x: (Math.random() - 0.5) * 3,
+			y: 2.5,
+			z: (Math.random() - 0.5) * 3,
+		}),
+	reset: () => {
+		PHYSIC_WORLD_CREATED_SPHERES.forEach((item) => {
+			item.body.removeEventListener("collide", physicWorldPlayTocSound);
+			PHYSICS_WORLD_INSTANCE.remove(item.body);
+
+			PHYSICS_WORLD_GROUP.remove(item.mesh);
+		});
+
+		PHYSIC_WORLD_CREATED_BOXES.forEach((item) => {
+			item.body.removeEventListener("collide", physicWorldPlayTocSound);
+			PHYSICS_WORLD_INSTANCE.remove(item.body);
+
+			PHYSICS_WORLD_GROUP.remove(item.mesh);
+		});
+
+		PHYSIC_WORLD_CREATED_SPHERES.splice(0, PHYSIC_WORLD_CREATED_SPHERES.length);
+		PHYSIC_WORLD_CREATED_BOXES.splice(0, PHYSIC_WORLD_CREATED_BOXES.length);
+	},
+};
+
 const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
 // _GUI_PHYSIC_WORLD.close();
 _GUI_PHYSIC_WORLD
-	.add(
-		{
-			function: () =>
-				physicWorldCreateSphere(Math.random() * 0.5, {
-					x: (Math.random() - 0.5) * 3,
-					y: 2.5,
-					z: (Math.random() - 0.5) * 3,
-				}),
-		},
-		"function"
-	)
+	.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
 	.name("Create random sphere");
-// _GUI_PHYSIC_WORLD.close();
 _GUI_PHYSIC_WORLD
-	.add(
-		{
-			function: () =>
-				physicWorldCreateBox(Math.random() * 0.5, {
-					x: (Math.random() - 0.5) * 3,
-					y: 2.5,
-					z: (Math.random() - 0.5) * 3,
-				}),
-		},
-		"function"
-	)
+	.add(PHYSIC_WORLD_GUI_OPTIONS, "createBox")
 	.name("Create random box");
+_GUI_PHYSIC_WORLD
+	.add(PHYSIC_WORLD_GUI_OPTIONS, "reset")
+	.name("Reset created objects");
 /* =========== END PHYSICS WORLD =========== */
 
 // ADD TO GROUPE
