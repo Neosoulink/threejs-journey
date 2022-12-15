@@ -1221,6 +1221,7 @@ const PHYSICS_WORLD_INSTANCE = new Cannon.World();
 PHYSICS_WORLD_INSTANCE.broadphase = new Cannon.SAPBroadphase(
 	PHYSICS_WORLD_INSTANCE
 );
+PHYSICS_WORLD_INSTANCE.allowSleep = true;
 PHYSICS_WORLD_INSTANCE.gravity.set(0, -9.82, 0);
 
 /* Physic Materials */
