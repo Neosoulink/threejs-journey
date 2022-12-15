@@ -1259,9 +1259,10 @@ PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_FLOOR_PHYSIC_BODY);
 
 /* Geometries */
 const PHYSIC_WORLD_SPHERE_GEOMETRY = new THREE.SphereGeometry(1, 20, 20);
+const PHYSIC_WORLD_BOX_GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
 
 /* Materials */
-const PHYSIC_WORLD_SPHERE_MATERIAL = new THREE.MeshStandardMaterial({
+const PHYSIC_WORLD_DEFAULT_MATERIAL = new THREE.MeshStandardMaterial({
 	metalness: 0.3,
 	roughness: 0.4,
 	envMap: ENVIRONMENT_MAP_TEXTURE,
@@ -1271,7 +1272,7 @@ const PHYSIC_WORLD_SPHERE_MATERIAL = new THREE.MeshStandardMaterial({
 /* Sphere */
 // const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
 // 	new THREE.SphereGeometry(0.5, 32, 32),
-// 	PHYSIC_WORLD_SPHERE_MATERIAL
+// 	PHYSIC_WORLD_DEFAULT_MATERIAL
 // );
 // PHYSICS_WORLD_SPHERE.castShadow = true;
 // PHYSICS_WORLD_SPHERE.position.y = 0.5;
@@ -1315,6 +1316,10 @@ PHYSICS_WORLD_GROUP.add(
 /* Utils */
 const PHYSIC_WORLD_CREATED_SPHERES: { mesh: THREE.Mesh; body: Cannon.Body }[] =
 	[];
+const PHYSIC_WORLD_CREATED_BOXES: {
+	mesh: THREE.Mesh;
+	body: Cannon.Body;
+}[] = [];
 const physicWorldCreateSphere = (
 	radius: number,
 	position: { x: number; y: number; z: number }
@@ -1322,7 +1327,7 @@ const physicWorldCreateSphere = (
 	/* Mesh */
 	const _SPHERE_MESH = new THREE.Mesh(
 		PHYSIC_WORLD_SPHERE_GEOMETRY,
-		PHYSIC_WORLD_SPHERE_MATERIAL
+		PHYSIC_WORLD_DEFAULT_MATERIAL
 	);
 	_SPHERE_MESH.scale.set(radius, radius, radius);
 	_SPHERE_MESH.castShadow = true;
@@ -1346,6 +1351,37 @@ const physicWorldCreateSphere = (
 	});
 };
 
+const physicWorldCreateBox = (
+	radius: number,
+	position: { x: number; y: number; z: number }
+) => {
+	/* Mesh */
+	const _BOX_MESH = new THREE.Mesh(
+		PHYSIC_WORLD_BOX_GEOMETRY,
+		PHYSIC_WORLD_DEFAULT_MATERIAL
+	);
+	_BOX_MESH.scale.set(radius, radius, radius);
+	_BOX_MESH.castShadow = true;
+	_BOX_MESH.position.x = position.x;
+	_BOX_MESH.position.y = position.y;
+	_BOX_MESH.position.z = position.z;
+
+	/* Physic body */
+	const _PHYSIC_SPHERE_BODY = new Cannon.Body({
+		mass: 1,
+		shape: new Cannon.Box(new Cannon.Vec3(radius / 2, radius / 2, radius / 2)),
+		position: new Vec3(position.x, position.y, position.z),
+	});
+
+	PHYSICS_WORLD_GROUP.add(_BOX_MESH);
+	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
+
+	PHYSIC_WORLD_CREATED_BOXES.push({
+		mesh: _BOX_MESH,
+		body: _PHYSIC_SPHERE_BODY,
+	});
+};
+
 const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
 // _GUI_PHYSIC_WORLD.close();
 _GUI_PHYSIC_WORLD
@@ -1361,6 +1397,20 @@ _GUI_PHYSIC_WORLD
 		"function"
 	)
 	.name("Create random sphere");
+// _GUI_PHYSIC_WORLD.close();
+_GUI_PHYSIC_WORLD
+	.add(
+		{
+			function: () =>
+				physicWorldCreateBox(Math.random() * 0.5, {
+					x: (Math.random() - 0.5) * 3,
+					y: 2.5,
+					z: (Math.random() - 0.5) * 3,
+				}),
+		},
+		"function"
+	)
+	.name("Create random box");
 /* =========== END PHYSICS WORLD =========== */
 
 // ADD TO GROUPE
@@ -1609,6 +1659,19 @@ APP.animate(() => {
 			item.body.position.x,
 			item.body.position.y,
 			item.body.position.z
+		);
+	});
+	PHYSIC_WORLD_CREATED_BOXES.forEach((item) => {
+		item.mesh.position.set(
+			item.body.position.x,
+			item.body.position.y,
+			item.body.position.z
+		);
+		item.mesh.quaternion.set(
+			item.body.quaternion.x,
+			item.body.quaternion.y,
+			item.body.quaternion.z,
+			item.body.quaternion.w
 		);
 	});
 
