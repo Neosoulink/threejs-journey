@@ -1364,6 +1364,7 @@ const physicWorldCreateSphere = (
 		position: new Vec3(position.x, position.y, position.z),
 	});
 
+	_PHYSIC_SPHERE_BODY.addEventListener("collide", physicWorldPlayTocSound);
 	PHYSICS_WORLD_GROUP.add(_SPHERE_MESH);
 	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
 
