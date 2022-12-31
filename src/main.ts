@@ -1441,6 +1441,7 @@ const PHYSIC_WORLD_GUI_OPTIONS = {
 
 const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
 // _GUI_PHYSIC_WORLD.close();
+_GUI_PHYSIC_WORLD.add(PHYSICS_WORLD_GROUP, "visible");
 _GUI_PHYSIC_WORLD
 	.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
 	.name("Create random sphere");
