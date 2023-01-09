@@ -1454,6 +1454,40 @@ _GUI_PHYSIC_WORLD
 	.name("Reset created objects");
 /* =========== END PHYSICS WORLD =========== */
 
+/* =========== START MODELS =========== */
+const MODELS_GROUP = new THREE.Group();
+/**
+ * Floor
+ */
+const MODELS_FLOOR = new THREE.Mesh(
+	new THREE.PlaneGeometry(10, 10),
+	new THREE.MeshStandardMaterial({
+		color: "#444444",
+		metalness: 0,
+		roughness: 0.5,
+	})
+);
+MODELS_FLOOR.receiveShadow = true;
+MODELS_FLOOR.rotation.x = -Math.PI * 0.5;
+
+/**
+ * Lights
+ */
+const MODELS_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.8);
+
+const MODELS_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.6);
+MODELS_DIRECTIONAL_LIGHT.castShadow = true;
+MODELS_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
+MODELS_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+
+MODELS_GROUP.add(MODELS_FLOOR, MODELS_AMBIENT_LIGHT, MODELS_DIRECTIONAL_LIGHT);
+/* =========== END MODELS =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -1486,7 +1520,7 @@ SHADOW_GROUP.add(
 );
 
 /* Camera */
-APP.camera.position.set(-3, 3, 3);
+APP.camera.position.set(2, 2, 2);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1505,7 +1539,8 @@ APP.scene.add(
 	PARTICLES_GALAXY_GROUP,
 	RAY_CASTER_GROUP,
 	SCROLL_BASED_GROUP,
-	PHYSICS_WORLD_GROUP
+	PHYSICS_WORLD_GROUP,
+	MODELS_GROUP
 );
 
 if (SCROLL_BASED_GROUP.visible) {
@@ -1516,6 +1551,7 @@ if (SCROLL_BASED_GROUP.visible) {
 
 /* Control */
 if (APP?.control?.enabled) {
+	APP.control.target.set(0, 0.75, 0);
 	APP.control.enableDamping = true;
 }
 
