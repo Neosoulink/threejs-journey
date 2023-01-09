@@ -1215,11 +1215,12 @@ if (SCROLL_BASED_GROUP.visible) {
 /* =========== END SCROLL BASED ANIMATION =========== */
 
 /* =========== START PHYSICS WORLD =========== */
-/* Sounds */
-const PHYSIC_WORLD_TOC_SOUND = new Audio(tocSound);
-
 /* Groups */
 const PHYSICS_WORLD_GROUP = new THREE.Group();
+PHYSICS_WORLD_GROUP.visible = false;
+
+/* Sounds */
+const PHYSIC_WORLD_TOC_SOUND = new Audio(tocSound);
 
 /* World */
 const PHYSICS_WORLD_INSTANCE = new Cannon.World();
