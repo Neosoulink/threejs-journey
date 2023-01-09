@@ -2,6 +2,7 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 import Cannon, { Vec3 } from "cannon";
@@ -17,6 +18,10 @@ import "./assets/css/style.css";
 
 /* FONTS */
 import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typeface.json?url";
+
+/* MODELS */
+/* gltf */
+import defaultGltfDuck from "./assets/models/Duck/glTF/Duck.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -97,7 +102,7 @@ const DONUT_GROUP = new THREE.Group();
 MESH_NEW_MATERIAL_GROUP.visible = false;
 DONUT_GROUP.visible = false;
 
-/* LOADING MANAGER */
+/* LOADERS */
 const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
@@ -111,6 +116,8 @@ LOADING_MANAGER.onLoad = () => {
 LOADING_MANAGER.onError = () => {
 	console.log("Error triggered");
 };
+const FONT_LOADER = new FontLoader();
+const GLTF_LOADER = new GLTFLoader();
 
 /**
  * TEXTURES LOADER
@@ -242,7 +249,6 @@ CubeClone.rotation.set(Math.PI / 2, -1, 0, "YXZ");
 TRIANGLE_MESH.visible = false;
 
 // FONTS
-const FONT_LOADER = new FontLoader();
 FONT_LOADER.load(HelvetikerFont, (font) => {
 	const BEVEL_THICKNESS = 0.03;
 	const BEVEL_SIZE = 0.02;
@@ -1455,6 +1461,9 @@ _GUI_PHYSIC_WORLD
 /* =========== END PHYSICS WORLD =========== */
 
 /* =========== START MODELS =========== */
+const MODELS_DUCK_MODEL = GLTF_LOADER.load(defaultGltfDuck, (gltf) => {
+	console.log("gltf loaded ===>", gltf);
+});
 const MODELS_GROUP = new THREE.Group();
 /**
  * Floor
