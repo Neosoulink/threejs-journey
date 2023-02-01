@@ -2,6 +2,8 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 import Cannon, { Vec3 } from "cannon";
@@ -17,6 +19,12 @@ import "./assets/css/style.css";
 
 /* FONTS */
 import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typeface.json?url";
+
+/* MODELS */
+/* gltf */
+// import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
+// import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
+import FoxGLTF from "./assets/models/Fox/glTF/Fox.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -97,7 +105,7 @@ const DONUT_GROUP = new THREE.Group();
 MESH_NEW_MATERIAL_GROUP.visible = false;
 DONUT_GROUP.visible = false;
 
-/* LOADING MANAGER */
+/* LOADERS */
 const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
@@ -111,6 +119,9 @@ LOADING_MANAGER.onLoad = () => {
 LOADING_MANAGER.onError = () => {
 	console.log("Error triggered");
 };
+const FONT_LOADER = new FontLoader();
+const DRACO_LOADER = new DRACOLoader();
+const GLTF_LOADER = new GLTFLoader();
 
 /**
  * TEXTURES LOADER
@@ -242,7 +253,6 @@ CubeClone.rotation.set(Math.PI / 2, -1, 0, "YXZ");
 TRIANGLE_MESH.visible = false;
 
 // FONTS
-const FONT_LOADER = new FontLoader();
 FONT_LOADER.load(HelvetikerFont, (font) => {
 	const BEVEL_THICKNESS = 0.03;
 	const BEVEL_SIZE = 0.02;
@@ -1215,11 +1225,12 @@ if (SCROLL_BASED_GROUP.visible) {
 /* =========== END SCROLL BASED ANIMATION =========== */
 
 /* =========== START PHYSICS WORLD =========== */
-/* Sounds */
-const PHYSIC_WORLD_TOC_SOUND = new Audio(tocSound);
-
 /* Groups */
 const PHYSICS_WORLD_GROUP = new THREE.Group();
+PHYSICS_WORLD_GROUP.visible = false;
+
+/* Sounds */
+const PHYSIC_WORLD_TOC_SOUND = new Audio(tocSound);
 
 /* World */
 const PHYSICS_WORLD_INSTANCE = new Cannon.World();
@@ -1453,6 +1464,61 @@ _GUI_PHYSIC_WORLD
 	.name("Reset created objects");
 /* =========== END PHYSICS WORLD =========== */
 
+/* =========== START MODELS =========== */
+DRACO_LOADER.setDecoderPath("/decoders/draco/");
+GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
+let foxMixer: THREE.AnimationMixer | undefined;
+GLTF_LOADER.load(FoxGLTF, (gltf) => {
+	console.log("gltf loaded ===>", gltf);
+	// const _FIXED_GLTF_CHILDREN = [...gltf.scene.children];
+	// while (gltf.scene.children.length) {
+	// 	APP.scene.add(gltf.scene.children[0]);
+	// }
+	// for (let i = 0; i < _FIXED_GLTF_CHILDREN.length; i++) {
+	// 	APP.scene.add(_FIXED_GLTF_CHILDREN[i]);
+	// }
+
+	foxMixer = new THREE.AnimationMixer(gltf.scene);
+	foxMixer.clipAction(gltf.animations[0]).play();
+	// foxMixer.clipAction(gltf.animations[1]).play();
+	// foxMixer.clipAction(gltf.animations[2]).play();
+
+	gltf.scene.scale.set(0.025, 0.025, 0.025);
+	APP.scene.add(gltf.scene);
+});
+const MODELS_GROUP = new THREE.Group();
+/**
+ * Floor
+ */
+const MODELS_FLOOR = new THREE.Mesh(
+	new THREE.PlaneGeometry(10, 10),
+	new THREE.MeshStandardMaterial({
+		color: "#444444",
+		metalness: 0,
+		roughness: 0.5,
+	})
+);
+MODELS_FLOOR.receiveShadow = true;
+MODELS_FLOOR.rotation.x = -Math.PI * 0.5;
+
+/**
+ * Lights
+ */
+const MODELS_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.8);
+
+const MODELS_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.6);
+MODELS_DIRECTIONAL_LIGHT.castShadow = true;
+MODELS_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
+MODELS_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
+MODELS_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+
+MODELS_GROUP.add(MODELS_FLOOR, MODELS_AMBIENT_LIGHT, MODELS_DIRECTIONAL_LIGHT);
+/* =========== END MODELS =========== */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -1485,7 +1551,7 @@ SHADOW_GROUP.add(
 );
 
 /* Camera */
-APP.camera.position.set(-3, 3, 3);
+APP.camera.position.set(2, 2, 2);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1504,7 +1570,8 @@ APP.scene.add(
 	PARTICLES_GALAXY_GROUP,
 	RAY_CASTER_GROUP,
 	SCROLL_BASED_GROUP,
-	PHYSICS_WORLD_GROUP
+	PHYSICS_WORLD_GROUP,
+	MODELS_GROUP
 );
 
 if (SCROLL_BASED_GROUP.visible) {
@@ -1515,6 +1582,7 @@ if (SCROLL_BASED_GROUP.visible) {
 
 /* Control */
 if (APP?.control?.enabled) {
+	APP.control.target.set(0, 0.75, 0);
 	APP.control.enableDamping = true;
 }
 
@@ -1714,8 +1782,12 @@ APP.animate(() => {
 			item.body.quaternion.w
 		);
 	});
-
 	// console.log(PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y);
+
+	// FOX animation
+	if (foxMixer) {
+		foxMixer.update(DELTA_TIME);
+	}
 });
 
 /* ANIMATIONS */
