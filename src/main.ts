@@ -21,7 +21,7 @@ import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typefac
 
 /* MODELS */
 /* gltf */
-import defaultGltfDuck from "./assets/models/Duck/glTF/Duck.gltf?url";
+import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -1461,8 +1461,17 @@ _GUI_PHYSIC_WORLD
 /* =========== END PHYSICS WORLD =========== */
 
 /* =========== START MODELS =========== */
-const MODELS_DUCK_MODEL = GLTF_LOADER.load(defaultGltfDuck, (gltf) => {
+const MODELS_DUCK_MODEL = GLTF_LOADER.load(FlightHelmetGLTF, (gltf) => {
 	console.log("gltf loaded ===>", gltf);
+	// const _FIXED_GLTF_CHILDREN = [...gltf.scene.children];
+	// while (gltf.scene.children.length) {
+	// 	APP.scene.add(gltf.scene.children[0]);
+	// }
+	// for (let i = 0; i < _FIXED_GLTF_CHILDREN.length; i++) {
+	// 	APP.scene.add(_FIXED_GLTF_CHILDREN[i]);
+	// }
+
+	APP.scene.add(gltf.scene);
 });
 const MODELS_GROUP = new THREE.Group();
 /**
