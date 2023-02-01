@@ -23,7 +23,8 @@ import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typefac
 /* MODELS */
 /* gltf */
 // import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
-import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
+// import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
+import FoxGLTF from "./assets/models/Fox/glTF/Fox.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -1466,7 +1467,8 @@ _GUI_PHYSIC_WORLD
 /* =========== START MODELS =========== */
 DRACO_LOADER.setDecoderPath("/decoders/draco/");
 GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
-GLTF_LOADER.load(DuckGLTF_Draco, (gltf) => {
+let foxMixer: THREE.AnimationMixer | undefined;
+GLTF_LOADER.load(FoxGLTF, (gltf) => {
 	console.log("gltf loaded ===>", gltf);
 	// const _FIXED_GLTF_CHILDREN = [...gltf.scene.children];
 	// while (gltf.scene.children.length) {
@@ -1476,6 +1478,12 @@ GLTF_LOADER.load(DuckGLTF_Draco, (gltf) => {
 	// 	APP.scene.add(_FIXED_GLTF_CHILDREN[i]);
 	// }
 
+	foxMixer = new THREE.AnimationMixer(gltf.scene);
+	foxMixer.clipAction(gltf.animations[0]).play();
+	// foxMixer.clipAction(gltf.animations[1]).play();
+	// foxMixer.clipAction(gltf.animations[2]).play();
+
+	gltf.scene.scale.set(0.025, 0.025, 0.025);
 	APP.scene.add(gltf.scene);
 });
 const MODELS_GROUP = new THREE.Group();
@@ -1774,8 +1782,12 @@ APP.animate(() => {
 			item.body.quaternion.w
 		);
 	});
-
 	// console.log(PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y);
+
+	// FOX animation
+	if (foxMixer) {
+		foxMixer.update(DELTA_TIME);
+	}
 });
 
 /* ANIMATIONS */
