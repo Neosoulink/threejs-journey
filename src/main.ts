@@ -2,6 +2,7 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
@@ -21,7 +22,8 @@ import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typefac
 
 /* MODELS */
 /* gltf */
-import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
+// import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
+import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -117,6 +119,7 @@ LOADING_MANAGER.onError = () => {
 	console.log("Error triggered");
 };
 const FONT_LOADER = new FontLoader();
+const DRACO_LOADER = new DRACOLoader();
 const GLTF_LOADER = new GLTFLoader();
 
 /**
@@ -1461,7 +1464,9 @@ _GUI_PHYSIC_WORLD
 /* =========== END PHYSICS WORLD =========== */
 
 /* =========== START MODELS =========== */
-const MODELS_DUCK_MODEL = GLTF_LOADER.load(FlightHelmetGLTF, (gltf) => {
+DRACO_LOADER.setDecoderPath("/decoders/draco/");
+GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
+GLTF_LOADER.load(DuckGLTF_Draco, (gltf) => {
 	console.log("gltf loaded ===>", gltf);
 	// const _FIXED_GLTF_CHILDREN = [...gltf.scene.children];
 	// while (gltf.scene.children.length) {
