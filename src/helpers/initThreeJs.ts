@@ -28,8 +28,8 @@ export function animate(callback: () => any = () => {}) {
 	requestAnimationFrame(() => animate(callback));
 }
 
-export default (props?: initThreeProps) => {
-	const DOM_APP = document.querySelector<HTMLCanvasElement>("canvas#app")!;
+export default (props?: initThreeProps, appDom = "canvas#app") => {
+	const DOM_APP = document.querySelector<HTMLCanvasElement>(appDom)!;
 	const SCENE_SIZES: initThreeProps["sceneSizes"] =
 		props?.sceneSizes ?? viewPortSize;
 
