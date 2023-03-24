@@ -25,6 +25,7 @@ import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typefac
 // import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 // import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
 import FoxGLTF from "./assets/models/Fox/glTF/Fox.gltf?url";
+import HamburgerGLTF from "./assets/models/hamburger/hamburger.glb?url";
 
 /* IMAGES */
 /* Door images */
@@ -122,6 +123,12 @@ LOADING_MANAGER.onError = () => {
 const FONT_LOADER = new FontLoader();
 const DRACO_LOADER = new DRACOLoader();
 const GLTF_LOADER = new GLTFLoader();
+
+/**
+ * LOADER
+ */
+DRACO_LOADER.setDecoderPath("/decoders/draco/");
+GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
 
 /**
  * TEXTURES LOADER
@@ -1465,59 +1472,109 @@ _GUI_PHYSIC_WORLD
 /* =========== END PHYSICS WORLD =========== */
 
 /* =========== START MODELS =========== */
-DRACO_LOADER.setDecoderPath("/decoders/draco/");
-GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
-let foxMixer: THREE.AnimationMixer | undefined;
-GLTF_LOADER.load(FoxGLTF, (gltf) => {
-	console.log("gltf loaded ===>", gltf);
-	// const _FIXED_GLTF_CHILDREN = [...gltf.scene.children];
-	// while (gltf.scene.children.length) {
-	// 	APP.scene.add(gltf.scene.children[0]);
-	// }
-	// for (let i = 0; i < _FIXED_GLTF_CHILDREN.length; i++) {
-	// 	APP.scene.add(_FIXED_GLTF_CHILDREN[i]);
-	// }
-
-	foxMixer = new THREE.AnimationMixer(gltf.scene);
-	foxMixer.clipAction(gltf.animations[0]).play();
-	// foxMixer.clipAction(gltf.animations[1]).play();
-	// foxMixer.clipAction(gltf.animations[2]).play();
-
-	gltf.scene.scale.set(0.025, 0.025, 0.025);
-	APP.scene.add(gltf.scene);
-});
 const MODELS_GROUP = new THREE.Group();
-/**
- * Floor
- */
-const MODELS_FLOOR = new THREE.Mesh(
-	new THREE.PlaneGeometry(10, 10),
-	new THREE.MeshStandardMaterial({
-		color: "#444444",
-		metalness: 0,
-		roughness: 0.5,
-	})
-);
-MODELS_FLOOR.receiveShadow = true;
-MODELS_FLOOR.rotation.x = -Math.PI * 0.5;
+MODELS_GROUP.visible = false;
+let foxMixer: THREE.AnimationMixer | undefined;
 
-/**
- * Lights
- */
-const MODELS_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.8);
+if (MODELS_GROUP.visible) {
+	GLTF_LOADER.load(FoxGLTF, (gltf) => {
+		console.log("gltf loaded ===>", gltf);
+		// const _FIXED_GLTF_CHILDREN = [...gltf.scene.children];
+		// while (gltf.scene.children.length) {
+		// 	APP.scene.add(gltf.scene.children[0]);
+		// }
+		// for (let i = 0; i < _FIXED_GLTF_CHILDREN.length; i++) {
+		// 	APP.scene.add(_FIXED_GLTF_CHILDREN[i]);
+		// }
 
-const MODELS_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.6);
-MODELS_DIRECTIONAL_LIGHT.castShadow = true;
-MODELS_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
-MODELS_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
-MODELS_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
-MODELS_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
-MODELS_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
-MODELS_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
-MODELS_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+		foxMixer = new THREE.AnimationMixer(gltf.scene);
+		foxMixer.clipAction(gltf.animations[0]).play();
+		// foxMixer.clipAction(gltf.animations[1]).play();
+		// foxMixer.clipAction(gltf.animations[2]).play();
 
-MODELS_GROUP.add(MODELS_FLOOR, MODELS_AMBIENT_LIGHT, MODELS_DIRECTIONAL_LIGHT);
+		gltf.scene.scale.set(0.025, 0.025, 0.025);
+		MODELS_GROUP.add(gltf.scene);
+	});
+
+	/**
+	 * Floor
+	 */
+	const MODELS_FLOOR = new THREE.Mesh(
+		new THREE.PlaneGeometry(10, 10),
+		new THREE.MeshStandardMaterial({
+			color: "#444444",
+			metalness: 0,
+			roughness: 0.5,
+		})
+	);
+	MODELS_FLOOR.receiveShadow = true;
+	MODELS_FLOOR.rotation.x = -Math.PI * 0.5;
+
+	/**
+	 * Lights
+	 */
+	const MODELS_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.8);
+
+	const MODELS_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.6);
+	MODELS_DIRECTIONAL_LIGHT.castShadow = true;
+	MODELS_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+	MODELS_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+	MODELS_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
+	MODELS_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
+	MODELS_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
+	MODELS_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
+	MODELS_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+
+	MODELS_GROUP.add(
+		MODELS_FLOOR,
+		MODELS_AMBIENT_LIGHT,
+		MODELS_DIRECTIONAL_LIGHT
+	);
+}
 /* =========== END MODELS =========== */
+
+/* =========== START HAMBURGER MODELS =========== */
+const HAMBURGER_GROUPE = new THREE.Group();
+HAMBURGER_GROUPE.visible = true;
+
+if (HAMBURGER_GROUPE.visible) {
+	GLTF_LOADER.load(HamburgerGLTF, (gltf) => {
+		HAMBURGER_GROUPE.add(gltf.scene);
+	});
+
+	/**
+	 * Floor
+	 */
+	const HAMBURGER_FLOOR = new THREE.Mesh(
+		new THREE.PlaneGeometry(50, 50),
+		new THREE.MeshStandardMaterial({
+			color: "#444444",
+			metalness: 0,
+			roughness: 0.5,
+		})
+	);
+	HAMBURGER_FLOOR.receiveShadow = true;
+	HAMBURGER_FLOOR.rotation.x = -Math.PI * 0.5;
+	HAMBURGER_GROUPE.add(HAMBURGER_FLOOR);
+
+	/**
+	 * Lights
+	 */
+	const HAMBURGER_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.8);
+	HAMBURGER_GROUPE.add(HAMBURGER_AMBIENT_LIGHT);
+
+	const HAMBURGER_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.6);
+	HAMBURGER_DIRECTIONAL_LIGHT.castShadow = true;
+	HAMBURGER_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
+	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
+	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
+	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
+	HAMBURGER_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
+	HAMBURGER_GROUPE.add(HAMBURGER_DIRECTIONAL_LIGHT);
+}
+/* ============ END HAMBURGER MODELS ============ */
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1551,7 +1608,7 @@ SHADOW_GROUP.add(
 );
 
 /* Camera */
-APP.camera.position.set(2, 2, 2);
+APP.camera.position.set(-8, 4, 8);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1571,7 +1628,8 @@ APP.scene.add(
 	RAY_CASTER_GROUP,
 	SCROLL_BASED_GROUP,
 	PHYSICS_WORLD_GROUP,
-	MODELS_GROUP
+	MODELS_GROUP,
+	HAMBURGER_GROUPE
 );
 
 if (SCROLL_BASED_GROUP.visible) {
