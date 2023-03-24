@@ -1630,6 +1630,8 @@ const loadRealisticRenderer = () => {
 				) {
 					// child.material.envMap = ENVIRONMENT_MAP_TEXTURE;
 					child.material.envMapIntensity = debugObject.envMapIntensity;
+					child.castShadow = true;
+					child.receiveShadow = true;
 				}
 			});
 		};
@@ -1637,6 +1639,9 @@ const loadRealisticRenderer = () => {
 		// LIGHTS
 		const DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 3);
 		DIRECTIONAL_LIGHT.position.set(0.25, 3, -2.25);
+		DIRECTIONAL_LIGHT.castShadow = true;
+		DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+		DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
 
 		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
 		realisticRendererGui
