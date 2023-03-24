@@ -1688,6 +1688,20 @@ const loadRealisticRenderer = () => {
 				.name("Env Map Intensity")
 				.onChange(updateAllChildMeshEnvMap);
 
+			realisticRendererGui?.add(APP.renderer, "toneMapping", {
+				No: THREE.NoToneMapping,
+				Linear: THREE.LinearToneMapping,
+				Reinhard: THREE.ReinhardToneMapping,
+				Cineon: THREE.CineonToneMapping,
+				ACESFilmic: THREE.ACESFilmicToneMapping,
+			});
+
+			realisticRendererGui
+				?.add(APP.renderer, "toneMappingExposure")
+				.min(0)
+				.max(10)
+				.step(0.001);
+
 			updateAllChildMeshEnvMap();
 		});
 
