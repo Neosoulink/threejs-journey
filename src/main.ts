@@ -1642,6 +1642,7 @@ const loadRealisticRenderer = () => {
 		DIRECTIONAL_LIGHT.castShadow = true;
 		DIRECTIONAL_LIGHT.shadow.camera.far = 15;
 		DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+		DIRECTIONAL_LIGHT.shadow.normalBias = 0.05;
 
 		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
 		realisticRendererGui
