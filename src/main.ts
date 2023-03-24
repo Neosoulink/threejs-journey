@@ -1774,6 +1774,7 @@ if (APP?.control?.enabled) {
 APP.renderer.shadowMap.enabled = true;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 APP.renderer.physicallyCorrectLights = true;
+APP.renderer.outputEncoding = THREE.sRGBEncoding;
 
 /* Haunted house fog */
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
