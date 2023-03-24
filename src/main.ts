@@ -26,6 +26,7 @@ import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typefac
 // import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
 import FoxGLTF from "./assets/models/Fox/glTF/Fox.gltf?url";
 import HamburgerGLTF from "./assets/models/hamburger/hamburger.glb?url";
+import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -174,6 +175,7 @@ const ENVIRONMENT_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
 	pzEnvImg,
 	nzEnvImg,
 ]);
+ENVIRONMENT_MAP_TEXTURE.encoding = THREE.sRGBEncoding;
 // const BAKED_SHADOW = TEXTURE_LOADER.load(bakedShadowImg);
 const SIMPLE_SHADOW = TEXTURE_LOADER.load(simpleShadowImg);
 /* Update texture properties */
@@ -294,6 +296,7 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 
 	setTimeout(() => {
 		const _GUI_TEXT_FOLDER = _GUI.addFolder("Text");
+		_GUI_TEXT_FOLDER.close();
 
 		_GUI_TEXT_FOLDER.add(TEXT_FORM, "visible");
 	}, 1000);
@@ -1212,6 +1215,7 @@ SCROLL_BASED_GROUP.add(
 );
 
 const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
+_SCROLL_BASED_FOLDER_GUI.close();
 _SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
 
 _SCROLL_BASED_FOLDER_GUI
@@ -1458,7 +1462,7 @@ const PHYSIC_WORLD_GUI_OPTIONS = {
 };
 
 const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
-// _GUI_PHYSIC_WORLD.close();
+_GUI_PHYSIC_WORLD.close();
 _GUI_PHYSIC_WORLD.add(PHYSICS_WORLD_GROUP, "visible");
 _GUI_PHYSIC_WORLD
 	.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
@@ -1535,7 +1539,7 @@ if (MODELS_GROUP.visible) {
 
 /* =========== START HAMBURGER MODELS =========== */
 const HAMBURGER_GROUPE = new THREE.Group();
-HAMBURGER_GROUPE.visible = true;
+HAMBURGER_GROUPE.visible = false;
 
 if (HAMBURGER_GROUPE.visible) {
 	GLTF_LOADER.load(HamburgerGLTF, (gltf) => {
@@ -1576,6 +1580,149 @@ if (HAMBURGER_GROUPE.visible) {
 }
 /* ============ END HAMBURGER MODELS ============ */
 
+/* =========== START REALISTIC MODELS =========== */
+let realisticRendererGroup: THREE.Group | undefined;
+let realisticRendererGui: GUI | undefined;
+
+const destructRealisticRenderer = () => {
+	if (realisticRendererGroup) {
+		APP.scene.remove(realisticRendererGroup);
+
+		realisticRendererGroup.clear();
+		realisticRendererGroup = undefined;
+		if (realisticRendererGui) {
+			realisticRendererGui.destroy();
+			realisticRendererGui = undefined;
+		}
+
+		APP.scene.background = null;
+		APP.scene.environment = null;
+
+		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
+		realisticRendererGui
+			.add({ function: loadRealisticRenderer }, "function")
+			.name("Enable realistic renderer");
+	}
+};
+
+const loadRealisticRenderer = () => {
+	if (realisticRendererGui) {
+		realisticRendererGui.destroy();
+		realisticRendererGui = undefined;
+	}
+
+	if (realisticRendererGroup) {
+		destructRealisticRenderer();
+	}
+
+	if (!realisticRendererGroup) {
+		realisticRendererGroup = new THREE.Group();
+
+		// DATA
+		const debugObject = { envMapIntensity: 2.5 };
+
+		// FUNCTIONS
+		const updateAllChildMeshEnvMap = () => {
+			realisticRendererGroup?.traverse((child) => {
+				if (
+					child instanceof THREE.Mesh &&
+					child.material instanceof THREE.MeshStandardMaterial
+				) {
+					// child.material.envMap = ENVIRONMENT_MAP_TEXTURE;
+					child.material.envMapIntensity = debugObject.envMapIntensity;
+					child.castShadow = true;
+					child.receiveShadow = true;
+				}
+			});
+		};
+
+		// LIGHTS
+		const DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 3);
+		DIRECTIONAL_LIGHT.position.set(0.25, 3, -2.25);
+		DIRECTIONAL_LIGHT.castShadow = true;
+		DIRECTIONAL_LIGHT.shadow.camera.far = 15;
+		DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
+		DIRECTIONAL_LIGHT.shadow.normalBias = 0.05;
+
+		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT, "intensity")
+			.min(0)
+			.max(10)
+			.step(0.001)
+			.name("LightIntensity");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT.position, "x")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("LightX");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT.position, "y")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("LightY");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT.position, "z")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("LightX");
+
+		realisticRendererGui
+			.add({ function: destructRealisticRenderer }, "function")
+			.name("Destruct realistic world");
+
+		// MODELS
+		GLTF_LOADER.load(FlightHelmetGLTF, (gltf) => {
+			gltf.scene.scale.set(10, 10, 10);
+			gltf.scene.position.set(0, -4, 0);
+			gltf.scene.rotation.y = Math.PI * 0.5;
+			realisticRendererGroup?.add(gltf.scene);
+			realisticRendererGui
+				?.add(gltf.scene.rotation, "y")
+				.min(-Math.PI)
+				.max(Math.PI)
+				.step(0.001)
+				.name("Helmet Y rotation");
+			realisticRendererGui
+				?.add(debugObject, "envMapIntensity")
+				.min(0)
+				.max(10)
+				.step(0.001)
+				.name("Env Map Intensity")
+				.onChange(updateAllChildMeshEnvMap);
+
+			realisticRendererGui?.add(APP.renderer, "toneMapping", {
+				No: THREE.NoToneMapping,
+				Linear: THREE.LinearToneMapping,
+				Reinhard: THREE.ReinhardToneMapping,
+				Cineon: THREE.CineonToneMapping,
+				ACESFilmic: THREE.ACESFilmicToneMapping,
+			});
+
+			realisticRendererGui
+				?.add(APP.renderer, "toneMappingExposure")
+				.min(0)
+				.max(10)
+				.step(0.001);
+
+			updateAllChildMeshEnvMap();
+		});
+
+		APP.scene.background = ENVIRONMENT_MAP_TEXTURE;
+		APP.scene.environment = ENVIRONMENT_MAP_TEXTURE;
+
+		realisticRendererGroup.add(DIRECTIONAL_LIGHT);
+		APP.scene.add(realisticRendererGroup);
+	}
+};
+
+loadRealisticRenderer();
+
+/* ============ END REALISTIC MODELS ============ */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -1608,7 +1755,7 @@ SHADOW_GROUP.add(
 );
 
 /* Camera */
-APP.camera.position.set(-8, 4, 8);
+APP.camera.position.set(4, 1, -4);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1647,6 +1794,8 @@ if (APP?.control?.enabled) {
 /* Renderer */
 APP.renderer.shadowMap.enabled = true;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+APP.renderer.physicallyCorrectLights = true;
+APP.renderer.outputEncoding = THREE.sRGBEncoding;
 
 /* Haunted house fog */
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
@@ -1854,7 +2003,7 @@ APP.animate(() => {
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
 
 /* DEBUGGER UI */
-_GUI.close();
+// _GUI.close();
 const _GUI_CUBES_GROUP_FOLDER = _GUI.addFolder("Cube group");
 _GUI_CUBES_GROUP_FOLDER.close();
 _GUI_CUBES_GROUP_FOLDER.add(CUBES_GROUP, "visible").name("CUBES_GROUP visible");
@@ -1958,6 +2107,7 @@ _GUI_SHADOWS_FOLDER
 	.step(0.001);
 
 const _GUI_PARTICLES = _GUI.addFolder("Particles");
+_GUI_PARTICLES.close();
 _GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
