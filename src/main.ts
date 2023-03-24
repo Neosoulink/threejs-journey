@@ -1659,11 +1659,21 @@ const loadRealisticRenderer = () => {
 
 		// MODELS
 		GLTF_LOADER.load(FlightHelmetGLTF, (gltf) => {
-			console.log("gltf", gltf);
+			gltf.scene.scale.set(10, 10, 10);
+			gltf.scene.position.set(0, -4, 0);
+			gltf.scene.rotation.y = Math.PI * 0.5;
+			realisticRendererGroup?.add(gltf.scene);
+			realisticRendererGui
+				?.add(gltf.scene.rotation, "y")
+				.min(-Math.PI)
+				.max(Math.PI)
+				.step(0.001)
+				.name("Helmet Y rotation");
 		});
 
 		realisticRendererGroup.add(DIRECTIONAL_LIGHT, TEST_SPHERE);
 		APP.scene.add(realisticRendererGroup);
+
 	}
 };
 
