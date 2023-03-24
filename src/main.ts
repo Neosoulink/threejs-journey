@@ -1594,6 +1594,9 @@ const destructRealisticRenderer = () => {
 			realisticRendererGui = undefined;
 		}
 
+		APP.scene.background = null;
+		APP.scene.environment = null;
+
 		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
 		realisticRendererGui
 			.add({ function: loadRealisticRenderer }, "function")
@@ -1614,14 +1617,21 @@ const loadRealisticRenderer = () => {
 	if (!realisticRendererGroup) {
 		realisticRendererGroup = new THREE.Group();
 
-		// MESHES
-		/**
-		 * Test sphere
-		 */
-		const TEST_SPHERE = new THREE.Mesh(
-			new THREE.SphereGeometry(1, 32, 32),
-			new THREE.MeshStandardMaterial()
-		);
+		// DATA
+		const debugObject = { envMapIntensity: 2.5 };
+
+		// FUNCTIONS
+		const updateAllChildMeshEnvMap = () => {
+			realisticRendererGroup?.traverse((child) => {
+				if (
+					child instanceof THREE.Mesh &&
+					child.material instanceof THREE.MeshStandardMaterial
+				) {
+					// child.material.envMap = ENVIRONMENT_MAP_TEXTURE;
+					child.material.envMapIntensity = debugObject.envMapIntensity;
+				}
+			});
+		};
 
 		// LIGHTS
 		const DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 3);
@@ -1669,11 +1679,22 @@ const loadRealisticRenderer = () => {
 				.max(Math.PI)
 				.step(0.001)
 				.name("Helmet Y rotation");
+			realisticRendererGui
+				?.add(debugObject, "envMapIntensity")
+				.min(0)
+				.max(10)
+				.step(0.001)
+				.name("Env Map Intensity")
+				.onChange(updateAllChildMeshEnvMap);
+
+			updateAllChildMeshEnvMap();
 		});
 
-		realisticRendererGroup.add(DIRECTIONAL_LIGHT, TEST_SPHERE);
-		APP.scene.add(realisticRendererGroup);
+		APP.scene.background = ENVIRONMENT_MAP_TEXTURE;
+		APP.scene.environment = ENVIRONMENT_MAP_TEXTURE;
 
+		realisticRendererGroup.add(DIRECTIONAL_LIGHT);
+		APP.scene.add(realisticRendererGroup);
 	}
 };
 
