@@ -294,6 +294,7 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 
 	setTimeout(() => {
 		const _GUI_TEXT_FOLDER = _GUI.addFolder("Text");
+		_GUI_TEXT_FOLDER.close();
 
 		_GUI_TEXT_FOLDER.add(TEXT_FORM, "visible");
 	}, 1000);
@@ -1212,6 +1213,7 @@ SCROLL_BASED_GROUP.add(
 );
 
 const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
+_SCROLL_BASED_FOLDER_GUI.close();
 _SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
 
 _SCROLL_BASED_FOLDER_GUI
@@ -1458,7 +1460,7 @@ const PHYSIC_WORLD_GUI_OPTIONS = {
 };
 
 const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
-// _GUI_PHYSIC_WORLD.close();
+_GUI_PHYSIC_WORLD.close();
 _GUI_PHYSIC_WORLD.add(PHYSICS_WORLD_GROUP, "visible");
 _GUI_PHYSIC_WORLD
 	.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
@@ -1535,7 +1537,7 @@ if (MODELS_GROUP.visible) {
 
 /* =========== START HAMBURGER MODELS =========== */
 const HAMBURGER_GROUPE = new THREE.Group();
-HAMBURGER_GROUPE.visible = true;
+HAMBURGER_GROUPE.visible = false;
 
 if (HAMBURGER_GROUPE.visible) {
 	GLTF_LOADER.load(HamburgerGLTF, (gltf) => {
@@ -1576,6 +1578,71 @@ if (HAMBURGER_GROUPE.visible) {
 }
 /* ============ END HAMBURGER MODELS ============ */
 
+/* =========== START REALISTIC MODELS =========== */
+let realisticRendererGroup: THREE.Group | undefined;
+let realisticRendererGui: GUI | undefined;
+
+const loadRealisticRenderer = () => {
+	if (!realisticRendererGroup) {
+		realisticRendererGroup = new THREE.Group();
+
+		// MESHES
+		/**
+		 * Test sphere
+		 */
+		const TEST_SPHERE = new THREE.Mesh(
+			new THREE.SphereGeometry(1, 32, 32),
+			new THREE.MeshStandardMaterial()
+		);
+
+		// LIGHTS
+		const DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 3);
+		DIRECTIONAL_LIGHT.position.set(0.25, 3, -2.25);
+
+		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT, "intensity")
+			.min(0)
+			.max(10)
+			.step(0.001)
+			.name("LightIntensity");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT.position, "x")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("LightX");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT.position, "y")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("LightY");
+		realisticRendererGui
+			.add(DIRECTIONAL_LIGHT.position, "z")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("LighZX");
+
+		APP.scene.add(realisticRendererGroup, DIRECTIONAL_LIGHT, TEST_SPHERE);
+	}
+};
+loadRealisticRenderer();
+const destructRealisticRenderer = () => {
+	if (realisticRendererGroup) {
+		APP.scene.remove(realisticRendererGroup);
+
+		realisticRendererGroup = undefined;
+		if (realisticRendererGui) {
+			realisticRendererGui.destroy();
+		}
+	}
+};
+destructRealisticRenderer;
+
+/* ============ END REALISTIC MODELS ============ */
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -1608,7 +1675,7 @@ SHADOW_GROUP.add(
 );
 
 /* Camera */
-APP.camera.position.set(-8, 4, 8);
+APP.camera.position.set(4, 1, -4);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1647,6 +1714,7 @@ if (APP?.control?.enabled) {
 /* Renderer */
 APP.renderer.shadowMap.enabled = true;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+APP.renderer.physicallyCorrectLights = true;
 
 /* Haunted house fog */
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
@@ -1854,7 +1922,7 @@ APP.animate(() => {
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
 
 /* DEBUGGER UI */
-_GUI.close();
+// _GUI.close();
 const _GUI_CUBES_GROUP_FOLDER = _GUI.addFolder("Cube group");
 _GUI_CUBES_GROUP_FOLDER.close();
 _GUI_CUBES_GROUP_FOLDER.add(CUBES_GROUP, "visible").name("CUBES_GROUP visible");
@@ -1958,6 +2026,7 @@ _GUI_SHADOWS_FOLDER
 	.step(0.001);
 
 const _GUI_PARTICLES = _GUI.addFolder("Particles");
+_GUI_PARTICLES.close();
 _GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
