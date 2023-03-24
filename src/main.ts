@@ -26,6 +26,7 @@ import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typefac
 // import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
 import FoxGLTF from "./assets/models/Fox/glTF/Fox.gltf?url";
 import HamburgerGLTF from "./assets/models/hamburger/hamburger.glb?url";
+import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -1582,7 +1583,34 @@ if (HAMBURGER_GROUPE.visible) {
 let realisticRendererGroup: THREE.Group | undefined;
 let realisticRendererGui: GUI | undefined;
 
+const destructRealisticRenderer = () => {
+	if (realisticRendererGroup) {
+		APP.scene.remove(realisticRendererGroup);
+
+		realisticRendererGroup.clear();
+		realisticRendererGroup = undefined;
+		if (realisticRendererGui) {
+			realisticRendererGui.destroy();
+			realisticRendererGui = undefined;
+		}
+
+		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
+		realisticRendererGui
+			.add({ function: loadRealisticRenderer }, "function")
+			.name("Enable realistic renderer");
+	}
+};
+
 const loadRealisticRenderer = () => {
+	if (realisticRendererGui) {
+		realisticRendererGui.destroy();
+		realisticRendererGui = undefined;
+	}
+
+	if (realisticRendererGroup) {
+		destructRealisticRenderer();
+	}
+
 	if (!realisticRendererGroup) {
 		realisticRendererGroup = new THREE.Group();
 
@@ -1623,23 +1651,23 @@ const loadRealisticRenderer = () => {
 			.min(-5)
 			.max(5)
 			.step(0.001)
-			.name("LighZX");
+			.name("LightX");
 
-		APP.scene.add(realisticRendererGroup, DIRECTIONAL_LIGHT, TEST_SPHERE);
+		realisticRendererGui
+			.add({ function: destructRealisticRenderer }, "function")
+			.name("Destruct realistic world");
+
+		// MODELS
+		GLTF_LOADER.load(FlightHelmetGLTF, (gltf) => {
+			console.log("gltf", gltf);
+		});
+
+		realisticRendererGroup.add(DIRECTIONAL_LIGHT, TEST_SPHERE);
+		APP.scene.add(realisticRendererGroup);
 	}
 };
+
 loadRealisticRenderer();
-const destructRealisticRenderer = () => {
-	if (realisticRendererGroup) {
-		APP.scene.remove(realisticRendererGroup);
-
-		realisticRendererGroup = undefined;
-		if (realisticRendererGui) {
-			realisticRendererGui.destroy();
-		}
-	}
-};
-destructRealisticRenderer;
 
 /* ============ END REALISTIC MODELS ============ */
 
