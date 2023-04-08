@@ -63,6 +63,7 @@ import lesson_25 from "./app/lesson_25";
 import lesson_24 from "./app/lesson_24";
 import lesson_22 from "./app/lesson_22";
 import lesson_21 from "./app/lesson_21";
+import Lesson_26 from "./app/lesson_26";
 
 // APP
 const APP = initThreeJs({
@@ -1294,6 +1295,16 @@ lesson_25({
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 });
 
+const lesson_26 = new Lesson_26({
+	app: APP,
+	appGui: _GUI,
+	textureLoader: TEXTURE_LOADER,
+	cubeTextureLoader: CUBE_TEXTURE_LOADER,
+	gltfLoader: GLTF_LOADER,
+	onConstruct: () => {},
+	onDestruct: () => {},
+});
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -1564,6 +1575,10 @@ APP.animate(() => {
 	// FOX animation
 	if (lesson22FoxMixer) {
 		lesson22FoxMixer.update(DELTA_TIME);
+	}
+
+	if (lesson_26.foxMixer) {
+		lesson_26.foxMixer.update(DELTA_TIME);
 	}
 });
 
