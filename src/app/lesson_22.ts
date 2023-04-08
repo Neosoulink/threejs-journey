@@ -3,7 +3,7 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { GUI } from "lil-gui";
 
 // HELPERS
-import initThreeJs from "../helpers/threejs/initThreeJs";
+import ThreeApp from "../helpers/ThreeApp";
 
 // MODELS
 import FoxGLTF from "../assets/models/Fox/glTF/Fox.gltf?url";
@@ -16,7 +16,7 @@ export default ({
 	onConstruct,
 	onDestruct,
 }: {
-	app: ReturnType<typeof initThreeJs>;
+	app: ThreeApp;
 	appGui: GUI;
 	GLTF_Loader: GLTFLoader;
 	foxLoadedCallback?: (props: {

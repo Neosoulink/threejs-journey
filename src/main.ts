@@ -9,7 +9,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 
 /* HELPERS */
-import initThreeJs from "./helpers/threejs/initThreeJs";
+import ThreeApp from "./helpers/ThreeApp";
 
 /* COMPONENTS */
 import Cube from "./components/Cube";
@@ -66,7 +66,7 @@ import lesson_21 from "./app/lesson_21";
 import Lesson_26 from "./app/lesson_26";
 
 // APP
-const APP = initThreeJs({
+const APP = new ThreeApp({
 	enableOrbit: true,
 	axesSizes: 2,
 });
@@ -1703,7 +1703,7 @@ window.addEventListener("dblclick", () => {
 			document.fullscreenElement || document.webkitFullscreenElement;
 
 		if (!fullscreenElement) {
-			if (APP.canvas.requestFullscreen) {
+			if (APP.canvas?.requestFullscreen) {
 				APP.canvas.requestFullscreen();
 				// @ts-ignore: Safari fix ಥ‿ಥ
 			} else if (APP.canvas.webkitRequestFullscreen) {

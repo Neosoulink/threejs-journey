@@ -4,7 +4,7 @@ import Cannon from "cannon";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 // HELPERS
-import initThreeJs from "../helpers/threejs/initThreeJs";
+import ThreeApp from "../helpers/ThreeApp";
 
 // MODELS
 import FoxGLTF from "../assets/models/Fox/glTF/Fox.gltf?url";
@@ -21,7 +21,7 @@ import dirtNormalImg from "../assets/imG/textures/dirt/normal.jpg";
 
 // LOCAL TYPES
 export interface ConstructorProps {
-	app: ReturnType<typeof initThreeJs>;
+	app: ThreeApp;
 	appGui: GUI;
 	textureLoader?: THREE.TextureLoader;
 	cubeTextureLoader?: THREE.CubeTextureLoader;
@@ -67,7 +67,7 @@ export default class Lesson_26 {
 		this.appGui = appGui;
 		this.gui = appGui.addFolder(this.folderName);
 		this.gui
-			.add({ function: () => this.construct(this) }, "function")
+			.add({ function: () => this.construct() }, "function")
 			.name("Enable");
 		this.cubeTextureLoader = cubeTextureLoader;
 		this.gltfLoader = gltfLoader;
@@ -75,39 +75,39 @@ export default class Lesson_26 {
 		this.onDestruct = onDestruct;
 	}
 
-	destroy(self: Lesson_26) {
-		if (self.groupContainer) {
-			self.app.scene.remove(self.groupContainer);
+	destroy() {
+		if (this.groupContainer) {
+			this.app.scene.remove(this.groupContainer);
 
-			self.groupContainer?.clear();
-			self.groupContainer = undefined;
+			this.groupContainer?.clear();
+			this.groupContainer = undefined;
 
-			if (self.gui) {
-				self.gui.destroy();
-				self.gui = undefined;
+			if (this.gui) {
+				this.gui.destroy();
+				this.gui = undefined;
 			}
 
-			self.gui = self.appGui.addFolder(self.folderName);
-			self.gui
-				.add({ function: () => self.construct(self) }, "function")
+			this.gui = this.appGui.addFolder(this.folderName);
+			this.gui
+				.add({ function: () => this.construct() }, "function")
 				.name("Enable");
 
-			self.onDestruct && self.onDestruct();
+			this.onDestruct && this.onDestruct();
 		}
 	}
 
-	construct(self: Lesson_26 = this) {
-		if (self.gui) {
-			self.gui.destroy();
-			self.gui = undefined;
+	construct() {
+		if (this.gui) {
+			this.gui.destroy();
+			this.gui = undefined;
 		}
 
-		if (self.groupContainer) {
-			self.destroy(self);
+		if (this.groupContainer) {
+			this.destroy();
 		}
 
-		if (!self.environmentMap) {
-			self.environmentMap = self.cubeTextureLoader?.load([
+		if (!this.environmentMap) {
+			this.environmentMap = this.cubeTextureLoader?.load([
 				pxEnvImg,
 				nxEnvImg,
 				pyEnvImg,
@@ -116,52 +116,52 @@ export default class Lesson_26 {
 				nzEnvImg,
 			]);
 
-			if (self.environmentMap) {
-				self.environmentMap.encoding = THREE.sRGBEncoding;
-				self.app.scene.environment = self.environmentMap;
+			if (this.environmentMap) {
+				this.environmentMap.encoding = THREE.sRGBEncoding;
+				this.app.scene.environment = this.environmentMap;
 			}
 		}
 
 		if (
-			!self.groupContainer &&
-			self.environmentMap &&
-			self.cubeTextureLoader &&
-			self.textureLoader
+			!this.groupContainer &&
+			this.environmentMap &&
+			this.cubeTextureLoader &&
+			this.textureLoader
 		) {
-			self.groupContainer = new THREE.Group();
+			this.groupContainer = new THREE.Group();
 
 			// scene.background = environmentMap
-			self.app.scene.environment = self.environmentMap;
+			this.app.scene.environment = this.environmentMap;
 
 			/**
 			 * Models
 			 */
 
-			self.gltfLoader?.load(FoxGLTF, (gltf) => {
+			this.gltfLoader?.load(FoxGLTF, (gltf) => {
 				// Model
 				gltf.scene.scale.set(0.02, 0.02, 0.02);
-				self.groupContainer?.add(gltf.scene);
+				this.groupContainer?.add(gltf.scene);
 
 				// Animation
-				self.foxMixer = new THREE.AnimationMixer(gltf.scene);
-				const foxAction = self.foxMixer.clipAction(gltf.animations[0]);
+				this.foxMixer = new THREE.AnimationMixer(gltf.scene);
+				const foxAction = this.foxMixer.clipAction(gltf.animations[0]);
 				foxAction.play();
 
 				// Update materials
-				self.updateAllMaterials(self);
-				self.groupContainer?.add(gltf.scene);
+				this.updateAllMaterials();
+				this.groupContainer?.add(gltf.scene);
 			});
 
 			/**
 			 * Floor
 			 */
-			const floorColorTexture = self.textureLoader.load(dirtColorImg);
+			const floorColorTexture = this.textureLoader.load(dirtColorImg);
 			floorColorTexture.encoding = THREE.sRGBEncoding;
 			floorColorTexture.repeat.set(1.5, 1.5);
 			floorColorTexture.wrapS = THREE.RepeatWrapping;
 			floorColorTexture.wrapT = THREE.RepeatWrapping;
 
-			const floorNormalTexture = self.textureLoader.load(dirtNormalImg);
+			const floorNormalTexture = this.textureLoader.load(dirtNormalImg);
 			floorNormalTexture.repeat.set(1.5, 1.5);
 			floorNormalTexture.wrapS = THREE.RepeatWrapping;
 			floorNormalTexture.wrapT = THREE.RepeatWrapping;
@@ -184,65 +184,65 @@ export default class Lesson_26 {
 			directionalLight.shadow.normalBias = 0.05;
 			directionalLight.position.set(3.5, 2, -1.25);
 
-			self.app.renderer.physicallyCorrectLights = true;
-			self.app.renderer.outputEncoding = THREE.sRGBEncoding;
-			self.app.renderer.toneMapping = THREE.CineonToneMapping;
-			self.app.renderer.toneMappingExposure = 1.75;
-			self.app.renderer.shadowMap.enabled = true;
-			self.app.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-			self.app.renderer.setClearColor("#211d20");
+			this.app.renderer.physicallyCorrectLights = true;
+			this.app.renderer.outputEncoding = THREE.sRGBEncoding;
+			this.app.renderer.toneMapping = THREE.CineonToneMapping;
+			this.app.renderer.toneMappingExposure = 1.75;
+			this.app.renderer.shadowMap.enabled = true;
+			this.app.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+			this.app.renderer.setClearColor("#211d20");
 
-			self.groupContainer.add(floor, directionalLight);
+			this.groupContainer.add(floor, directionalLight);
 
-			self.app.scene.add(self.groupContainer);
+			this.app.scene.add(this.groupContainer);
 
-			self.debugObject.envMapIntensity = 0.4;
-			self.gui = self.appGui?.addFolder(self.folderName);
-			self.gui
-				.add(self.debugObject, "envMapIntensity")
+			this.debugObject.envMapIntensity = 0.4;
+			this.gui = this.appGui?.addFolder(this.folderName);
+			this.gui
+				.add(this.debugObject, "envMapIntensity")
 				.min(0)
 				.max(4)
 				.step(0.001)
-				.onChange(() => self.updateAllMaterials(self));
+				.onChange(() => this.updateAllMaterials());
 
-			self.gui
+			this.gui
 				.add(directionalLight, "intensity")
 				.min(0)
 				.max(10)
 				.step(0.001)
 				.name("lightIntensity");
-			self.gui
+			this.gui
 				.add(directionalLight.position, "x")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("lightX");
-			self.gui
+			this.gui
 				.add(directionalLight.position, "y")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("lightY");
-			self.gui
+			this.gui
 				.add(directionalLight.position, "z")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("lightZ");
-			self.gui
-				.add({ function: () => self.destroy(self) }, "function")
+			this.gui
+				.add({ function: () => this.destroy() }, "function")
 				.name("Destroy");
 		}
 	}
 
-	updateAllMaterials(self: Lesson_26) {
-		self.groupContainer?.traverse((child) => {
+	updateAllMaterials(this: Lesson_26) {
+		this.groupContainer?.traverse((child) => {
 			if (
 				child instanceof THREE.Mesh &&
 				child.material instanceof THREE.MeshStandardMaterial
 			) {
 				// child.material.envMap = environmentMap
-				child.material.envMapIntensity = self.debugObject.envMapIntensity ?? 0;
+				child.material.envMapIntensity = this.debugObject.envMapIntensity ?? 0;
 				child.material.needsUpdate = true;
 				child.castShadow = true;
 				child.receiveShadow = true;

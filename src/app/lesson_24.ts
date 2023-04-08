@@ -3,7 +3,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { GUI } from "lil-gui";
 
 // HELPERS
-import initThreeJs from "../helpers/threejs/initThreeJs";
+import initThreeJs from "../helpers/ThreeApp";
 
 // MODELS
 import HamburgerGLTF from "../assets/models/hamburger/hamburger.glb?url";

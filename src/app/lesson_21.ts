@@ -3,7 +3,7 @@ import { GUI } from "lil-gui";
 import Cannon, { Vec3 } from "cannon";
 
 // HELPERS
-import initThreeJs from "../helpers/threejs/initThreeJs";
+import ThreeApp from "../helpers/ThreeApp";
 
 // TEXTURES
 import nxEnvImg from "../assets/img/textures/environmentMaps/0/nx.jpg";
@@ -23,7 +23,7 @@ export default ({
 	onConstruct,
 	onDestruct,
 }: {
-	app: ReturnType<typeof initThreeJs>;
+	app: ThreeApp;
 	appGui: GUI;
 	CubeTextureLoader: THREE.CubeTextureLoader;
 	onConstruct?: (formsPhysic: {
