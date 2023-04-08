@@ -3,7 +3,7 @@ import { GUI } from "lil-gui";
 import Cannon from "cannon";
 
 // HELPERS
-import initThreeJs from "../helpers/initThreeJs";
+import initThreeJs from "../helpers/threejs/initThreeJs";
 
 /* IMGS */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";

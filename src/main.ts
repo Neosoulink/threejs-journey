@@ -9,7 +9,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 
 /* HELPERS */
-import initThreeJs from "./helpers/initThreeJs";
+import initThreeJs from "./helpers/threejs/initThreeJs";
 
 /* COMPONENTS */
 import Cube from "./components/Cube";

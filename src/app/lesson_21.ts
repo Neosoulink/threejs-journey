@@ -3,7 +3,7 @@ import { GUI } from "lil-gui";
 import Cannon, { Vec3 } from "cannon";
 
 // HELPERS
-import initThreeJs from "../helpers/initThreeJs";
+import initThreeJs from "../helpers/threejs/initThreeJs";
 
 // TEXTURES
 import nxEnvImg from "../assets/img/textures/environmentMaps/0/nx.jpg";
