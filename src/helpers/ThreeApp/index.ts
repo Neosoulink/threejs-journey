@@ -33,7 +33,7 @@ export default class ThreeApp {
 	time!: Time;
 	world!: World;
 
-	constructor(props: initThreeProps, appDom = "canvas#app") {
+	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
 			return intense;
 		}
@@ -45,7 +45,7 @@ export default class ThreeApp {
 		const SIZES_INSTANCE = new Sizes({
 			height: SCENE_SIZES.height,
 			width: SCENE_SIZES.width,
-			listenResize: props.autoSceneResize,
+			listenResize: props?.autoSceneResize,
 		});
 		const timeInstance = new Time();
 
@@ -58,7 +58,7 @@ export default class ThreeApp {
 			width: SIZES_INSTANCE.width,
 		};
 		this.canvas = DOM_APP;
-		this.camera2 = new Camera({ enableControls: !!props.enableControls });
+		this.camera2 = new Camera({ enableControls: !!props?.enableControls });
 		this.control = this.camera2.controls;
 		this.rendererIntense = new Renderer();
 		this.world = new World();
