@@ -1,7 +1,12 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+// HELPERS
 import Sizes, { sceneSizesType } from "./utils/Sizes";
 import Time from "./utils/Time";
+import Camera from "./Camera";
+
+let intense: ThreeApp;
 
 export interface initThreeProps {
 	enableOrbit?: boolean;
@@ -17,16 +22,23 @@ export default class ThreeApp {
 		width: window.innerWidth,
 		height: window.innerHeight,
 	};
-	sceneSizes: sceneSizesType;
-	scene: THREE.Scene;
+	sceneSizes!: sceneSizesType;
+	scene!: THREE.Scene;
 	canvas?: HTMLCanvasElement;
-	camera: THREE.PerspectiveCamera;
-	renderer: THREE.WebGLRenderer;
-	control: OrbitControls;
-	sizes: Sizes;
-	time: Time;
+	camera!: THREE.PerspectiveCamera;
+	camera2!: Camera;
+	renderer!: THREE.WebGLRenderer;
+	control!: OrbitControls;
+	sizes!: Sizes;
+	time!: Time;
 
 	constructor(props: initThreeProps, appDom = "canvas#app") {
+		if (intense) {
+			return intense;
+		}
+
+		intense = this;
+
 		const DOM_APP = document.querySelector<HTMLCanvasElement>(appDom)!;
 		const SCENE_SIZES = props?.sceneSizes ?? this.viewPortSize;
 		const SizesInstance = new Sizes({
@@ -46,11 +58,13 @@ export default class ThreeApp {
 			0.1,
 			1000
 		);
+		this.camera2 = new Camera();
 		this.renderer = new THREE.WebGLRenderer({
 			canvas: DOM_APP,
 			antialias: true,
 			alpha: true,
 		});
+		this.canvas = DOM_APP;
 		this.renderer.setSize(SCENE_SIZES.width, SCENE_SIZES.height);
 		this.renderer.setPixelRatio(SizesInstance.pixelRatio);
 
