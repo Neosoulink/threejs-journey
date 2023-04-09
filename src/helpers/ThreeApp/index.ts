@@ -5,6 +5,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Sizes, { sceneSizesType } from "./utils/Sizes";
 import Time from "./utils/Time";
 import Camera from "./Camera";
+import Renderer from "./Renderer";
 
 let intense: ThreeApp;
 
@@ -25,7 +26,7 @@ export default class ThreeApp {
 	scene!: THREE.Scene;
 	canvas?: HTMLCanvasElement;
 	camera2!: Camera;
-	renderer!: THREE.WebGLRenderer;
+	rendererIntense!: Renderer;
 	control?: OrbitControls;
 	sizes!: Sizes;
 	time!: Time;
@@ -54,16 +55,10 @@ export default class ThreeApp {
 			height: SIZES_INSTANCE.height,
 			width: SIZES_INSTANCE.width,
 		};
-		this.renderer = new THREE.WebGLRenderer({
-			canvas: DOM_APP,
-			antialias: true,
-			alpha: true,
-		});
 		this.canvas = DOM_APP;
-		this.renderer.setSize(SCENE_SIZES.width, SCENE_SIZES.height);
-		this.renderer.setPixelRatio(SIZES_INSTANCE.pixelRatio);
 		this.camera2 = new Camera({ enableControls: !!props.enableControls });
 		this.control = this.camera2.controls;
+		this.rendererIntense = new Renderer();
 
 		if (typeof props?.axesSizes === "number") {
 			const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
@@ -80,8 +75,6 @@ export default class ThreeApp {
 	}
 
 	animate(callback: () => unknown = () => {}) {
-		this.renderer.render(this.scene, this.camera);
-
 		callback();
 		requestAnimationFrame(() => this.animate(callback));
 	}
@@ -89,15 +82,19 @@ export default class ThreeApp {
 	resize() {
 		this.camera2.resize();
 
-		this.renderer.setSize(this.sizes.width, this.sizes.height);
-		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		this.rendererIntense.resize();
 	}
 
 	update() {
 		this.camera2.update();
+		this.rendererIntense.update();
 	}
 
 	get camera() {
 		return this.camera2.intense;
+	}
+
+	get renderer() {
+		return this.rendererIntense.intense;
 	}
 }
