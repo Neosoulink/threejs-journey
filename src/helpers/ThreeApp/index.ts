@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Sizes, { sceneSizesType } from "./Sizes";
-import Time from "./Time";
+import Sizes, { sceneSizesType } from "./utils/Sizes";
+import Time from "./utils/Time";
 
 export interface initThreeProps {
 	enableOrbit?: boolean;
