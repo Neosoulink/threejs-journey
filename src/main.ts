@@ -67,7 +67,7 @@ import Lesson_26 from "./app/lesson_26";
 
 // APP
 const APP = new ThreeApp({
-	enableOrbit: true,
+	enableControls: true,
 	axesSizes: 2,
 });
 
@@ -89,10 +89,12 @@ const APP_CONFIG = {
 const _GUI = new GUI();
 
 const _GUI_MAIN_FOLDER = _GUI.addFolder("Main");
-_GUI_MAIN_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
-_GUI_MAIN_FOLDER
-	.add(APP_CONFIG, "enableDblClickFullScreen")
-	.name("enable dblclick FullScreen");
+if (APP.control) {
+	_GUI_MAIN_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
+	_GUI_MAIN_FOLDER
+		.add(APP_CONFIG, "enableDblClickFullScreen")
+		.name("enable dblclick FullScreen");
+}
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
