@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Sizes, { sceneSizesType } from "./Sizes";
+import Time from "./Time";
 
 export interface initThreeProps {
 	enableOrbit?: boolean;
@@ -23,6 +24,7 @@ export default class ThreeApp {
 	renderer: THREE.WebGLRenderer;
 	control: OrbitControls;
 	sizes: Sizes;
+	time: Time;
 
 	constructor(props: initThreeProps, appDom = "canvas#app") {
 		const DOM_APP = document.querySelector<HTMLCanvasElement>(appDom)!;
@@ -31,34 +33,19 @@ export default class ThreeApp {
 			sceneSizes: SCENE_SIZES,
 			autoSceneResize: props.autoSceneResize,
 		});
+		const timeInstance = new Time();
 
-		this.sizes = SizesInstance;
-
-		this.sceneSizes = SizesInstance.sceneSizes;
-
-		// SCENE & CAMERA
+		// SETUP
 		this.scene = new THREE.Scene();
-
-		// Perspective camera
+		this.sizes = SizesInstance;
+		this.time = timeInstance;
+		this.sceneSizes = SizesInstance.sceneSizes;
 		this.camera = new THREE.PerspectiveCamera(
 			75,
 			SCENE_SIZES.width / SCENE_SIZES.height,
 			0.1,
 			1000
 		);
-
-		// Orthographic Camera
-		// const ASPECT_RATIO = SCENE_SIZES.width / SCENE_SIZES.height;
-		// camera = new THREE.OrthographicCamera(
-		// 	-1 * ASPECT_RATIO,
-		// 	1 * ASPECT_RATIO,
-		// 	1,
-		// 	1,
-		// 	0.1,
-		// 	100
-		// );
-		// console.log(ASPECT_RATIO);
-
 		this.renderer = new THREE.WebGLRenderer({
 			canvas: DOM_APP,
 			antialias: true,
@@ -67,7 +54,9 @@ export default class ThreeApp {
 		this.renderer.setSize(SCENE_SIZES.width, SCENE_SIZES.height);
 		this.renderer.setPixelRatio(SizesInstance.pixelRatio);
 
-		// ORBIT CONTROL
+		/**
+		 * Orbit control
+		 */
 		const ORBIT_CONTROL = new OrbitControls(
 			this.camera,
 			this.renderer.domElement
@@ -98,11 +87,20 @@ export default class ThreeApp {
 				this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 			});
 		}
+
+		this.time.on("tick", () => {
+			this.update();
+		});
 	}
 
-	animate(callback: () => any = () => {}) {
+	animate(callback: () => unknown = () => {}) {
 		this.renderer.render(this.scene, this.camera);
+
 		callback();
 		requestAnimationFrame(() => this.animate(callback));
 	}
+
+	resize() {}
+
+	update() {}
 }
