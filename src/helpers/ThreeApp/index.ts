@@ -6,6 +6,7 @@ import Sizes, { sceneSizesType } from "./utils/Sizes";
 import Time from "./utils/Time";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
+import World from "./world";
 
 let intense: ThreeApp;
 
@@ -30,6 +31,7 @@ export default class ThreeApp {
 	control?: OrbitControls;
 	sizes!: Sizes;
 	time!: Time;
+	world!: World;
 
 	constructor(props: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
@@ -59,6 +61,7 @@ export default class ThreeApp {
 		this.camera2 = new Camera({ enableControls: !!props.enableControls });
 		this.control = this.camera2.controls;
 		this.rendererIntense = new Renderer();
+		this.world = new World();
 
 		if (typeof props?.axesSizes === "number") {
 			const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
