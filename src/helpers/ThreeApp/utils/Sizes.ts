@@ -1,35 +1,40 @@
 import EventEmitter from "events";
 
 export interface sceneSizesType {
-	width: number;
 	height: number;
+	width: number;
 }
 
 export interface SizesProps {
-	sceneSizes: sceneSizesType;
-	autoSceneResize?: boolean;
+	height?: number;
+	width?: number;
+	listenResize?: boolean;
 }
 
 export default class Sizes extends EventEmitter {
-	sceneSizes: SizesProps["sceneSizes"];
-	autoSceneResize: SizesProps["autoSceneResize"];
+	width = window.innerWidth;
+	height = window.innerHeight;
+	listenResize: boolean;
 	pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-	constructor(props: SizesProps) {
+	constructor({ height, width, listenResize = true }: SizesProps) {
 		super();
 
-		this.sceneSizes = props.sceneSizes;
-		this.autoSceneResize = props.autoSceneResize;
+		// SETUP
+		this.height = Number(height ?? this.height);
+		this.width = Number(width ?? this.width);
+		this.listenResize = !!listenResize;
 
-		if (
-			props?.autoSceneResize === undefined ||
-			props?.autoSceneResize === true
-		) {
+		if (this.listenResize) {
 			window.addEventListener("resize", () => {
-				this.sceneSizes.width = window.innerWidth;
-				this.sceneSizes.height = window.innerHeight;
+				this.height = window.innerHeight;
+				this.width = window.innerWidth;
+				this.pixelRatio = this.pixelRatio = Math.min(
+					window.devicePixelRatio,
+					2
+				);
 
-				this.emit("resize", this.sceneSizes);
+				this.emit("resize", { width: this.width, height: this.height });
 			});
 		}
 	}
