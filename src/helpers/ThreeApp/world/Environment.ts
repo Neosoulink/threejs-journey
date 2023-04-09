@@ -1,4 +1,6 @@
 import * as THREE from "three";
+
+// CLASSES
 import ThreeApp from "..";
 
 export default class Environment {

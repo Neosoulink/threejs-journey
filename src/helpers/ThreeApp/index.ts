@@ -1,12 +1,18 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+
+// CONSTANTS
+import SOURCES from "./sources";
+
+
 // HELPERS
 import Sizes, { sceneSizesType } from "./utils/Sizes";
 import Time from "./utils/Time";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
 import World from "./world";
+import Resources from "./utils/Resoureces";
 
 let intense: ThreeApp;
 
@@ -32,6 +38,7 @@ export default class ThreeApp {
 	sizes!: Sizes;
 	time!: Time;
 	world!: World;
+	resources!: Resources;
 
 	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
@@ -61,6 +68,7 @@ export default class ThreeApp {
 		this.camera2 = new Camera({ enableControls: !!props?.enableControls });
 		this.control = this.camera2.controls;
 		this.rendererIntense = new Renderer();
+		this.resources = new Resources(SOURCES);
 		this.world = new World();
 
 		if (typeof props?.axesSizes === "number") {
