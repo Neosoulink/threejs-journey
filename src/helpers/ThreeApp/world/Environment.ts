@@ -5,14 +5,18 @@ import ThreeApp from "..";
 
 export default class Environment {
 	private app = new ThreeApp({});
-	sunLight = new THREE.DirectionalLight(0xffffffff, 4);
+
+	sunLight = new THREE.DirectionalLight("#ffffff", 4);
 	environmentMap?: {
 		intensity: number;
 		texture: THREE.CubeTexture;
 		updateMaterials?: () => unknown;
 	};
 
-	constructor() {}
+	constructor() {
+		this.setSunLight();
+		this.setEnvironmentMap();
+	}
 
 	setSunLight() {
 		this.sunLight.castShadow = true;
@@ -20,9 +24,11 @@ export default class Environment {
 		this.sunLight.shadow.mapSize.set(1024, 1024);
 		this.sunLight.shadow.normalBias = 0.05;
 		this.sunLight.position.set(3.5, 2, -1.25);
+
+		this.app.scene.add(this.sunLight);
 	}
 
-	steEnvironmentMap() {
+	setEnvironmentMap() {
 		const _TEXTURE = this.app.resources.items["environmentMapTexture"];
 
 		if (_TEXTURE instanceof THREE.CubeTexture) {
@@ -47,6 +53,7 @@ export default class Environment {
 					}
 				});
 			};
+
 			this.environmentMap.updateMaterials();
 		}
 	}
