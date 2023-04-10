@@ -4,11 +4,14 @@ import Environment from "./Environment";
 
 export default class Camera {
 	app = new ThreeApp({});
-	environment: Environment;
+	environment?: Environment;
 
 	constructor() {
 		// Setup
-		this.environment = new Environment();
+
+		this.app.resources.on("ready", () => {
+			this.environment = new Environment();
+		});
 	}
 
 	resize() {}

@@ -14,7 +14,7 @@ export type LoadedItemType = GLTF | THREE.Texture | THREE.CubeTexture;
 export default class Resources extends EventEmitter {
 	app: ThreeApp;
 	sources: ResourcesConstructor[];
-	items: { [name: string]: LoadedItemType } = {};
+	items: { [name: SourceType['name']]: LoadedItemType } = {};
 	toLoad = 0;
 	loaded = 0;
 	loaders: {
