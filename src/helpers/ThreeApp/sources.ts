@@ -1,4 +1,7 @@
-// Textures
+// MODELS
+import FoxGLTF from "../../assets/models/Fox/glTF/Fox.gltf?url";
+
+// TEXTURES
 import nxEnvImg from "../../assets/img/textures/environmentMaps/0/nx.jpg";
 import nyEnvImg from "../../assets/img/textures/environmentMaps/0/ny.jpg";
 import nzEnvImg from "../../assets/img/textures/environmentMaps/0/nz.jpg";
@@ -30,6 +33,11 @@ const SOURCES: SourceType[] = [
 		name: "grassNormalTexture",
 		type: "texture",
 		path: dirtNormalImg,
+	},
+	{
+		name: "foxModel",
+		type: "gltfModel",
+		path: FoxGLTF,
 	},
 ];
 

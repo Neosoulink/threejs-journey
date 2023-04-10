@@ -1,10 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-
 // CONSTANTS
 import SOURCES from "./sources";
-
 
 // HELPERS
 import Sizes, { sceneSizesType } from "./utils/Sizes";
@@ -99,6 +97,7 @@ export default class ThreeApp {
 	update() {
 		this.camera2.update();
 		this.rendererIntense.update();
+		this.world.update();
 	}
 
 	get camera() {
