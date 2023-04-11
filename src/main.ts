@@ -1388,7 +1388,7 @@ if (HAUNTED_HOUSE_GROUP.visible) {
 
 /* Animate */
 let previewsElapseTime = 0;
-APP.setUpdateCallback = () => {
+APP.addNewUpdateCallback = () => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
 	// const DELTA_TIME = CURRENT_TIME - savedTime;

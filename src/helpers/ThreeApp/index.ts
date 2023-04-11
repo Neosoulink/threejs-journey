@@ -41,7 +41,7 @@ export default class ThreeApp {
 	world!: World;
 	resources!: Resources;
 	debug?: Debug;
-	private updateCallback?: () => unknown;
+	private updateCallbacks: (() => unknown)[] = [];
 
 	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
@@ -102,8 +102,10 @@ export default class ThreeApp {
 		this.rendererIntense.update();
 		this.world.update();
 
-		if (this.updateCallback) {
-			this.updateCallback();
+		if (this.updateCallbacks.length) {
+			this.updateCallbacks.map((callback) => {
+				callback();
+			});
 		}
 	}
 
@@ -143,7 +145,7 @@ export default class ThreeApp {
 		return this.rendererIntense.intense;
 	}
 
-	set setUpdateCallback(callback: typeof this.updateCallback) {
-		this.updateCallback = callback;
+	set addNewUpdateCallback(callback: () => unknown) {
+		this.updateCallbacks.push(callback);
 	}
 }
