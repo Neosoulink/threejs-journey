@@ -73,7 +73,7 @@ export default class ThreeApp {
 		this.control = this.camera2.controls;
 		this.rendererIntense = new Renderer();
 		this.resources = new Resources(SOURCES);
-		this.world = new World();
+		// this.world = new World();
 
 		if (typeof props?.axesSizes === "number") {
 			const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
