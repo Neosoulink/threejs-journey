@@ -11,6 +11,7 @@ import Camera from "./Camera";
 import Renderer from "./Renderer";
 import World from "./world";
 import Resources from "./utils/Resoureces";
+import Debug from "./utils/Debug";
 
 let intense: ThreeApp;
 
@@ -37,6 +38,7 @@ export default class ThreeApp {
 	time!: Time;
 	world!: World;
 	resources!: Resources;
+	debug?: Debug;
 
 	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
@@ -55,6 +57,7 @@ export default class ThreeApp {
 		const timeInstance = new Time();
 
 		// SETUP
+		this.debug = new Debug();
 		this.scene = new THREE.Scene();
 		this.sizes = SIZES_INSTANCE;
 		this.time = timeInstance;

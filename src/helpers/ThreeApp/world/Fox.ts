@@ -1,8 +1,9 @@
 import * as THREE from "three";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import GUI from "lil-gui";
 
 // CLASSES
 import ThreeApp from "..";
-import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
 export type foxActionAnimationNames =
 	| "idle"
@@ -22,8 +23,14 @@ export default class Fox {
 	} = {
 		actions: {},
 	};
+	debugFolder?: GUI;
 
 	constructor() {
+		// Debug
+		if (this.app.debug?.active && this.app.debug.ui) {
+			this.debugFolder = this.app.debug.ui.addFolder("Fox");
+		}
+
 		this.setModel();
 		this.setAnimation();
 	}
@@ -81,22 +88,22 @@ export default class Fox {
 			};
 
 			// Debug
-			// if (this.debug.active) {
-			// 	const debugObject = {
-			// 		playIdle: () => {
-			// 			this.animation.play("idle");
-			// 		},
-			// 		playWalking: () => {
-			// 			this.animation.play("walking");
-			// 		},
-			// 		playRunning: () => {
-			// 			this.animation.play("running");
-			// 		},
-			// 	};
-			// 	this.debugFolder.add(debugObject, "playIdle");
-			// 	this.debugFolder.add(debugObject, "playWalking");
-			// 	this.debugFolder.add(debugObject, "playRunning");
-			// }
+			if (this.app.debug?.active) {
+				const debugObject = {
+					playIdle: () => {
+						this.animation?.play && this.animation?.play("idle");
+					},
+					playWalking: () => {
+						this.animation?.play && this.animation.play("walking");
+					},
+					playRunning: () => {
+						this.animation?.play && this.animation.play("running");
+					},
+				};
+				this.debugFolder?.add(debugObject, "playIdle");
+				this.debugFolder?.add(debugObject, "playWalking");
+				this.debugFolder?.add(debugObject, "playRunning");
+			}
 		}
 	}
 
