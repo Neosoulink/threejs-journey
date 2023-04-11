@@ -14,6 +14,8 @@ import Resources from "./utils/Resoureces";
 import Debug from "./utils/Debug";
 
 let intense: ThreeApp;
+let tickEvent: () => unknown | undefined;
+let resizeEvent: () => unknown | undefined;
 
 export interface initThreeProps {
 	enableControls?: boolean;
@@ -77,13 +79,15 @@ export default class ThreeApp {
 			this.scene.add(AXES_HELPER);
 		}
 
-		this.time.on("tick", () => {
+		tickEvent = () => {
 			this.update();
-		});
-
-		this.sizes.on("resize", () => {
+		};
+		resizeEvent = () => {
 			this.resize();
-		});
+		};
+
+		this.time.on("tick", tickEvent);
+		this.sizes.on("resize", resizeEvent);
 	}
 
 	animate(callback: () => unknown = () => {}) {
@@ -101,6 +105,34 @@ export default class ThreeApp {
 		this.camera2.update();
 		this.rendererIntense.update();
 		this.world.update();
+	}
+
+	destroy() {
+		tickEvent && this.time.off("tick", tickEvent);
+		resizeEvent && this.sizes.off("resize", resizeEvent);
+
+		// Traverse the whole scene
+		this.scene.traverse((child) => {
+			// Test if it's a mesh
+			if (child instanceof THREE.Mesh) {
+				child.geometry.dispose();
+
+				// Loop through the material properties
+				for (const key in child.material) {
+					const value = child.material[key];
+
+					// Test if there is a dispose function
+					if (value && typeof value.dispose === "function") {
+						value.dispose();
+					}
+				}
+			}
+		});
+
+		this.control?.dispose();
+		this.renderer.dispose();
+
+		if (this.debug?.active) this.debug.ui?.destroy();
 	}
 
 	get camera() {
