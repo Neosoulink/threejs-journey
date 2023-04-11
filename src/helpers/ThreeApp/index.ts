@@ -41,6 +41,7 @@ export default class ThreeApp {
 	world!: World;
 	resources!: Resources;
 	debug?: Debug;
+	private updateCallback?: () => unknown;
 
 	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
@@ -90,11 +91,6 @@ export default class ThreeApp {
 		this.sizes.on("resize", resizeEvent);
 	}
 
-	animate(callback: () => unknown = () => {}) {
-		callback();
-		requestAnimationFrame(() => this.animate(callback));
-	}
-
 	resize() {
 		this.camera2.resize();
 
@@ -105,6 +101,10 @@ export default class ThreeApp {
 		this.camera2.update();
 		this.rendererIntense.update();
 		this.world.update();
+
+		if (this.updateCallback) {
+			this.updateCallback();
+		}
 	}
 
 	destroy() {
@@ -141,5 +141,9 @@ export default class ThreeApp {
 
 	get renderer() {
 		return this.rendererIntense.intense;
+	}
+
+	set setUpdateCallback(callback: typeof this.updateCallback) {
+		this.updateCallback = callback;
 	}
 }
