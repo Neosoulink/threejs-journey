@@ -63,6 +63,7 @@ import lesson_24 from "./app/lesson_24";
 import lesson_22 from "./app/lesson_22";
 import lesson_21 from "./app/lesson_21";
 import Lesson_26 from "./app/lesson_26";
+import Lesson_27 from "./app/Lesson_27";
 
 // APP
 const APP = new ThreeApp({
@@ -1295,6 +1296,8 @@ const lesson_26 = new Lesson_26({
 	onConstruct: () => {},
 	onDestruct: () => {},
 });
+
+new Lesson_27();
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
