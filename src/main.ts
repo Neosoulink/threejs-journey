@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Cannon from "cannon";
 import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
@@ -6,10 +7,9 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
-import Cannon, { Vec3 } from "cannon";
 
 /* HELPERS */
-import initThreeJs from "./helpers/initThreeJs";
+import ThreeApp from "./helpers/ThreeApp";
 
 /* COMPONENTS */
 import Cube from "./components/Cube";
@@ -19,14 +19,6 @@ import "./assets/css/style.css";
 
 /* FONTS */
 import HelvetikerFont from "./assets/fonts/helvetiker/helvetiker_regular.typeface.json?url";
-
-/* MODELS */
-/* gltf */
-// import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
-// import DuckGLTF_Draco from "./assets/models/Duck/glTF-Draco/Duck.gltf?url";
-import FoxGLTF from "./assets/models/Fox/glTF/Fox.gltf?url";
-import HamburgerGLTF from "./assets/models/hamburger/hamburger.glb?url";
-import FlightHelmetGLTF from "./assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 
 /* IMAGES */
 /* Door images */
@@ -65,12 +57,17 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
-/* Sounds */
-import tocSound from "./assets/sounds/hit.mp3";
+
+// MODULES
+import lesson_25 from "./app/lesson_25";
+import lesson_24 from "./app/lesson_24";
+import lesson_22 from "./app/lesson_22";
+import lesson_21 from "./app/lesson_21";
+import Lesson_26 from "./app/lesson_26";
 
 // APP
-const APP = initThreeJs({
-	enableOrbit: true,
+const APP = new ThreeApp({
+	enableControls: true,
 	axesSizes: 2,
 });
 
@@ -92,10 +89,12 @@ const APP_CONFIG = {
 const _GUI = new GUI();
 
 const _GUI_MAIN_FOLDER = _GUI.addFolder("Main");
-_GUI_MAIN_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
-_GUI_MAIN_FOLDER
-	.add(APP_CONFIG, "enableDblClickFullScreen")
-	.name("enable dblclick FullScreen");
+if (APP.control) {
+	_GUI_MAIN_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
+	_GUI_MAIN_FOLDER
+		.add(APP_CONFIG, "enableDblClickFullScreen")
+		.name("enable dblclick FullScreen");
+}
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -1235,493 +1234,78 @@ if (SCROLL_BASED_GROUP.visible) {
 }
 /* =========== END SCROLL BASED ANIMATION =========== */
 
-/* =========== START PHYSICS WORLD =========== */
-/* Groups */
-const PHYSICS_WORLD_GROUP = new THREE.Group();
-PHYSICS_WORLD_GROUP.visible = false;
+/**
+ * Lesson 21 | Physic World
+ */
+let PHYSICS_WORLD_INSTANCE: Cannon.World | undefined,
+	PHYSIC_WORLD_CREATED_SPHERES:
+		| {
+				mesh: THREE.Mesh;
+				body: Cannon.Body;
+		  }[]
+		| undefined,
+	PHYSIC_WORLD_CREATED_BOXES:
+		| {
+				mesh: THREE.Mesh;
+				body: Cannon.Body;
+		  }[]
+		| undefined;
 
-/* Sounds */
-const PHYSIC_WORLD_TOC_SOUND = new Audio(tocSound);
-
-/* World */
-const PHYSICS_WORLD_INSTANCE = new Cannon.World();
-PHYSICS_WORLD_INSTANCE.broadphase = new Cannon.SAPBroadphase(
-	PHYSICS_WORLD_INSTANCE
-);
-PHYSICS_WORLD_INSTANCE.allowSleep = true;
-PHYSICS_WORLD_INSTANCE.gravity.set(0, -9.82, 0);
-
-/* Physic Materials */
-const PHYSICS_WORLD_DEFAULT_MATERIAL = new Cannon.Material("default");
-
-const PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL = new Cannon.ContactMaterial(
-	PHYSICS_WORLD_DEFAULT_MATERIAL,
-	PHYSICS_WORLD_DEFAULT_MATERIAL,
-	{
-		friction: 0.1,
-		restitution: 0.7,
-	}
-);
-
-/* Objects */
-// const PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE = new Cannon.Sphere(0.5);
-// const PHYSICS_WORLD_SPHERE_PHYSIC_BODY = new Cannon.Body({
-// 	mass: 1,
-// 	position: new Cannon.Vec3(0, 3, 0),
-// 	shape: PHYSICS_WORLD_SPHERE_PHYSIC_SHAPE,
-// });
-
-const PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE = new Cannon.Plane();
-const PHYSICS_WORLD_FLOOR_PHYSIC_BODY = new Cannon.Body();
-PHYSICS_WORLD_FLOOR_PHYSIC_BODY.quaternion.setFromAxisAngle(
-	new Cannon.Vec3(-1, 0, 0),
-	Math.PI * 0.5
-);
-PHYSICS_WORLD_FLOOR_PHYSIC_BODY.mass = 0;
-PHYSICS_WORLD_FLOOR_PHYSIC_BODY.addShape(PHYSICS_WORLD_FLOOR_PHYSIC_SHAPE);
-
-/* Forces */
-// PHYSICS_WORLD_SPHERE_PHYSIC_BODY.applyLocalForce(
-// 	new Cannon.Vec3(150, 0, 0),
-// 	new Cannon.Vec3(0, 0, 0)
-// );
-
-PHYSICS_WORLD_INSTANCE.addContactMaterial(
-	PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL
-);
-PHYSICS_WORLD_INSTANCE.defaultContactMaterial =
-	PHYSICS_WORLD_DEFAULT_CONTACT_MATERIAL;
-// PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_SPHERE_PHYSIC_BODY);
-PHYSICS_WORLD_INSTANCE.addBody(PHYSICS_WORLD_FLOOR_PHYSIC_BODY);
-
-/* Geometries */
-const PHYSIC_WORLD_SPHERE_GEOMETRY = new THREE.SphereGeometry(1, 20, 20);
-const PHYSIC_WORLD_BOX_GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
-
-/* Materials */
-const PHYSIC_WORLD_DEFAULT_MATERIAL = new THREE.MeshStandardMaterial({
-	metalness: 0.3,
-	roughness: 0.4,
-	envMap: ENVIRONMENT_MAP_TEXTURE,
-	envMapIntensity: 0.5,
-});
-/* Meshes */
-/* Sphere */
-// const PHYSICS_WORLD_SPHERE = new THREE.Mesh(
-// 	new THREE.SphereGeometry(0.5, 32, 32),
-// 	PHYSIC_WORLD_DEFAULT_MATERIAL
-// );
-// PHYSICS_WORLD_SPHERE.castShadow = true;
-// PHYSICS_WORLD_SPHERE.position.y = 0.5;
-
-/* Floor */
-const PHYSICS_WORLD_FLOOR = new THREE.Mesh(
-	new THREE.PlaneGeometry(10, 10),
-	new THREE.MeshStandardMaterial({
-		color: "#777777",
-		metalness: 0.3,
-		roughness: 0.4,
-		envMap: ENVIRONMENT_MAP_TEXTURE,
-		envMapIntensity: 0.5,
-	})
-);
-PHYSICS_WORLD_FLOOR.receiveShadow = true;
-PHYSICS_WORLD_FLOOR.rotation.x = -Math.PI * 0.5;
-
-/* Lights */
-const PHYSICS_WORLD_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.7);
-const PHYSICS_WORLD_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(
-	0xffffff,
-	0.2
-);
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.castShadow = true;
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
-PHYSICS_WORLD_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
-
-PHYSICS_WORLD_GROUP.add(
-	// PHYSICS_WORLD_SPHERE,
-	PHYSICS_WORLD_FLOOR,
-	PHYSICS_WORLD_AMBIENT_LIGHT,
-	PHYSICS_WORLD_DIRECTIONAL_LIGHT
-);
-
-/* Utils */
-const PHYSIC_WORLD_CREATED_SPHERES: { mesh: THREE.Mesh; body: Cannon.Body }[] =
-	[];
-const PHYSIC_WORLD_CREATED_BOXES: {
-	mesh: THREE.Mesh;
-	body: Cannon.Body;
-}[] = [];
-const physicWorldPlayTocSound = (collision: any) => {
-	if (collision.contact.getImpactVelocityAlongNormal() > 1.5) {
-		PHYSIC_WORLD_TOC_SOUND.volume = Math.random();
-		PHYSIC_WORLD_TOC_SOUND.currentTime = 0;
-		PHYSIC_WORLD_TOC_SOUND.play();
-	}
-};
-const physicWorldCreateSphere = (
-	radius: number,
-	position: { x: number; y: number; z: number }
-) => {
-	/* Mesh */
-	const _SPHERE_MESH = new THREE.Mesh(
-		PHYSIC_WORLD_SPHERE_GEOMETRY,
-		PHYSIC_WORLD_DEFAULT_MATERIAL
-	);
-	_SPHERE_MESH.scale.set(radius, radius, radius);
-	_SPHERE_MESH.castShadow = true;
-	_SPHERE_MESH.position.x = position.x;
-	_SPHERE_MESH.position.y = position.y;
-	_SPHERE_MESH.position.z = position.z;
-
-	/* Physic body */
-	const _PHYSIC_SPHERE_BODY = new Cannon.Body({
-		mass: 1,
-		shape: new Cannon.Sphere(radius),
-		position: new Vec3(position.x, position.y, position.z),
-	});
-
-	_PHYSIC_SPHERE_BODY.addEventListener("collide", physicWorldPlayTocSound);
-	PHYSICS_WORLD_GROUP.add(_SPHERE_MESH);
-	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
-
-	PHYSIC_WORLD_CREATED_SPHERES.push({
-		mesh: _SPHERE_MESH,
-		body: _PHYSIC_SPHERE_BODY,
-	});
-};
-const physicWorldCreateBox = (
-	radius: number,
-	position: { x: number; y: number; z: number }
-) => {
-	/* Mesh */
-	const _BOX_MESH = new THREE.Mesh(
-		PHYSIC_WORLD_BOX_GEOMETRY,
-		PHYSIC_WORLD_DEFAULT_MATERIAL
-	);
-	_BOX_MESH.scale.set(radius, radius, radius);
-	_BOX_MESH.castShadow = true;
-	_BOX_MESH.position.x = position.x;
-	_BOX_MESH.position.y = position.y;
-	_BOX_MESH.position.z = position.z;
-
-	/* Physic body */
-	const _PHYSIC_SPHERE_BODY = new Cannon.Body({
-		mass: 1,
-		shape: new Cannon.Box(new Cannon.Vec3(radius / 2, radius / 2, radius / 2)),
-		position: new Vec3(position.x, position.y, position.z),
-	});
-
-	_PHYSIC_SPHERE_BODY.addEventListener("collide", physicWorldPlayTocSound);
-	PHYSICS_WORLD_GROUP.add(_BOX_MESH);
-	PHYSICS_WORLD_INSTANCE.addBody(_PHYSIC_SPHERE_BODY);
-
-	PHYSIC_WORLD_CREATED_BOXES.push({
-		mesh: _BOX_MESH,
-		body: _PHYSIC_SPHERE_BODY,
-	});
-};
-
-const PHYSIC_WORLD_GUI_OPTIONS = {
-	createSphere: () =>
-		physicWorldCreateSphere(Math.random() * 0.5, {
-			x: (Math.random() - 0.5) * 3,
-			y: 2.5,
-			z: (Math.random() - 0.5) * 3,
-		}),
-
-	createBox: () =>
-		physicWorldCreateBox(Math.random() * 0.5, {
-			x: (Math.random() - 0.5) * 3,
-			y: 2.5,
-			z: (Math.random() - 0.5) * 3,
-		}),
-	reset: () => {
-		PHYSIC_WORLD_CREATED_SPHERES.forEach((item) => {
-			item.body.removeEventListener("collide", physicWorldPlayTocSound);
-			PHYSICS_WORLD_INSTANCE.remove(item.body);
-
-			PHYSICS_WORLD_GROUP.remove(item.mesh);
-		});
-
-		PHYSIC_WORLD_CREATED_BOXES.forEach((item) => {
-			item.body.removeEventListener("collide", physicWorldPlayTocSound);
-			PHYSICS_WORLD_INSTANCE.remove(item.body);
-
-			PHYSICS_WORLD_GROUP.remove(item.mesh);
-		});
-
-		PHYSIC_WORLD_CREATED_SPHERES.splice(0, PHYSIC_WORLD_CREATED_SPHERES.length);
-		PHYSIC_WORLD_CREATED_BOXES.splice(0, PHYSIC_WORLD_CREATED_BOXES.length);
+lesson_21({
+	app: APP,
+	appGui: _GUI,
+	CubeTextureLoader: CUBE_TEXTURE_LOADER,
+	onConstruct({ worldInstance, spheres, boxes }) {
+		PHYSICS_WORLD_INSTANCE = worldInstance;
+		PHYSIC_WORLD_CREATED_SPHERES = spheres;
+		PHYSIC_WORLD_CREATED_BOXES = boxes;
 	},
-};
+});
 
-const _GUI_PHYSIC_WORLD = _GUI.addFolder("Physic world");
-_GUI_PHYSIC_WORLD.close();
-_GUI_PHYSIC_WORLD.add(PHYSICS_WORLD_GROUP, "visible");
-_GUI_PHYSIC_WORLD
-	.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
-	.name("Create random sphere");
-_GUI_PHYSIC_WORLD
-	.add(PHYSIC_WORLD_GUI_OPTIONS, "createBox")
-	.name("Create random box");
-_GUI_PHYSIC_WORLD
-	.add(PHYSIC_WORLD_GUI_OPTIONS, "reset")
-	.name("Reset created objects");
-/* =========== END PHYSICS WORLD =========== */
+/**
+ * Lesson 22 | Imported Models
+ */
+let lesson22FoxMixer: THREE.AnimationMixer | undefined;
+lesson_22({
+	app: APP,
+	appGui: _GUI,
+	GLTF_Loader: GLTF_LOADER,
+	foxLoadedCallback: ({ mixer }) => {
+		lesson22FoxMixer = mixer;
+	},
+	onDestruct() {
+		lesson22FoxMixer = undefined;
+	},
+});
 
-/* =========== START MODELS =========== */
-const MODELS_GROUP = new THREE.Group();
-MODELS_GROUP.visible = false;
-let foxMixer: THREE.AnimationMixer | undefined;
+/**
+ * Lesson 24 | Custom model with blender
+ */
+lesson_24({
+	app: APP,
+	appGui: _GUI,
+	GLTF_Loader: GLTF_LOADER,
+});
 
-if (MODELS_GROUP.visible) {
-	GLTF_LOADER.load(FoxGLTF, (gltf) => {
-		console.log("gltf loaded ===>", gltf);
-		// const _FIXED_GLTF_CHILDREN = [...gltf.scene.children];
-		// while (gltf.scene.children.length) {
-		// 	APP.scene.add(gltf.scene.children[0]);
-		// }
-		// for (let i = 0; i < _FIXED_GLTF_CHILDREN.length; i++) {
-		// 	APP.scene.add(_FIXED_GLTF_CHILDREN[i]);
-		// }
+/**
+ * Lesson 25 | Realistic renderer
+ */
+lesson_25({
+	app: APP,
+	appGui: _GUI,
+	GLTF_Loader: GLTF_LOADER,
+	CubeTextureLoader: CUBE_TEXTURE_LOADER,
+});
 
-		foxMixer = new THREE.AnimationMixer(gltf.scene);
-		foxMixer.clipAction(gltf.animations[0]).play();
-		// foxMixer.clipAction(gltf.animations[1]).play();
-		// foxMixer.clipAction(gltf.animations[2]).play();
-
-		gltf.scene.scale.set(0.025, 0.025, 0.025);
-		MODELS_GROUP.add(gltf.scene);
-	});
-
-	/**
-	 * Floor
-	 */
-	const MODELS_FLOOR = new THREE.Mesh(
-		new THREE.PlaneGeometry(10, 10),
-		new THREE.MeshStandardMaterial({
-			color: "#444444",
-			metalness: 0,
-			roughness: 0.5,
-		})
-	);
-	MODELS_FLOOR.receiveShadow = true;
-	MODELS_FLOOR.rotation.x = -Math.PI * 0.5;
-
-	/**
-	 * Lights
-	 */
-	const MODELS_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.8);
-
-	const MODELS_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.6);
-	MODELS_DIRECTIONAL_LIGHT.castShadow = true;
-	MODELS_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
-	MODELS_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
-	MODELS_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
-	MODELS_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
-	MODELS_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
-	MODELS_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
-	MODELS_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
-
-	MODELS_GROUP.add(
-		MODELS_FLOOR,
-		MODELS_AMBIENT_LIGHT,
-		MODELS_DIRECTIONAL_LIGHT
-	);
-}
-/* =========== END MODELS =========== */
-
-/* =========== START HAMBURGER MODELS =========== */
-const HAMBURGER_GROUPE = new THREE.Group();
-HAMBURGER_GROUPE.visible = false;
-
-if (HAMBURGER_GROUPE.visible) {
-	GLTF_LOADER.load(HamburgerGLTF, (gltf) => {
-		HAMBURGER_GROUPE.add(gltf.scene);
-	});
-
-	/**
-	 * Floor
-	 */
-	const HAMBURGER_FLOOR = new THREE.Mesh(
-		new THREE.PlaneGeometry(50, 50),
-		new THREE.MeshStandardMaterial({
-			color: "#444444",
-			metalness: 0,
-			roughness: 0.5,
-		})
-	);
-	HAMBURGER_FLOOR.receiveShadow = true;
-	HAMBURGER_FLOOR.rotation.x = -Math.PI * 0.5;
-	HAMBURGER_GROUPE.add(HAMBURGER_FLOOR);
-
-	/**
-	 * Lights
-	 */
-	const HAMBURGER_AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 0.8);
-	HAMBURGER_GROUPE.add(HAMBURGER_AMBIENT_LIGHT);
-
-	const HAMBURGER_DIRECTIONAL_LIGHT = new THREE.DirectionalLight(0xffffff, 0.6);
-	HAMBURGER_DIRECTIONAL_LIGHT.castShadow = true;
-	HAMBURGER_DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
-	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.far = 15;
-	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.left = -7;
-	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.top = 7;
-	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.right = 7;
-	HAMBURGER_DIRECTIONAL_LIGHT.shadow.camera.bottom = -7;
-	HAMBURGER_DIRECTIONAL_LIGHT.position.set(5, 5, 5);
-	HAMBURGER_GROUPE.add(HAMBURGER_DIRECTIONAL_LIGHT);
-}
-/* ============ END HAMBURGER MODELS ============ */
-
-/* =========== START REALISTIC MODELS =========== */
-let realisticRendererGroup: THREE.Group | undefined;
-let realisticRendererGui: GUI | undefined;
-
-const destructRealisticRenderer = () => {
-	if (realisticRendererGroup) {
-		APP.scene.remove(realisticRendererGroup);
-
-		realisticRendererGroup.clear();
-		realisticRendererGroup = undefined;
-		if (realisticRendererGui) {
-			realisticRendererGui.destroy();
-			realisticRendererGui = undefined;
-		}
-
-		APP.scene.background = null;
-		APP.scene.environment = null;
-
-		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
-		realisticRendererGui
-			.add({ function: loadRealisticRenderer }, "function")
-			.name("Enable realistic renderer");
-	}
-};
-
-const loadRealisticRenderer = () => {
-	if (realisticRendererGui) {
-		realisticRendererGui.destroy();
-		realisticRendererGui = undefined;
-	}
-
-	if (realisticRendererGroup) {
-		destructRealisticRenderer();
-	}
-
-	if (!realisticRendererGroup) {
-		realisticRendererGroup = new THREE.Group();
-
-		// DATA
-		const debugObject = { envMapIntensity: 2.5 };
-
-		// FUNCTIONS
-		const updateAllChildMeshEnvMap = () => {
-			realisticRendererGroup?.traverse((child) => {
-				if (
-					child instanceof THREE.Mesh &&
-					child.material instanceof THREE.MeshStandardMaterial
-				) {
-					// child.material.envMap = ENVIRONMENT_MAP_TEXTURE;
-					child.material.envMapIntensity = debugObject.envMapIntensity;
-					child.castShadow = true;
-					child.receiveShadow = true;
-				}
-			});
-		};
-
-		// LIGHTS
-		const DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 3);
-		DIRECTIONAL_LIGHT.position.set(0.25, 3, -2.25);
-		DIRECTIONAL_LIGHT.castShadow = true;
-		DIRECTIONAL_LIGHT.shadow.camera.far = 15;
-		DIRECTIONAL_LIGHT.shadow.mapSize.set(1024, 1024);
-		DIRECTIONAL_LIGHT.shadow.normalBias = 0.05;
-
-		realisticRendererGui = _GUI.addFolder("Realistic Renderer");
-		realisticRendererGui
-			.add(DIRECTIONAL_LIGHT, "intensity")
-			.min(0)
-			.max(10)
-			.step(0.001)
-			.name("LightIntensity");
-		realisticRendererGui
-			.add(DIRECTIONAL_LIGHT.position, "x")
-			.min(-5)
-			.max(5)
-			.step(0.001)
-			.name("LightX");
-		realisticRendererGui
-			.add(DIRECTIONAL_LIGHT.position, "y")
-			.min(-5)
-			.max(5)
-			.step(0.001)
-			.name("LightY");
-		realisticRendererGui
-			.add(DIRECTIONAL_LIGHT.position, "z")
-			.min(-5)
-			.max(5)
-			.step(0.001)
-			.name("LightX");
-
-		realisticRendererGui
-			.add({ function: destructRealisticRenderer }, "function")
-			.name("Destruct realistic world");
-
-		// MODELS
-		GLTF_LOADER.load(FlightHelmetGLTF, (gltf) => {
-			gltf.scene.scale.set(10, 10, 10);
-			gltf.scene.position.set(0, -4, 0);
-			gltf.scene.rotation.y = Math.PI * 0.5;
-			realisticRendererGroup?.add(gltf.scene);
-			realisticRendererGui
-				?.add(gltf.scene.rotation, "y")
-				.min(-Math.PI)
-				.max(Math.PI)
-				.step(0.001)
-				.name("Helmet Y rotation");
-			realisticRendererGui
-				?.add(debugObject, "envMapIntensity")
-				.min(0)
-				.max(10)
-				.step(0.001)
-				.name("Env Map Intensity")
-				.onChange(updateAllChildMeshEnvMap);
-
-			realisticRendererGui?.add(APP.renderer, "toneMapping", {
-				No: THREE.NoToneMapping,
-				Linear: THREE.LinearToneMapping,
-				Reinhard: THREE.ReinhardToneMapping,
-				Cineon: THREE.CineonToneMapping,
-				ACESFilmic: THREE.ACESFilmicToneMapping,
-			});
-
-			realisticRendererGui
-				?.add(APP.renderer, "toneMappingExposure")
-				.min(0)
-				.max(10)
-				.step(0.001);
-
-			updateAllChildMeshEnvMap();
-		});
-
-		APP.scene.background = ENVIRONMENT_MAP_TEXTURE;
-		APP.scene.environment = ENVIRONMENT_MAP_TEXTURE;
-
-		realisticRendererGroup.add(DIRECTIONAL_LIGHT);
-		APP.scene.add(realisticRendererGroup);
-	}
-};
-
-loadRealisticRenderer();
-
-/* ============ END REALISTIC MODELS ============ */
+const lesson_26 = new Lesson_26({
+	app: APP,
+	appGui: _GUI,
+	textureLoader: TEXTURE_LOADER,
+	cubeTextureLoader: CUBE_TEXTURE_LOADER,
+	gltfLoader: GLTF_LOADER,
+	onConstruct: () => {},
+	onDestruct: () => {},
+});
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1773,10 +1357,7 @@ APP.scene.add(
 	PARTICLES_GROUP,
 	PARTICLES_GALAXY_GROUP,
 	RAY_CASTER_GROUP,
-	SCROLL_BASED_GROUP,
-	PHYSICS_WORLD_GROUP,
-	MODELS_GROUP,
-	HAMBURGER_GROUPE
+	SCROLL_BASED_GROUP
 );
 
 if (SCROLL_BASED_GROUP.visible) {
@@ -1807,7 +1388,7 @@ if (HAUNTED_HOUSE_GROUP.visible) {
 
 /* Animate */
 let previewsElapseTime = 0;
-APP.animate(() => {
+APP.addNewUpdateCallback = () => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
 	// const DELTA_TIME = CURRENT_TIME - savedTime;
@@ -1963,39 +1544,45 @@ APP.animate(() => {
 	// 	new Cannon.Vec3(-0.5, 0, 0),
 	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position
 	// );
-	PHYSICS_WORLD_INSTANCE.step(1 / 60, DELTA_TIME, 3);
+	PHYSICS_WORLD_INSTANCE && PHYSICS_WORLD_INSTANCE.step(1 / 60, DELTA_TIME, 3);
 	// PHYSICS_WORLD_SPHERE.position.set(
 	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.x,
 	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y,
 	// 	PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.z
 	// );
-	PHYSIC_WORLD_CREATED_SPHERES.forEach((item) => {
-		item.mesh.position.set(
-			item.body.position.x,
-			item.body.position.y,
-			item.body.position.z
-		);
-	});
-	PHYSIC_WORLD_CREATED_BOXES.forEach((item) => {
-		item.mesh.position.set(
-			item.body.position.x,
-			item.body.position.y,
-			item.body.position.z
-		);
-		item.mesh.quaternion.set(
-			item.body.quaternion.x,
-			item.body.quaternion.y,
-			item.body.quaternion.z,
-			item.body.quaternion.w
-		);
-	});
+	PHYSIC_WORLD_CREATED_SPHERES &&
+		PHYSIC_WORLD_CREATED_SPHERES.forEach((item) => {
+			item.mesh.position.set(
+				item.body.position.x,
+				item.body.position.y,
+				item.body.position.z
+			);
+		});
+	PHYSIC_WORLD_CREATED_BOXES &&
+		PHYSIC_WORLD_CREATED_BOXES.forEach((item) => {
+			item.mesh.position.set(
+				item.body.position.x,
+				item.body.position.y,
+				item.body.position.z
+			);
+			item.mesh.quaternion.set(
+				item.body.quaternion.x,
+				item.body.quaternion.y,
+				item.body.quaternion.z,
+				item.body.quaternion.w
+			);
+		});
 	// console.log(PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y);
 
 	// FOX animation
-	if (foxMixer) {
-		foxMixer.update(DELTA_TIME);
+	if (lesson22FoxMixer) {
+		lesson22FoxMixer.update(DELTA_TIME);
 	}
-});
+
+	if (lesson_26.foxMixer) {
+		lesson_26.foxMixer.update(DELTA_TIME);
+	}
+};
 
 /* ANIMATIONS */
 // GSAP
@@ -2118,7 +1705,7 @@ window.addEventListener("dblclick", () => {
 			document.fullscreenElement || document.webkitFullscreenElement;
 
 		if (!fullscreenElement) {
-			if (APP.canvas.requestFullscreen) {
+			if (APP.canvas?.requestFullscreen) {
 				APP.canvas.requestFullscreen();
 				// @ts-ignore: Safari fix ಥ‿ಥ
 			} else if (APP.canvas.webkitRequestFullscreen) {
