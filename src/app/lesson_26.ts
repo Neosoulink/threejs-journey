@@ -39,7 +39,7 @@ export interface ConstructorProps {
 
 export default class Lesson_26 {
 	// PROPS
-	folderName = "Lesson 26 | Class integartion";
+	folderName = "Lesson 26 | Class integration";
 	groupContainer?: THREE.Group;
 	debugObject: { envMapIntensity?: number } = {};
 	foxMixer?: THREE.AnimationMixer;
@@ -58,7 +58,7 @@ export default class Lesson_26 {
 		cubeTextureLoader = new THREE.CubeTextureLoader(),
 		onDestruct,
 	}: ConstructorProps) {
-		this.gui = this.gui?.addFolder(this.folderName);
+		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui
 			?.add({ function: () => this.construct() }, "function")
 			.name("Enable");
@@ -66,6 +66,8 @@ export default class Lesson_26 {
 		this.gltfLoader = gltfLoader;
 		this.textureLoader = textureLoader;
 		this.onDestruct = onDestruct;
+
+
 	}
 
 	destroy() {
