@@ -1,9 +1,8 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { GUI } from "lil-gui";
 
 // HELPERS
-import initThreeJs from "../helpers/ThreeApp";
+import ThreeApp from "../helpers/ThreeApp";
 
 // MODELS
 import FlightHelmetGLTF from "../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
@@ -17,26 +16,23 @@ import pyEnvImg from "../assets/img/textures/environmentMaps/0/py.jpg";
 import pzEnvImg from "../assets/img/textures/environmentMaps/0/pz.jpg";
 
 export default ({
-	app,
-	appGui,
 	GLTF_Loader = new GLTFLoader(),
 	CubeTextureLoader = new THREE.CubeTextureLoader(),
 	onConstruct,
 	onDestruct,
 }: {
-	app: ReturnType<typeof initThreeJs>;
-	appGui: GUI;
 	GLTF_Loader: GLTFLoader;
 	CubeTextureLoader: THREE.CubeTextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }) => {
 	// DATA
+	const app = new ThreeApp();
 	const FOLDER_NAME = "Lesson 25 | Realistic Renderer";
 	let ENVIRONMENT_MAP_TEXTURE: THREE.CubeTexture | undefined;
 
 	let groupContainer: THREE.Group | undefined;
-	let _GUI: typeof appGui | undefined = appGui.addFolder(FOLDER_NAME);
+	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 
 	const destroy = () => {
 		if (groupContainer) {
@@ -52,8 +48,8 @@ export default ({
 			app.scene.background = null;
 			app.scene.environment = null;
 
-			_GUI = appGui.addFolder(FOLDER_NAME);
-			_GUI.add({ function: construct }, "function").name("Enable");
+			_GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
+			_GUI?.add({ function: construct }, "function").name("Enable");
 
 			onDestruct && onDestruct();
 		}
@@ -152,39 +148,39 @@ export default ({
 			groupContainer.add(DIRECTIONAL_LIGHT);
 			app.scene.add(groupContainer);
 
-			_GUI = appGui.addFolder(FOLDER_NAME);
+			_GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 			_GUI
-				.add(DIRECTIONAL_LIGHT, "intensity")
+				?.add(DIRECTIONAL_LIGHT, "intensity")
 				.min(0)
 				.max(10)
 				.step(0.001)
 				.name("LightIntensity");
 			_GUI
-				.add(DIRECTIONAL_LIGHT.position, "x")
+				?.add(DIRECTIONAL_LIGHT.position, "x")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("LightX");
 			_GUI
-				.add(DIRECTIONAL_LIGHT.position, "y")
+				?.add(DIRECTIONAL_LIGHT.position, "y")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("LightY");
 			_GUI
-				.add(DIRECTIONAL_LIGHT.position, "z")
+				?.add(DIRECTIONAL_LIGHT.position, "z")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("LightX");
 
-			_GUI.add({ function: destroy }, "function").name("Destroy");
+			_GUI?.add({ function: destroy }, "function").name("Destroy");
 
 			onConstruct && onConstruct();
 		}
 	};
 
-	_GUI.add({ function: construct }, "function").name("Enable");
+	_GUI?.add({ function: construct }, "function").name("Enable");
 
 	return {
 		destroy,

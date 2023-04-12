@@ -10,7 +10,7 @@ import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 
 // LOCAL TYPES
 export interface ConstructorProps {
-	app: ReturnType<typeof initThreeJs>;
+	app: initThreeJs;
 	appGui: GUI;
 	textureLoader: THREE.TextureLoader;
 	onConstruct?: (formsPhysic: {
@@ -30,7 +30,7 @@ export interface ConstructorProps {
 export default class Lesson_20 {
 	// PROPS
 	folderName = "Lesson 20 | Scroll based animation";
-	app: ReturnType<typeof initThreeJs>;
+	app: initThreeJs;
 	appGui: GUI;
 	gui?: GUI;
 	groupContainer?: THREE.Group;

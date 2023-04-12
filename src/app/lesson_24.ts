@@ -1,31 +1,27 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { GUI } from "lil-gui";
 
 // HELPERS
-import initThreeJs from "../helpers/ThreeApp";
+import ThreeApp from "../helpers/ThreeApp";
 
 // MODELS
 import HamburgerGLTF from "../assets/models/hamburger/hamburger.glb?url";
 
 /* REALISTIC MODELS */
 export default ({
-	app,
-	appGui,
 	GLTF_Loader = new GLTFLoader(),
 	onConstruct,
 	onDestruct,
 }: {
-	app: ReturnType<typeof initThreeJs>;
-	appGui: GUI;
 	GLTF_Loader: GLTFLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }) => {
 	// DATA
+	const app = new ThreeApp();
 	const FOLDER_NAME = "Lesson 24 | Custom Model from Blender";
 	let groupContainer: THREE.Group | undefined;
-	let _GUI: typeof appGui | undefined = appGui.addFolder(FOLDER_NAME);
+	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 
 	const destroy = () => {
 		if (groupContainer) {
@@ -38,8 +34,8 @@ export default ({
 				_GUI = undefined;
 			}
 
-			_GUI = appGui.addFolder(FOLDER_NAME);
-			_GUI.add({ function: construct }, "function").name("Enable");
+			_GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
+			_GUI?.add({ function: construct }, "function").name("Enable");
 
 			onDestruct && onDestruct();
 		}
@@ -100,14 +96,14 @@ export default ({
 
 			app.scene.add(groupContainer);
 
-			_GUI = appGui.addFolder(FOLDER_NAME);
-			_GUI.add({ function: destroy }, "function").name("Destroy");
+			_GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
+			_GUI?.add({ function: destroy }, "function").name("Destroy");
 
 			onConstruct && onConstruct();
 		}
 	};
 
-	_GUI.add({ function: construct }, "function").name("Enable");
+	_GUI?.add({ function: construct }, "function").name("Enable");
 
 	return {
 		destroy,
