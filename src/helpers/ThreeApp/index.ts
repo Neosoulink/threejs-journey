@@ -9,7 +9,6 @@ import Sizes, { sceneSizesType } from "./utils/Sizes";
 import Time from "./utils/Time";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
-import World from "./world";
 import Resources from "./utils/Resoureces";
 import Debug from "./utils/Debug";
 
@@ -38,7 +37,6 @@ export default class ThreeApp {
 	control?: OrbitControls;
 	sizes!: Sizes;
 	time!: Time;
-	world!: World;
 	resources!: Resources;
 	debug?: Debug;
 	private updateCallbacks: (() => unknown)[] = [];
@@ -73,7 +71,6 @@ export default class ThreeApp {
 		this.control = this.camera2.controls;
 		this.rendererIntense = new Renderer();
 		this.resources = new Resources(SOURCES);
-		// this.world = new World();
 
 		if (typeof props?.axesSizes === "number") {
 			const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
@@ -100,7 +97,6 @@ export default class ThreeApp {
 	update() {
 		this.camera2.update();
 		this.rendererIntense.update();
-		this.world.update();
 
 		if (this.updateCallbacks.length) {
 			this.updateCallbacks.map((callback) => {
