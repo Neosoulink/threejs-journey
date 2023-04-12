@@ -39,7 +39,7 @@ export default class ThreeApp {
 	time!: Time;
 	resources!: Resources;
 	debug?: Debug;
-	private updateCallbacks: (() => unknown)[] = [];
+	private updateCallbacks: { [key: string]: () => unknown } = {};
 
 	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
@@ -98,9 +98,12 @@ export default class ThreeApp {
 		this.camera2.update();
 		this.rendererIntense.update();
 
-		if (this.updateCallbacks.length) {
-			this.updateCallbacks.map((callback) => {
-				callback();
+		const UPDATE_CALLBACKS_KEYS = Object.keys(this.updateCallbacks);
+		if (UPDATE_CALLBACKS_KEYS?.length) {
+			UPDATE_CALLBACKS_KEYS.map((callbackKey) => {
+				if (typeof this.updateCallbacks[callbackKey] === "function") {
+					this.updateCallbacks[callbackKey]();
+				}
 			});
 		}
 	}
@@ -133,15 +136,15 @@ export default class ThreeApp {
 		if (this.debug?.active) this.debug.ui?.destroy();
 	}
 
+	setUpdateCallback(key: string, callback: () => unknown) {
+		this.updateCallbacks[key] = callback;
+	}
+
 	get camera() {
 		return this.camera2.intense;
 	}
 
 	get renderer() {
 		return this.rendererIntense.intense;
-	}
-
-	set addNewUpdateCallback(callback: () => unknown) {
-		this.updateCallbacks.push(callback);
 	}
 }

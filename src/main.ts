@@ -1377,7 +1377,7 @@ if (HAUNTED_HOUSE_GROUP.visible) {
 
 /* Animate */
 let previewsElapseTime = 0;
-APP.addNewUpdateCallback = () => {
+APP.setUpdateCallback("root", () => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
 	// const DELTA_TIME = CURRENT_TIME - savedTime;
@@ -1571,7 +1571,7 @@ APP.addNewUpdateCallback = () => {
 	if (lesson_26.foxMixer) {
 		lesson_26.foxMixer.update(DELTA_TIME);
 	}
-};
+});
 
 /* ANIMATIONS */
 // GSAP
