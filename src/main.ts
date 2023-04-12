@@ -1330,9 +1330,6 @@ SHADOW_GROUP.add(
 	SHADOW_PLANE_BAKED_SHADOW
 );
 
-/* Camera */
-APP.camera.position.set(4, 1, -4);
-
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
 

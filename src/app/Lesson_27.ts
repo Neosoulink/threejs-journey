@@ -26,6 +26,8 @@ export default class Lesson_27 {
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
+
+		this.construct();
 	}
 
 	destroy() {
@@ -75,6 +77,7 @@ export default class Lesson_27 {
 
 		if (!this.mainGroup) {
 			this.mainGroup = new THREE.Group();
+			this.app.camera.position.set(0.25, - 0.25, 1)
 
 			/**
 			 * Textures
