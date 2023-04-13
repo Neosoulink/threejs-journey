@@ -2,10 +2,15 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 
 // HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
+
+// SHADERS
+import flagVertexUrl from "./shaders/flag.vert?url";
+import flagFragUrl from "./shaders/flag.frag?url";
 
 // LOCAL TYPES
 export interface Lesson27ConstructorProps {
+	fileLoader?: THREE.FileLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
@@ -16,6 +21,8 @@ export default class Lesson_27 {
 	appGui?: GUI;
 	gui?: GUI;
 	mainGroup?: THREE.Group;
+	fileLoader: THREE.FileLoader;
+	meshShader: THREE.ShaderMaterialParameters = {};
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
@@ -23,6 +30,8 @@ export default class Lesson_27 {
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
+
+		this.fileLoader = props?.fileLoader ?? new THREE.FileLoader();
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
@@ -65,7 +74,7 @@ export default class Lesson_27 {
 		}
 	}
 
-	construct() {
+	async construct() {
 		if (this.gui) {
 			this.gui.destroy();
 			this.gui = undefined;
@@ -77,7 +86,7 @@ export default class Lesson_27 {
 
 		if (!this.mainGroup) {
 			this.mainGroup = new THREE.Group();
-			this.app.camera.position.set(0.25, - 0.25, 1)
+			this.app.camera.position.set(0.25, -0.25, 1);
 
 			/**
 			 * Textures
@@ -91,12 +100,18 @@ export default class Lesson_27 {
 			const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
 			// Material
-			const material = new THREE.MeshBasicMaterial();
+			const VERTEX_SHADER = await this.loadFile(flagVertexUrl);
+			const FRAGMENT_SHADER = await this.loadFile(flagFragUrl);
+			const material = new THREE.RawShaderMaterial({
+				vertexShader: VERTEX_SHADER,
+				fragmentShader: FRAGMENT_SHADER,
+			});
 
 			// Mesh
 			const mesh = new THREE.Mesh(geometry, material);
 
 			this.mainGroup.add(mesh);
+
 			this.app.scene.add(this.mainGroup);
 			this.gui = this.appGui?.addFolder(this.folderName);
 
@@ -106,5 +121,18 @@ export default class Lesson_27 {
 		}
 
 		this.onConstruct && this.onConstruct();
+	}
+
+	async loadFile(fileLocation: string) {
+		return new Promise<string | undefined>((res, rej) => {
+			this.fileLoader.load(
+				fileLocation,
+				(file) => {
+					res(file.toString());
+				},
+				() => {},
+				() => rej(undefined)
+			);
+		});
 	}
 }
