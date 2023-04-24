@@ -86,7 +86,7 @@ export default class Lesson_27 {
 
 		if (!this.mainGroup) {
 			this.mainGroup = new THREE.Group();
-			this.app.camera.position.set(0.25, -0.25, 1);
+			this.app.camera.position.set(-0.25, 0, 3);
 
 			/**
 			 * Textures
@@ -105,6 +105,7 @@ export default class Lesson_27 {
 			const material = new THREE.RawShaderMaterial({
 				vertexShader: VERTEX_SHADER,
 				fragmentShader: FRAGMENT_SHADER,
+				side: THREE.DoubleSide,
 			});
 
 			// Mesh

@@ -21,7 +21,7 @@ export default class Camera {
 			1000
 		);
 
-		this.intense.position.set(6, 4, 8);
+		this.intense.position.z = 8;
 		this.app.scene.add(this.intense);
 
 		if (props.enableControls) {
