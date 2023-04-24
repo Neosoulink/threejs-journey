@@ -106,6 +106,7 @@ export default class Lesson_27 {
 				vertexShader: VERTEX_SHADER,
 				fragmentShader: FRAGMENT_SHADER,
 				side: THREE.DoubleSide,
+				transparent: true,
 			});
 
 			// Mesh
