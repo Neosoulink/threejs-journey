@@ -8,9 +8,13 @@ import ThreeApp from "../../helpers/ThreeApp";
 import flagVertexUrl from "./shaders/flag.vert?url";
 import flagFragUrl from "./shaders/flag.frag?url";
 
+// TEXTURES
+import flagFrenchImg from "../../assets/img/textures/flag/flag-french.jpg?url";
+
 // LOCAL TYPES
 export interface Lesson27ConstructorProps {
 	fileLoader?: THREE.FileLoader;
+	TextureLoader: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
@@ -24,6 +28,7 @@ export default class Lesson_27 {
 	fileLoader: THREE.FileLoader;
 	meshShader: THREE.ShaderMaterialParameters = {};
 	material?: THREE.RawShaderMaterial;
+	textureLoader: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
@@ -33,6 +38,7 @@ export default class Lesson_27 {
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
 
 		this.fileLoader = props?.fileLoader ?? new THREE.FileLoader();
+		this.textureLoader = props?.TextureLoader ?? new THREE.TextureLoader();
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
@@ -128,12 +134,14 @@ export default class Lesson_27 {
 				uniforms: {
 					uFrequency: { value: new THREE.Vector2(10, 5) },
 					uTime: { value: 0 },
+					uTexture: { value: this.textureLoader.load(flagFrenchImg) },
 				},
 			});
 			this.material = material;
 
 			// Mesh
 			const mesh = new THREE.Mesh(geometry, material);
+			mesh.scale.y = 2 / 3;
 
 			this.mainGroup.add(mesh);
 
@@ -157,7 +165,6 @@ export default class Lesson_27 {
 				?.add({ function: () => this.destroy() }, "function")
 				.name("Destroy");
 		}
-
 		const CLOCK = new THREE.Clock();
 
 		this.app.setUpdateCallback(this.folderName, () => {
