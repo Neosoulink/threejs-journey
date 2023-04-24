@@ -120,6 +120,9 @@ export default class Lesson_27 {
 				fragmentShader: FRAGMENT_SHADER,
 				side: THREE.DoubleSide,
 				transparent: true,
+				uniforms: {
+					uFrequency: { value: new THREE.Vector2(10, 5) },
+				},
 			});
 
 			// Mesh
@@ -129,6 +132,19 @@ export default class Lesson_27 {
 
 			this.app.scene.add(this.mainGroup);
 			this.gui = this.appGui?.addFolder(this.folderName);
+
+			this.gui
+				?.add(material.uniforms.uFrequency.value, "x")
+				.min(0)
+				.max(20)
+				.step(0.01)
+				.name("FrequencyX");
+			this.gui
+				?.add(material.uniforms.uFrequency.value, "y")
+				.min(0)
+				.max(20)
+				.step(0.01)
+				.name("FrequencyY");
 
 			this.gui
 				?.add({ function: () => this.destroy() }, "function")
