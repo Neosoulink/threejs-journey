@@ -23,6 +23,7 @@ export default class Lesson_27 {
 	mainGroup?: THREE.Group;
 	fileLoader: THREE.FileLoader;
 	meshShader: THREE.ShaderMaterialParameters = {};
+	material?: THREE.RawShaderMaterial;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
@@ -69,6 +70,10 @@ export default class Lesson_27 {
 			this.gui
 				?.add({ function: () => this.construct() }, "function")
 				.name("Enable");
+
+			if (this.app.updateCallbacks[this.folderName]) {
+				delete this.app.updateCallbacks[this.folderName];
+			}
 
 			this.onDestruct && this.onDestruct();
 		}
@@ -122,8 +127,10 @@ export default class Lesson_27 {
 				transparent: true,
 				uniforms: {
 					uFrequency: { value: new THREE.Vector2(10, 5) },
+					uTime: { value: 0 },
 				},
 			});
+			this.material = material;
 
 			// Mesh
 			const mesh = new THREE.Mesh(geometry, material);
@@ -151,6 +158,12 @@ export default class Lesson_27 {
 				.name("Destroy");
 		}
 
+		const CLOCK = new THREE.Clock();
+
+		this.app.setUpdateCallback(this.folderName, () => {
+			this.update(CLOCK.getElapsedTime());
+		});
+
 		this.onConstruct && this.onConstruct();
 	}
 
@@ -165,5 +178,11 @@ export default class Lesson_27 {
 				() => rej(undefined)
 			);
 		});
+	}
+
+	update(elapsedTime: number) {
+		if (this.material?.uniforms.uTime) {
+			this.material.uniforms.uTime.value = elapsedTime;
+		}
 	}
 }

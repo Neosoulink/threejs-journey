@@ -39,7 +39,7 @@ export default class ThreeApp {
 	time!: Time;
 	resources!: Resources;
 	debug?: Debug;
-	private updateCallbacks: { [key: string]: () => unknown } = {};
+	updateCallbacks: { [key: string]: () => unknown } = {};
 
 	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
