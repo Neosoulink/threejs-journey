@@ -97,7 +97,20 @@ export default class Lesson_27 {
 			 * Test mesh
 			 */
 			// Geometry
-			const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+			const geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32);
+			const POSITION_COUNT = (
+				geometry.attributes.position as THREE.Float32BufferAttribute
+			).count;
+			const RANDOM_POSITION = new Float32Array(POSITION_COUNT);
+
+			for (let i = 0; i < POSITION_COUNT; i++) {
+				RANDOM_POSITION[i] = Math.random();
+			}
+
+			geometry.setAttribute(
+				"aRandom",
+				new THREE.BufferAttribute(RANDOM_POSITION, 1)
+			);
 
 			// Material
 			const VERTEX_SHADER = await this.loadFile(flagVertexUrl);
