@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { GUI } from "lil-gui";
 import Cannon from "cannon";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
@@ -21,8 +20,6 @@ import dirtNormalImg from "../assets/imG/textures/dirt/normal.jpg";
 
 // LOCAL TYPES
 export interface ConstructorProps {
-	app: ThreeApp;
-	appGui: GUI;
 	textureLoader?: THREE.TextureLoader;
 	cubeTextureLoader?: THREE.CubeTextureLoader;
 	gltfLoader?: GLTFLoader;
@@ -42,37 +39,35 @@ export interface ConstructorProps {
 
 export default class Lesson_26 {
 	// PROPS
-	folderName = "Lesson 26 | Class integartion";
+	folderName = "Lesson 26 | Class integration";
 	groupContainer?: THREE.Group;
 	debugObject: { envMapIntensity?: number } = {};
 	foxMixer?: THREE.AnimationMixer;
 	environmentMap?: THREE.CubeTexture;
-	app: ConstructorProps["app"];
-	appGui: ConstructorProps["appGui"];
-	gui?: ConstructorProps["appGui"];
+	app = new ThreeApp();
+	appGui = this.app.debug?.ui;
+	gui?: typeof this.appGui;
 	textureLoader: ConstructorProps["textureLoader"];
 	cubeTextureLoader: ConstructorProps["cubeTextureLoader"];
 	gltfLoader: ConstructorProps["gltfLoader"];
 	onDestruct?: ConstructorProps["onDestruct"];
 
 	constructor({
-		app,
-		appGui,
 		gltfLoader = new GLTFLoader(),
 		textureLoader = new THREE.TextureLoader(),
 		cubeTextureLoader = new THREE.CubeTextureLoader(),
 		onDestruct,
 	}: ConstructorProps) {
-		this.app = app;
-		this.appGui = appGui;
-		this.gui = appGui.addFolder(this.folderName);
+		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui
-			.add({ function: () => this.construct() }, "function")
+			?.add({ function: () => this.construct() }, "function")
 			.name("Enable");
 		this.cubeTextureLoader = cubeTextureLoader;
 		this.gltfLoader = gltfLoader;
 		this.textureLoader = textureLoader;
 		this.onDestruct = onDestruct;
+
+
 	}
 
 	destroy() {
@@ -87,9 +82,9 @@ export default class Lesson_26 {
 				this.gui = undefined;
 			}
 
-			this.gui = this.appGui.addFolder(this.folderName);
+			this.gui = this.appGui?.addFolder(this.folderName);
 			this.gui
-				.add({ function: () => this.construct() }, "function")
+				?.add({ function: () => this.construct() }, "function")
 				.name("Enable");
 
 			this.onDestruct && this.onDestruct();
@@ -199,38 +194,38 @@ export default class Lesson_26 {
 			this.debugObject.envMapIntensity = 0.4;
 			this.gui = this.appGui?.addFolder(this.folderName);
 			this.gui
-				.add(this.debugObject, "envMapIntensity")
+				?.add(this.debugObject, "envMapIntensity")
 				.min(0)
 				.max(4)
 				.step(0.001)
 				.onChange(() => this.updateAllMaterials());
 
 			this.gui
-				.add(directionalLight, "intensity")
+				?.add(directionalLight, "intensity")
 				.min(0)
 				.max(10)
 				.step(0.001)
 				.name("lightIntensity");
 			this.gui
-				.add(directionalLight.position, "x")
+				?.add(directionalLight.position, "x")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("lightX");
 			this.gui
-				.add(directionalLight.position, "y")
+				?.add(directionalLight.position, "y")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("lightY");
 			this.gui
-				.add(directionalLight.position, "z")
+				?.add(directionalLight.position, "z")
 				.min(-5)
 				.max(5)
 				.step(0.001)
 				.name("lightZ");
 			this.gui
-				.add({ function: () => this.destroy() }, "function")
+				?.add({ function: () => this.destroy() }, "function")
 				.name("Destroy");
 		}
 	}

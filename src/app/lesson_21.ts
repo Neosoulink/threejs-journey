@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { GUI } from "lil-gui";
 import Cannon, { Vec3 } from "cannon";
 
 // HELPERS
@@ -17,14 +16,10 @@ import pzEnvImg from "../assets/img/textures/environmentMaps/0/pz.jpg";
 import tocSound from "../assets/sounds/hit.mp3";
 
 export default ({
-	app,
-	appGui,
 	CubeTextureLoader = new THREE.CubeTextureLoader(),
 	onConstruct,
 	onDestruct,
 }: {
-	app: ThreeApp;
-	appGui: GUI;
 	CubeTextureLoader: THREE.CubeTextureLoader;
 	onConstruct?: (formsPhysic: {
 		worldInstance: Cannon.World;
@@ -39,10 +34,13 @@ export default ({
 	}) => unknown;
 	onDestruct?: () => unknown;
 }) => {
+	// APP
+	const app = new ThreeApp();
+
 	// DATA
 	const FOLDER_NAME = "Lesson 21 | Physic world";
 
-	let _GUI: typeof appGui | undefined = appGui.addFolder(FOLDER_NAME);
+	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 	let physicWorldTocSound: HTMLAudioElement | undefined;
 	let environmentMapTexture: THREE.CubeTexture | undefined;
 	let groupContainer: THREE.Group | undefined;
@@ -59,8 +57,8 @@ export default ({
 				_GUI = undefined;
 			}
 
-			_GUI = appGui.addFolder(FOLDER_NAME);
-			_GUI.add({ function: construct }, "function").name("Enable");
+			_GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
+			_GUI?.add({ function: construct }, "function").name("Enable");
 
 			onDestruct && onDestruct();
 		}
@@ -330,16 +328,20 @@ export default ({
 				},
 			};
 
-			_GUI = appGui.addFolder(FOLDER_NAME);
+			_GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 			_GUI
-				.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
+				?.add(PHYSIC_WORLD_GUI_OPTIONS, "createSphere")
 				.name("Create random sphere");
-			_GUI.add(PHYSIC_WORLD_GUI_OPTIONS, "createBox").name("Create random box");
-			_GUI.add(PHYSIC_WORLD_GUI_OPTIONS, "reset").name("Reset created objects");
+			_GUI
+				?.add(PHYSIC_WORLD_GUI_OPTIONS, "createBox")
+				.name("Create random box");
+			_GUI
+				?.add(PHYSIC_WORLD_GUI_OPTIONS, "reset")
+				.name("Reset created objects");
 
 			app.scene.add(groupContainer);
 			_GUI
-				.add(
+				?.add(
 					{
 						function: () => {
 							PHYSIC_WORLD_GUI_OPTIONS.reset();
@@ -359,7 +361,7 @@ export default ({
 		}
 	};
 
-	_GUI.add({ function: construct }, "function").name("Enable");
+	_GUI?.add({ function: construct }, "function").name("Enable");
 
 	return {
 		destroy,

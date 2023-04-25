@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import Cannon from "cannon";
-import GUI from "lil-gui";
 import GSAP from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -64,6 +63,7 @@ import lesson_24 from "./app/lesson_24";
 import lesson_22 from "./app/lesson_22";
 import lesson_21 from "./app/lesson_21";
 import Lesson_26 from "./app/lesson_26";
+import Lesson_27 from "./app/Lesson_27";
 
 // APP
 const APP = new ThreeApp({
@@ -86,13 +86,13 @@ const APP_CONFIG = {
 };
 
 /* debuggers */
-const _GUI = new GUI();
+const _GUI = APP.debug?.ui;
 
-const _GUI_MAIN_FOLDER = _GUI.addFolder("Main");
+const _GUI_MAIN_FOLDER = _GUI?.addFolder("Main");
 if (APP.control) {
-	_GUI_MAIN_FOLDER.add(APP.control, "enabled").name("Enabled orbit control");
+	_GUI_MAIN_FOLDER?.add(APP.control, "enabled").name("Enabled orbit control");
 	_GUI_MAIN_FOLDER
-		.add(APP_CONFIG, "enableDblClickFullScreen")
+		?.add(APP_CONFIG, "enableDblClickFullScreen")
 		.name("enable dblclick FullScreen");
 }
 
@@ -294,10 +294,10 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 	TEXT_FORM.visible = false;
 
 	setTimeout(() => {
-		const _GUI_TEXT_FOLDER = _GUI.addFolder("Text");
-		_GUI_TEXT_FOLDER.close();
+		const _GUI_TEXT_FOLDER = _GUI?.addFolder("Text");
+		_GUI_TEXT_FOLDER?.close();
 
-		_GUI_TEXT_FOLDER.add(TEXT_FORM, "visible");
+		_GUI_TEXT_FOLDER?.add(TEXT_FORM, "visible");
 	}, 1000);
 
 	for (let i = 0; i < 100; i++) {
@@ -799,31 +799,31 @@ HAUNTED_HOUSE_GROUP.add(
 );
 
 // GUI
-const _HAUNTED_HOUSE_GUI = _GUI.addFolder("Haunted house");
-_HAUNTED_HOUSE_GUI.close();
-_HAUNTED_HOUSE_GUI.add(HAUNTED_HOUSE_GROUP, "visible");
+const _HAUNTED_HOUSE_GUI = _GUI?.addFolder("Haunted house");
+_HAUNTED_HOUSE_GUI?.close();
+_HAUNTED_HOUSE_GUI?.add(HAUNTED_HOUSE_GROUP, "visible");
 _HAUNTED_HOUSE_GUI
-	.add(HAUNTED_AMBIENT_LIGHT, "intensity")
+	?.add(HAUNTED_AMBIENT_LIGHT, "intensity")
 	.min(0)
 	.max(1)
 	.step(0.001);
 _HAUNTED_HOUSE_GUI
-	.add(HAUNTED_MOON_LIGHT, "intensity")
+	?.add(HAUNTED_MOON_LIGHT, "intensity")
 	.min(0)
 	.max(1)
 	.step(0.001);
 _HAUNTED_HOUSE_GUI
-	.add(HAUNTED_MOON_LIGHT.position, "x")
+	?.add(HAUNTED_MOON_LIGHT.position, "x")
 	.min(-5)
 	.max(5)
 	.step(0.001);
 _HAUNTED_HOUSE_GUI
-	.add(HAUNTED_MOON_LIGHT.position, "y")
+	?.add(HAUNTED_MOON_LIGHT.position, "y")
 	.min(-5)
 	.max(5)
 	.step(0.001);
 _HAUNTED_HOUSE_GUI
-	.add(HAUNTED_MOON_LIGHT.position, "z")
+	?.add(HAUNTED_MOON_LIGHT.position, "z")
 	.min(-5)
 	.max(5)
 	.step(0.001);
@@ -1018,59 +1018,59 @@ if (PARTICLES_GALAXY_GROUP.visible) {
 }
 
 /* GUI */
-const _PARTICLES_GALAXY_FOLDER_GUI = _GUI.addFolder("Particles galaxy");
-_PARTICLES_GALAXY_FOLDER_GUI.close();
+const _PARTICLES_GALAXY_FOLDER_GUI = _GUI?.addFolder("Particles galaxy");
+_PARTICLES_GALAXY_FOLDER_GUI?.close();
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_GROUP, "visible")
+	?.add(PARTICLES_GALAXY_GROUP, "visible")
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
+	?.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "count")
 	.min(100)
 	.max(100000)
 	.step(100)
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
+	?.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "size")
 	.min(0.001)
 
 	.max(0.1)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "radius")
+	?.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "radius")
 	.min(0.01)
 	.max(20)
 	.step(0.01)
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "branches")
+	?.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "branches")
 	.min(2)
 	.max(20)
 	.step(1)
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "spin")
+	?.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "spin")
 	.min(-5)
 	.max(5)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomness")
+	?.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomness")
 	.min(0)
 	.max(2)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomnessPower")
+	?.add(PARTICLES_GALAXY_DEFAULT_PARAMS, "randomnessPower")
 	.min(3)
 	.max(10)
 	.step(0.001)
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "insideColor")
+	?.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "insideColor")
 	.onFinishChange(generateParticleGalaxy);
 _PARTICLES_GALAXY_FOLDER_GUI
-	.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "outsideColor")
+	?.addColor(PARTICLES_GALAXY_DEFAULT_PARAMS, "outsideColor")
 	.onFinishChange(generateParticleGalaxy);
 /* =========== END PARTICLES_GALAXY =========== */
 
@@ -1111,9 +1111,9 @@ RAY_CASTER_GROUP.add(
 	RAY_CASTER_OBJECT_3
 );
 
-const _RAY_CASTER_FOLDER_GUI = _GUI.addFolder("Ray caster");
-_RAY_CASTER_FOLDER_GUI.close();
-_RAY_CASTER_FOLDER_GUI.add(RAY_CASTER_GROUP, "visible");
+const _RAY_CASTER_FOLDER_GUI = _GUI?.addFolder("Ray caster");
+_RAY_CASTER_FOLDER_GUI?.close();
+_RAY_CASTER_FOLDER_GUI?.add(RAY_CASTER_GROUP, "visible");
 
 /* =========== END RAY CASTER =========== */
 
@@ -1213,12 +1213,12 @@ SCROLL_BASED_GROUP.add(
 	SCROLL_BASED_PARTICLES_POINTS
 );
 
-const _SCROLL_BASED_FOLDER_GUI = _GUI.addFolder("Scroll based");
-_SCROLL_BASED_FOLDER_GUI.close();
-_SCROLL_BASED_FOLDER_GUI.add(SCROLL_BASED_GROUP, "visible");
+const _SCROLL_BASED_FOLDER_GUI = _GUI?.addFolder("Scroll based");
+_SCROLL_BASED_FOLDER_GUI?.close();
+_SCROLL_BASED_FOLDER_GUI?.add(SCROLL_BASED_GROUP, "visible");
 
 _SCROLL_BASED_FOLDER_GUI
-	.addColor(SCROLL_BASED_PARAMS, "materialColor")
+	?.addColor(SCROLL_BASED_PARAMS, "materialColor")
 	.onChange(() => {
 		SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor);
 		SCROLL_BASED_PARTICLES_MATERIAL.color.set(
@@ -1252,8 +1252,6 @@ let PHYSICS_WORLD_INSTANCE: Cannon.World | undefined,
 		| undefined;
 
 lesson_21({
-	app: APP,
-	appGui: _GUI,
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 	onConstruct({ worldInstance, spheres, boxes }) {
 		PHYSICS_WORLD_INSTANCE = worldInstance;
@@ -1267,8 +1265,6 @@ lesson_21({
  */
 let lesson22FoxMixer: THREE.AnimationMixer | undefined;
 lesson_22({
-	app: APP,
-	appGui: _GUI,
 	GLTF_Loader: GLTF_LOADER,
 	foxLoadedCallback: ({ mixer }) => {
 		lesson22FoxMixer = mixer;
@@ -1282,8 +1278,6 @@ lesson_22({
  * Lesson 24 | Custom model with blender
  */
 lesson_24({
-	app: APP,
-	appGui: _GUI,
 	GLTF_Loader: GLTF_LOADER,
 });
 
@@ -1291,21 +1285,19 @@ lesson_24({
  * Lesson 25 | Realistic renderer
  */
 lesson_25({
-	app: APP,
-	appGui: _GUI,
 	GLTF_Loader: GLTF_LOADER,
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 });
 
 const lesson_26 = new Lesson_26({
-	app: APP,
-	appGui: _GUI,
 	textureLoader: TEXTURE_LOADER,
 	cubeTextureLoader: CUBE_TEXTURE_LOADER,
 	gltfLoader: GLTF_LOADER,
 	onConstruct: () => {},
 	onDestruct: () => {},
 });
+
+new Lesson_27();
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1337,9 +1329,6 @@ SHADOW_GROUP.add(
 	SHADOW_SPHERE,
 	SHADOW_PLANE_BAKED_SHADOW
 );
-
-/* Camera */
-APP.camera.position.set(4, 1, -4);
 
 const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
@@ -1388,7 +1377,7 @@ if (HAUNTED_HOUSE_GROUP.visible) {
 
 /* Animate */
 let previewsElapseTime = 0;
-APP.addNewUpdateCallback = () => {
+APP.setUpdateCallback("root", () => {
 	// Animation using native js date
 	// const CURRENT_TIME = Date.now();
 	// const DELTA_TIME = CURRENT_TIME - savedTime;
@@ -1582,7 +1571,7 @@ APP.addNewUpdateCallback = () => {
 	if (lesson_26.foxMixer) {
 		lesson_26.foxMixer.update(DELTA_TIME);
 	}
-};
+});
 
 /* ANIMATIONS */
 // GSAP
@@ -1590,19 +1579,21 @@ APP.addNewUpdateCallback = () => {
 // GSAP.to(CUBES_GROUP.position, { duration: 0.2, delay: 2, x: 0 });
 
 /* DEBUGGER UI */
-// _GUI.close();
-const _GUI_CUBES_GROUP_FOLDER = _GUI.addFolder("Cube group");
-_GUI_CUBES_GROUP_FOLDER.close();
-_GUI_CUBES_GROUP_FOLDER.add(CUBES_GROUP, "visible").name("CUBES_GROUP visible");
+// _GUI?.close();
+const _GUI_CUBES_GROUP_FOLDER = _GUI?.addFolder("Cube group");
+_GUI_CUBES_GROUP_FOLDER?.close();
 _GUI_CUBES_GROUP_FOLDER
-	.add(CUBES_GROUP.position, "y")
+	?.add(CUBES_GROUP, "visible")
+	.name("CUBES_GROUP visible");
+_GUI_CUBES_GROUP_FOLDER
+	?.add(CUBES_GROUP.position, "y")
 	.min(-100)
 	.max(100)
 	.step(0.01);
-_GUI_CUBES_GROUP_FOLDER.add(Cube.material, "wireframe").name("Cube wireframe");
-_GUI_CUBES_GROUP_FOLDER.addColor(Cube.material, "color").name("Cube color");
+_GUI_CUBES_GROUP_FOLDER?.add(Cube.material, "wireframe").name("Cube wireframe");
+_GUI_CUBES_GROUP_FOLDER?.addColor(Cube.material, "color").name("Cube color");
 _GUI_CUBES_GROUP_FOLDER
-	.add(
+	?.add(
 		{
 			function: () => {
 				GSAP.to(CubeClone.rotation, {
@@ -1619,83 +1610,83 @@ _GUI_CUBES_GROUP_FOLDER
 	)
 	.name("Cubes lite animation");
 
-const _GUI_TRIANGLE_MESH_FOLDER = _GUI.addFolder("Triangle");
-_GUI_TRIANGLE_MESH_FOLDER.close();
+const _GUI_TRIANGLE_MESH_FOLDER = _GUI?.addFolder("Triangle");
+_GUI_TRIANGLE_MESH_FOLDER?.close();
 _GUI_TRIANGLE_MESH_FOLDER
-	.add(TRIANGLE_MESH, "visible")
+	?.add(TRIANGLE_MESH, "visible")
 	.name("Triangle Mesh Visible");
 _GUI_TRIANGLE_MESH_FOLDER
-	.add(TRIANGLE_MATERIAL, "wireframe")
+	?.add(TRIANGLE_MATERIAL, "wireframe")
 	.name("Triangle Wireframe");
 
-const _GUI_NEW_MATERIAL_FOLDER = _GUI.addFolder("New Material props");
-_GUI_NEW_MATERIAL_FOLDER.close();
+const _GUI_NEW_MATERIAL_FOLDER = _GUI?.addFolder("New Material props");
+_GUI_NEW_MATERIAL_FOLDER?.close();
 _GUI_NEW_MATERIAL_FOLDER
-	.add(MESH_NEW_MATERIAL_GROUP, "visible")
+	?.add(MESH_NEW_MATERIAL_GROUP, "visible")
 	.name("NEW_MATERIAL_GROUP visible");
 _GUI_NEW_MATERIAL_FOLDER
-	.add(MATER6IAL_FOR_LIGHT_PROPOSES_2, "metalness")
+	?.add(MATER6IAL_FOR_LIGHT_PROPOSES_2, "metalness")
 	.min(0)
 	.max(1)
 	.step(0.0001);
 _GUI_NEW_MATERIAL_FOLDER
-	.add(MATER6IAL_FOR_LIGHT_PROPOSES_2, "roughness")
+	?.add(MATER6IAL_FOR_LIGHT_PROPOSES_2, "roughness")
 	.min(0)
 	.max(1)
 	.step(0.0001);
 
-const _GUI_DONUTS_FOLDER = _GUI.addFolder("Donuts");
-_GUI_DONUTS_FOLDER.close();
-_GUI_DONUTS_FOLDER.add(DONUT_GROUP, "visible").name("Donuts visibility");
+const _GUI_DONUTS_FOLDER = _GUI?.addFolder("Donuts");
+_GUI_DONUTS_FOLDER?.close();
+_GUI_DONUTS_FOLDER?.add(DONUT_GROUP, "visible").name("Donuts visibility");
 
-const _GUI_LIGHT_FOLDER = _GUI.addFolder("Light");
-_GUI_LIGHT_FOLDER.close();
+const _GUI_LIGHT_FOLDER = _GUI?.addFolder("Light");
+_GUI_LIGHT_FOLDER?.close();
 _GUI_LIGHT_FOLDER
-	.add(LIGHT_FORMS_GROUP, "visible")
+	?.add(LIGHT_FORMS_GROUP, "visible")
 	.name("Lights group visible");
 
-const _GUI_SHADOWS_FOLDER = _GUI.addFolder("Shadows folder");
-_GUI_SHADOWS_FOLDER.close();
-_GUI_SHADOWS_FOLDER.add(SHADOW_GROUP, "visible");
+const _GUI_SHADOWS_FOLDER = _GUI?.addFolder("Shadows folder");
+_GUI_SHADOWS_FOLDER?.close();
+_GUI_SHADOWS_FOLDER?.add(SHADOW_GROUP, "visible");
 _GUI_SHADOWS_FOLDER
-	.add(SHADOW_AMBIENT_LIGHT, "intensity")
+	?.add(SHADOW_AMBIENT_LIGHT, "intensity")
 	.min(0)
 	.max(1)
 	.step(0.001);
 _GUI_SHADOWS_FOLDER
-	.add(SHADOW_DIRECTIONAL_LIGHT, "intensity")
+	?.add(SHADOW_DIRECTIONAL_LIGHT, "intensity")
 	.min(0)
 	.max(1)
 	.step(0.001);
 _GUI_SHADOWS_FOLDER
-	.add(SHADOW_DIRECTIONAL_LIGHT.position, "x")
+	?.add(SHADOW_DIRECTIONAL_LIGHT.position, "x")
 	.min(-5)
 	.max(5)
 	.step(0.001);
 _GUI_SHADOWS_FOLDER
-	.add(SHADOW_DIRECTIONAL_LIGHT.position, "y")
+	?.add(SHADOW_DIRECTIONAL_LIGHT.position, "y")
 	.min(-5)
 	.max(5)
 	.step(0.001);
 _GUI_SHADOWS_FOLDER
-	.add(SHADOW_DIRECTIONAL_LIGHT.position, "z")
+	?.add(SHADOW_DIRECTIONAL_LIGHT.position, "z")
 	.min(-5)
 	.max(5)
 	.step(0.001);
 _GUI_SHADOWS_FOLDER
-	.add(MATERIAL_FOR_SHADOWS_PROPOSES, "metalness")
+	?.add(MATERIAL_FOR_SHADOWS_PROPOSES, "metalness")
 	.min(0)
 	.max(1)
 	.step(0.001);
 _GUI_SHADOWS_FOLDER
-	.add(MATERIAL_FOR_SHADOWS_PROPOSES, "roughness")
+	?.add(MATERIAL_FOR_SHADOWS_PROPOSES, "roughness")
 	.min(0)
 	.max(1)
 	.step(0.001);
 
-const _GUI_PARTICLES = _GUI.addFolder("Particles");
-_GUI_PARTICLES.close();
-_GUI_PARTICLES.add(PARTICLES_GROUP, "visible");
+const _GUI_PARTICLES = _GUI?.addFolder("Particles");
+_GUI_PARTICLES?.close();
+_GUI_PARTICLES?.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
 window.addEventListener("dblclick", () => {
@@ -1726,8 +1717,8 @@ window.addEventListener("dblclick", () => {
 
 window.addEventListener("keydown", (e) => {
 	if (e.key === "h") {
-		if (_GUI._hidden) _GUI.show();
-		else _GUI.hide();
+		if (_GUI?._hidden) _GUI?.show();
+		else _GUI?.hide();
 	}
 });
 

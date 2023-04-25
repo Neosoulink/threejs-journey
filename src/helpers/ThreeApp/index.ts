@@ -9,7 +9,6 @@ import Sizes, { sceneSizesType } from "./utils/Sizes";
 import Time from "./utils/Time";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
-import World from "./world";
 import Resources from "./utils/Resoureces";
 import Debug from "./utils/Debug";
 
@@ -38,10 +37,9 @@ export default class ThreeApp {
 	control?: OrbitControls;
 	sizes!: Sizes;
 	time!: Time;
-	world!: World;
 	resources!: Resources;
 	debug?: Debug;
-	private updateCallbacks: (() => unknown)[] = [];
+	updateCallbacks: { [key: string]: () => unknown } = {};
 
 	constructor(props?: initThreeProps, appDom = "canvas#app") {
 		if (intense) {
@@ -73,7 +71,6 @@ export default class ThreeApp {
 		this.control = this.camera2.controls;
 		this.rendererIntense = new Renderer();
 		this.resources = new Resources(SOURCES);
-		// this.world = new World();
 
 		if (typeof props?.axesSizes === "number") {
 			const AXES_HELPER = new THREE.AxesHelper(props?.axesSizes);
@@ -100,11 +97,13 @@ export default class ThreeApp {
 	update() {
 		this.camera2.update();
 		this.rendererIntense.update();
-		this.world.update();
 
-		if (this.updateCallbacks.length) {
-			this.updateCallbacks.map((callback) => {
-				callback();
+		const UPDATE_CALLBACKS_KEYS = Object.keys(this.updateCallbacks);
+		if (UPDATE_CALLBACKS_KEYS?.length) {
+			UPDATE_CALLBACKS_KEYS.map((callbackKey) => {
+				if (typeof this.updateCallbacks[callbackKey] === "function") {
+					this.updateCallbacks[callbackKey]();
+				}
 			});
 		}
 	}
@@ -137,15 +136,15 @@ export default class ThreeApp {
 		if (this.debug?.active) this.debug.ui?.destroy();
 	}
 
+	setUpdateCallback(key: string, callback: () => unknown) {
+		this.updateCallbacks[key] = callback;
+	}
+
 	get camera() {
 		return this.camera2.intense;
 	}
 
 	get renderer() {
 		return this.rendererIntense.intense;
-	}
-
-	set addNewUpdateCallback(callback: () => unknown) {
-		this.updateCallbacks.push(callback);
 	}
 }
