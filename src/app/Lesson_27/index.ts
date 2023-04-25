@@ -42,8 +42,6 @@ export default class Lesson_27 {
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
-
-		this.construct();
 	}
 
 	destroy() {
