@@ -9,8 +9,8 @@ import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
 import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
 import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
-import dirtColorImg from "../../assets/imG/textures/dirt/color.jpg";
-import dirtNormalImg from "../../assets/imG/textures/dirt/normal.jpg";
+import dirtColorImg from "../../assets/img/textures/dirt/color.jpg";
+import dirtNormalImg from "../../assets/img/textures/dirt/normal.jpg";
 
 export interface SourceType {
 	name: string;
