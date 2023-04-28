@@ -18,6 +18,7 @@ let resizeEvent: () => unknown | undefined;
 
 export interface initThreeProps {
 	enableControls?: boolean;
+	enableDebug?: boolean;
 	axesSizes?: number;
 	sceneSizes?: sceneSizesType;
 	autoSceneResize?: boolean;
@@ -58,7 +59,7 @@ export default class ThreeApp {
 		const timeInstance = new Time();
 
 		// SETUP
-		this.debug = new Debug();
+		this.debug = new Debug(props?.enableDebug);
 		this.scene = new THREE.Scene();
 		this.sizes = SIZES_INSTANCE;
 		this.time = timeInstance;
