@@ -216,8 +216,39 @@ export default class Lesson_32 {
 			unrealBloomPass.enabled = false;
 			this.effectComposer.addPass(unrealBloomPass);
 
+			const customTintPass = new ShaderPass({
+				uniforms: {
+					tDiffuse: { value: null },
+					uTint: { value: null },
+				},
+				vertexShader: `
+					varying vec2 vUv;
+
+					void main()
+					{
+						gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+						vUv = uv;
+					}
+				`,
+				fragmentShader: `
+					uniform sampler2D tDiffuse;
+					uniform vec3 uTint;
+
+					varying vec2 vUv;
+
+					void main()
+					{
+						vec4 color = texture2D(tDiffuse, vUv);
+						color.rgb += uTint;
+						gl_FragColor = color;
+					}
+				`,
+			});
+			customTintPass.material.uniforms.uTint.value = new THREE.Vector3();
+			this.effectComposer.addPass(customTintPass);
+
 			const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
-			gammaCorrectionPass.enabled = false;
 			this.effectComposer.addPass(gammaCorrectionPass);
 
 			let SMAA_Pass: SMAAPass | undefined = undefined;
@@ -246,8 +277,6 @@ export default class Lesson_32 {
 			this.gui?.add(dotScreenPass, "enabled").name("Dot Screen Pass");
 			this.gui?.add(glitchPass, "enabled").name("Glitch Pass");
 			this.gui?.add(glitchPass, "goWild").name("Glitch Pass Wild");
-			SMAA_Pass && this.gui?.add(SMAA_Pass, "enabled").name("SMAA Pass");
-			this.gui?.add(rgbShiftPass, "enabled").name("RgbShift Pass");
 			this.gui?.add(rgbShiftPass, "enabled").name("RgbShift Pass");
 			this.gui?.add(unrealBloomPass, "enabled").name("Unreal Bloom Pass");
 			this.gui
@@ -268,6 +297,30 @@ export default class Lesson_32 {
 				.min(0)
 				.max(1)
 				.name("Unreal Bloom Threshold");
+			this.gui?.add(customTintPass, "enabled").name("Custom Tint Pass");
+			this.gui
+				?.add(customTintPass.material.uniforms.uTint.value, "x")
+				.step(0.001)
+				.min(0)
+				.max(1)
+				.name("Custom Tint x");
+			this.gui
+				?.add(customTintPass.material.uniforms.uTint.value, "y")
+				.step(0.001)
+				.min(0)
+				.max(1)
+				.name("Custom Tint y");
+			this.gui
+				?.add(customTintPass.material.uniforms.uTint.value, "z")
+				.step(0.001)
+				.min(0)
+				.max(1)
+				.name("Custom Tint z");
+			this.gui
+				?.add(gammaCorrectionPass, "enabled")
+				.name("Gamma Correction Pass");
+
+			SMAA_Pass && this.gui?.add(SMAA_Pass, "enabled").name("SMAA Pass");
 
 			this.gui
 				?.add({ function: () => this.destroy() }, "function")
