@@ -1307,8 +1307,7 @@ new Lesson_27();
 /**
  * Lesson 32
  */
-const lesson_32 = new Lesson_32();
-lesson_32.construct();
+new Lesson_32();
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);

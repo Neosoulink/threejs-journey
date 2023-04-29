@@ -99,6 +99,8 @@ export default class ThreeApp {
 		this.camera2.update();
 		this.rendererIntense.update();
 
+		if(this.debug?.stats) this.debug.stats.begin();
+
 		const UPDATE_CALLBACKS_KEYS = Object.keys(this.updateCallbacks);
 		if (UPDATE_CALLBACKS_KEYS?.length) {
 			UPDATE_CALLBACKS_KEYS.map((callbackKey) => {
@@ -107,6 +109,8 @@ export default class ThreeApp {
 				}
 			});
 		}
+
+		if(this.debug?.stats) this.debug.stats.end();
 	}
 
 	destroy() {
