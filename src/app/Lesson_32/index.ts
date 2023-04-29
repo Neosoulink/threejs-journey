@@ -25,6 +25,8 @@ import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
 import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
 import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
+import interfaceNormalMapImg from "../../assets/img/textures/interfaceNormalMap.png";
+
 // LOCAL TYPES
 export interface Lesson32ConstructorProps {
 	GLTFLoader?: GLTFLoader;
@@ -44,6 +46,8 @@ export default class Lesson_32 {
 	cubeTextureLoader: THREE.CubeTextureLoader;
 	textureLoader: THREE.TextureLoader;
 	effectComposer?: EffectComposer;
+	clock = new THREE.Clock();
+	customDisplacementPass?: ShaderPass;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 	resizeEvent?: () => unknown;
@@ -245,8 +249,58 @@ export default class Lesson_32 {
 					}
 				`,
 			});
+			customTintPass.enabled = false;
 			customTintPass.material.uniforms.uTint.value = new THREE.Vector3();
 			this.effectComposer.addPass(customTintPass);
+
+			this.customDisplacementPass = new ShaderPass({
+				uniforms: {
+					tDiffuse: { value: null },
+					uTime: { value: null },
+					uNormalMap: { value: null },
+				},
+				vertexShader: `
+					varying vec2 vUv;
+
+					void main()
+					{
+						gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+						vUv = uv;
+					}
+				`,
+				fragmentShader: `
+					uniform sampler2D tDiffuse;
+					uniform sampler2D uNormalMap;
+					uniform float uTime;
+
+					varying vec2 vUv;
+
+					void main()
+					{
+						vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
+
+						vec2 newVUv = vec2(
+							vUv.x,
+							vUv.y + sin(vUv.x * 10.0 + uTime) * 0.1
+						) + normalColor.xy * 0.1;
+						vec4 color = texture2D(tDiffuse, newVUv);
+
+						vec3 lightDirection = normalize(vec3(-1.0, 1.0, 0.0));
+						float lightness = clamp(dot(normalColor, lightDirection), 0.0, 1.0);
+
+						color.rgb += lightness * 2.0;
+
+						gl_FragColor = color;
+					}
+				`,
+			});
+			this.customDisplacementPass.enabled = false;
+			this.customDisplacementPass.material.uniforms.uTime.value = 0;
+			this.customDisplacementPass.material.uniforms.uNormalMap.value =
+				this.textureLoader.load(interfaceNormalMapImg);
+
+			this.effectComposer.addPass(this.customDisplacementPass);
 
 			const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
 			this.effectComposer.addPass(gammaCorrectionPass);
@@ -317,6 +371,9 @@ export default class Lesson_32 {
 				.max(1)
 				.name("Custom Tint z");
 			this.gui
+				?.add(this.customDisplacementPass, "enabled")
+				.name("Custom Displacement Pass");
+			this.gui
 				?.add(gammaCorrectionPass, "enabled")
 				.name("Gamma Correction Pass");
 
@@ -336,6 +393,10 @@ export default class Lesson_32 {
 	}
 
 	update() {
+		if (this.customDisplacementPass?.enabled) {
+			const elapsedTime = this.clock.getElapsedTime();
+			this.customDisplacementPass.material.uniforms.uTime.value = elapsedTime;
+		}
 		this.effectComposer?.render();
 	}
 }
