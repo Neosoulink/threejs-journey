@@ -8,6 +8,7 @@ export interface intenseProps {}
 export default class Renderer {
 	private app = new ThreeApp({});
 	intense: THREE.WebGLRenderer;
+	enabled = true;
 
 	constructor() {
 		this.intense = new THREE.WebGLRenderer({
@@ -33,6 +34,8 @@ export default class Renderer {
 	}
 
 	update() {
-		this.intense.render(this.app.scene, this.app.camera);
+		if (this.enabled) {
+			this.intense.render(this.app.scene, this.app.camera);
+		}
 	}
 }

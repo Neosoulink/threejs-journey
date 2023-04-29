@@ -4,8 +4,8 @@ export default class Debug {
 	active = window.location.hash === "#debug";
 	ui?: GUI;
 
-	constructor() {
-		if (this.active) {
+	constructor(active?: boolean) {
+		if (this.active || active) {
 			this.ui = new GUI();
 		}
 	}

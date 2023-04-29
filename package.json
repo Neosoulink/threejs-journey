@@ -19,7 +19,7 @@
 		"@types/cannon": "^0.1.8",
 		"@types/jest": "^27.0.3",
 		"@types/node": "^17.0.5",
-		"@types/three": "^0.135.0",
+		"@types/three": "^0.151.0",
 		"babel-jest": "^27.4.5",
 		"jest": "^27.4.5",
 		"lil-gui": "^0.17.0",
