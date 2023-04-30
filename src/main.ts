@@ -66,7 +66,7 @@ import Lesson_26 from "./app/lesson_26";
 import Lesson_27 from "./app/Lesson_27";
 import Lesson_32 from "./app/Lesson_32";
 import Lesson_33 from "./app/Lesson_33";
-import Lesson_34 from "./app/lesson_34";
+import Lesson_34 from "./app/Lesson_34";
 
 // APP
 const APP = new ThreeApp({
@@ -119,14 +119,21 @@ LOADING_MANAGER.onProgress = () => {
 	console.log("On progress");
 };
 LOADING_MANAGER.onLoad = () => {
+	if (LESSON_34.overlayMaterial) {
+		GSAP.to(LESSON_34.overlayMaterial.uniforms.uAlpha, {
+			duration: 3,
+			value: 0,
+		});
+	}
 	console.log("End loading");
 };
 LOADING_MANAGER.onError = () => {
 	console.log("Error triggered");
 };
-const FONT_LOADER = new FontLoader();
-const DRACO_LOADER = new DRACOLoader();
-const GLTF_LOADER = new GLTFLoader();
+const FONT_LOADER = new FontLoader(LOADING_MANAGER);
+const DRACO_LOADER = new DRACOLoader(LOADING_MANAGER);
+const GLTF_LOADER = new GLTFLoader(LOADING_MANAGER);
+const FILE_LOADER = new THREE.FileLoader(LOADING_MANAGER);
 
 /**
  * LOADER
@@ -1319,7 +1326,13 @@ new Lesson_33({ textureLoader: TEXTURE_LOADER });
 /**
  * Lesson 34
  */
-new Lesson_34({ CubeTextureLoader: CUBE_TEXTURE_LOADER });
+const LESSON_34 = new Lesson_34({
+	CubeTextureLoader: CUBE_TEXTURE_LOADER,
+	fileLoader: FILE_LOADER,
+	GLTF_Loader: GLTF_LOADER,
+});
+
+LESSON_34.construct();
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);

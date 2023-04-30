@@ -3,18 +3,18 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import GUI from "lil-gui";
 
 // HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
 // MODELS
-import FlightHelmetGLTF from "../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
+import FlightHelmetGLTF from "../../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 
 // TEXTURES
-import nxEnvImg from "../assets/img/textures/environmentMaps/0/nx.jpg";
-import nyEnvImg from "../assets/img/textures/environmentMaps/0/ny.jpg";
-import nzEnvImg from "../assets/img/textures/environmentMaps/0/nz.jpg";
-import pxEnvImg from "../assets/img/textures/environmentMaps/0/px.jpg";
-import pyEnvImg from "../assets/img/textures/environmentMaps/0/py.jpg";
-import pzEnvImg from "../assets/img/textures/environmentMaps/0/pz.jpg";
+import nxEnvImg from "../../assets/img/textures/environmentMaps/0/nx.jpg";
+import nyEnvImg from "../../assets/img/textures/environmentMaps/0/ny.jpg";
+import nzEnvImg from "../../assets/img/textures/environmentMaps/0/nz.jpg";
+import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
+import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
+import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
 export default class Lesson_34 {
 	// DATA
@@ -25,17 +25,23 @@ export default class Lesson_34 {
 	gui?: GUI;
 	GLTF_Loader: GLTFLoader;
 	CubeTextureLoader: THREE.CubeTextureLoader;
+	fileLoader: THREE.FileLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
+	overlayGeometry?: THREE.PlaneGeometry;
+	overlayMaterial?: THREE.ShaderMaterial;
+	overlayMesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
 
 	constructor({
 		GLTF_Loader = new GLTFLoader(),
 		CubeTextureLoader = new THREE.CubeTextureLoader(),
+		fileLoader,
 		onConstruct,
 		onDestruct,
 	}: {
 		GLTF_Loader?: GLTFLoader;
 		CubeTextureLoader?: THREE.CubeTextureLoader;
+		fileLoader?: THREE.FileLoader;
 		onConstruct?: () => unknown;
 		onDestruct?: () => unknown;
 	}) {
@@ -43,6 +49,7 @@ export default class Lesson_34 {
 		this.CubeTextureLoader = CubeTextureLoader;
 		this.onConstruct = onConstruct;
 		this.onDestruct = onDestruct;
+		this.fileLoader = fileLoader ?? new THREE.FileLoader();
 
 		this.gui = this.app.debug?.ui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
@@ -58,6 +65,11 @@ export default class Lesson_34 {
 				this.gui.destroy();
 				this.gui = undefined;
 			}
+			this.overlayGeometry?.dispose();
+			this.overlayMaterial?.dispose();
+
+			this.overlayGeometry = undefined;
+			this.overlayMaterial = undefined;
 
 			if (this.environmentMapTexture) {
 				this.environmentMapTexture.dispose();
@@ -93,7 +105,6 @@ export default class Lesson_34 {
 			// DATA
 			const debugObject = { envMapIntensity: 2.5 };
 
-			// FUNCTIONS
 			const updateAllChildMeshEnvMap = () => {
 				this.groupContainer?.traverse((child) => {
 					if (
@@ -107,6 +118,31 @@ export default class Lesson_34 {
 					}
 				});
 			};
+
+			this.overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1);
+			this.overlayMaterial = new THREE.ShaderMaterial({
+				transparent: true,
+				uniforms: {
+					uAlpha: { value: 1 },
+				},
+				vertexShader: `
+					void main() {
+						gl_Position = vec4(position, 1.0);
+					}
+				`,
+				fragmentShader: `
+				uniform float uAlpha;
+
+				void main() {
+					gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
+				}
+				`,
+			});
+			this.overlayMesh = new THREE.Mesh(
+				this.overlayGeometry,
+				this.overlayMaterial
+			);
+			this.groupContainer.add(this.overlayMesh);
 
 			// LIGHTS
 			const DIRECTIONAL_LIGHT = new THREE.DirectionalLight("#ffffff", 3);
@@ -203,5 +239,18 @@ export default class Lesson_34 {
 
 			this.onConstruct && this.onConstruct();
 		}
+	}
+
+	async loadFile(fileLocation: string) {
+		return new Promise<string | undefined>((res, rej) => {
+			this.fileLoader.load(
+				fileLocation,
+				(file) => {
+					res(file.toString());
+				},
+				() => {},
+				() => rej(undefined)
+			);
+		});
 	}
 }
