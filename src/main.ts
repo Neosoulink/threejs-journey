@@ -73,7 +73,7 @@ import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 const APP = new ThreeApp({
 	enableControls: true,
 	enableDebug: true,
-	axesSizes: 2,
+	axesSizes: undefined,
 });
 
 /* DATA */
@@ -95,12 +95,12 @@ const APP_CONFIG = {
 const _GUI = APP.debug?.ui;
 
 const _GUI_MAIN_FOLDER = _GUI?.addFolder("Main");
-if (APP.control) {
+if (APP.control)
 	_GUI_MAIN_FOLDER?.add(APP.control, "enabled").name("Enabled orbit control");
-	_GUI_MAIN_FOLDER
-		?.add(APP_CONFIG, "enableDblClickFullScreen")
-		.name("enable dblclick FullScreen");
-}
+
+_GUI_MAIN_FOLDER
+	?.add(APP_CONFIG, "enableDblClickFullScreen")
+	.name("enable dblclick FullScreen");
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -140,6 +140,10 @@ LOADING_MANAGER.onLoad = () => {
 				value: 0,
 			});
 		}
+
+		GSAP.delayedCall(2.2, () => {
+			LESSON_35.sceneReady = true;
+		});
 		console.log("End loading");
 	});
 };
@@ -1393,7 +1397,8 @@ const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
 
 /* Scene */
-APP.scene.add(
+APP.scene
+	.add
 	// GROUP_APP_CAMERA,
 	// CUBES_GROUP,
 	// TRIANGLE_MESH,
@@ -1406,7 +1411,7 @@ APP.scene.add(
 	// PARTICLES_GALAXY_GROUP,
 	// RAY_CASTER_GROUP,
 	// SCROLL_BASED_GROUP
-);
+	();
 
 if (SCROLL_BASED_GROUP.visible) {
 	APP.camera.position.z = 6;

@@ -31,6 +31,7 @@ export default class Lesson_35 {
 	overlayGeometry?: THREE.PlaneGeometry;
 	overlayMaterial?: THREE.ShaderMaterial;
 	overlayMesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+	sceneReady = false;
 
 	constructor({
 		GLTF_Loader = new GLTFLoader(),
@@ -114,8 +115,16 @@ export default class Lesson_35 {
 				element: HTMLDivElement | null;
 			}[] = [
 				{
-					position: new THREE.Vector3(1.55, 0.1, -0.6),
-					element: window.document.querySelector(".point-0"),
+					position: new THREE.Vector3(1.55, 0.3, -0.6),
+					element: document.querySelector(".point-0"),
+				},
+				{
+					position: new THREE.Vector3(0.5, 0.8, -1.6),
+					element: document.querySelector(".point-1"),
+				},
+				{
+					position: new THREE.Vector3(1.6, -1.3, -0.7),
+					element: document.querySelector(".point-2"),
 				},
 			];
 
@@ -254,32 +263,41 @@ export default class Lesson_35 {
 				.name("LightX");
 
 			this.app.setUpdateCallback(this.folderName, () => {
-				for (const point of points) {
-					if (point.element) {
-						const screenPosition = point.position.clone();
-						screenPosition.project(this.app.camera);
+				if (this.sceneReady) {
+					for (const point of points) {
+						if (point.element) {
+							const screenPosition = point.position.clone();
+							screenPosition.project(this.app.camera);
 
-						rayCaster.setFromCamera(screenPosition, this.app.camera);
-						const intersects = rayCaster.intersectObjects(
-							this.app.scene.children,
-							true
-						);
+							rayCaster.setFromCamera(screenPosition, this.app.camera);
+							const intersects = rayCaster.intersectObjects(
+								this.app.scene.children,
+								true
+							);
 
-						console.log(intersects.length);
+							if (intersects.length === 0) {
+								point.element?.classList.add("visible");
+							} else {
+								const intersectionDistance = intersects[0].distance;
+								const pointDistance = point.position.distanceTo(
+									this.app.camera.position
+								);
 
-						if (intersects.length === 0) {
-							point.element?.classList.add("visible");
-						} else {
-							point.element?.classList.remove("visible");
+								if (intersectionDistance < pointDistance) {
+									point.element?.classList.remove("visible");
+								} else {
+									point.element?.classList.add("visible");
+								}
+							}
+
+							const translateX = screenPosition.x * this.app.sizes.width * 0.5;
+							const translateY = -(
+								screenPosition.y *
+								this.app.sizes.height *
+								0.5
+							);
+							point.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
 						}
-
-						const translateX = screenPosition.x * this.app.sizes.width * 0.5;
-						const translateY = -(
-							screenPosition.y *
-							this.app.sizes.height *
-							0.5
-						);
-						point.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
 					}
 				}
 			});
