@@ -62,12 +62,11 @@ export default class Lesson_26 {
 		this.gui
 			?.add({ function: () => this.construct() }, "function")
 			.name("Enable");
+		this.gui?.close();
 		this.cubeTextureLoader = cubeTextureLoader;
 		this.gltfLoader = gltfLoader;
 		this.textureLoader = textureLoader;
 		this.onDestruct = onDestruct;
-
-
 	}
 
 	destroy() {

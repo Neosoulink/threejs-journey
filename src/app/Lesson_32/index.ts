@@ -56,6 +56,7 @@ export default class Lesson_32 {
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
+		this.gui?.close();
 
 		this.gltfLoader = props?.GLTFLoader ?? new GLTFLoader();
 		this.cubeTextureLoader =

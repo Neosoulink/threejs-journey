@@ -41,6 +41,7 @@ export default ({
 	const FOLDER_NAME = "Lesson 21 | Physic world";
 
 	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
+	_GUI?.close();
 	let physicWorldTocSound: HTMLAudioElement | undefined;
 	let environmentMapTexture: THREE.CubeTexture | undefined;
 	let groupContainer: THREE.Group | undefined;

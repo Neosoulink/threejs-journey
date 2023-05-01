@@ -6,7 +6,7 @@ import GUI from "lil-gui";
 import ThreeApp from "../../helpers/ThreeApp";
 
 // MODELS
-import FlightHelmetGLTF from "../../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
+import damagedHelmetGLTF from "../../assets/models/DamagedHelmet/glTF/DamagedHelmet.gltf?url";
 
 // TEXTURES
 import nxEnvImg from "../../assets/img/textures/environmentMaps/0/nx.jpg";
@@ -16,10 +16,10 @@ import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
 import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
 import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
-export default class Lesson_34 {
+export default class Lesson_35 {
 	// DATA
 	app = new ThreeApp();
-	folderName = "Lesson 34 | Intro and Loading progress";
+	folderName = "Lesson 35 | Mixing HTML and WebGL";
 	environmentMapTexture?: THREE.CubeTexture;
 	groupContainer?: THREE.Group;
 	gui?: GUI;
@@ -31,6 +31,7 @@ export default class Lesson_34 {
 	overlayGeometry?: THREE.PlaneGeometry;
 	overlayMaterial?: THREE.ShaderMaterial;
 	overlayMesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+	sceneReady = false;
 
 	constructor({
 		GLTF_Loader = new GLTFLoader(),
@@ -52,7 +53,6 @@ export default class Lesson_34 {
 		this.fileLoader = fileLoader ?? new THREE.FileLoader();
 
 		this.gui = this.app.debug?.ui?.addFolder(this.folderName);
-		this.gui?.close();
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
 	}
 
@@ -75,6 +75,10 @@ export default class Lesson_34 {
 			if (this.environmentMapTexture) {
 				this.environmentMapTexture.dispose();
 				this.environmentMapTexture = undefined;
+			}
+
+			if (this.app.updateCallbacks[this.folderName]) {
+				delete this.app.updateCallbacks[this.folderName];
 			}
 
 			this.app.scene.background = null;
@@ -104,8 +108,27 @@ export default class Lesson_34 {
 			this.groupContainer = new THREE.Group();
 
 			// DATA
+			const rayCaster = new THREE.Raycaster();
 			const debugObject = { envMapIntensity: 2.5 };
+			const points: {
+				position: THREE.Vector3;
+				element: HTMLDivElement | null;
+			}[] = [
+				{
+					position: new THREE.Vector3(1.55, 0.3, -0.6),
+					element: document.querySelector(".point-0"),
+				},
+				{
+					position: new THREE.Vector3(0.5, 0.8, -1.6),
+					element: document.querySelector(".point-1"),
+				},
+				{
+					position: new THREE.Vector3(1.6, -1.3, -0.7),
+					element: document.querySelector(".point-2"),
+				},
+			];
 
+			// FUNCTIONS
 			const updateAllChildMeshEnvMap = () => {
 				this.groupContainer?.traverse((child) => {
 					if (
@@ -154,11 +177,12 @@ export default class Lesson_34 {
 			DIRECTIONAL_LIGHT.shadow.normalBias = 0.05;
 
 			// MODELS
-			this.GLTF_Loader.load(FlightHelmetGLTF, (gltf) => {
-				gltf.scene.scale.set(10, 10, 10);
-				gltf.scene.position.set(0, -4, 0);
+			this.GLTF_Loader.load(damagedHelmetGLTF, (gltf) => {
+				gltf.scene.scale.set(2.5, 2.5, 2.5);
 				gltf.scene.rotation.y = Math.PI * 0.5;
+
 				this.groupContainer?.add(gltf.scene);
+
 				this.gui
 					?.add(gltf.scene.rotation, "y")
 					.min(-Math.PI)
@@ -204,6 +228,8 @@ export default class Lesson_34 {
 				this.app.scene.environment = this.environmentMapTexture;
 			}
 
+			this.app.camera.position.set(4, 1, -4);
+
 			this.app.renderer.toneMapping = THREE.ReinhardToneMapping;
 			this.app.renderer.toneMappingExposure = 3;
 
@@ -235,6 +261,46 @@ export default class Lesson_34 {
 				.max(5)
 				.step(0.001)
 				.name("LightX");
+
+			this.app.setUpdateCallback(this.folderName, () => {
+				if (this.sceneReady) {
+					for (const point of points) {
+						if (point.element) {
+							const screenPosition = point.position.clone();
+							screenPosition.project(this.app.camera);
+
+							rayCaster.setFromCamera(screenPosition, this.app.camera);
+							const intersects = rayCaster.intersectObjects(
+								this.app.scene.children,
+								true
+							);
+
+							if (intersects.length === 0) {
+								point.element?.classList.add("visible");
+							} else {
+								const intersectionDistance = intersects[0].distance;
+								const pointDistance = point.position.distanceTo(
+									this.app.camera.position
+								);
+
+								if (intersectionDistance < pointDistance) {
+									point.element?.classList.remove("visible");
+								} else {
+									point.element?.classList.add("visible");
+								}
+							}
+
+							const translateX = screenPosition.x * this.app.sizes.width * 0.5;
+							const translateY = -(
+								screenPosition.y *
+								this.app.sizes.height *
+								0.5
+							);
+							point.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
+						}
+					}
+				}
+			});
 
 			this.gui?.add({ fn: () => this.destroy() }, "fn").name("Destroy");
 

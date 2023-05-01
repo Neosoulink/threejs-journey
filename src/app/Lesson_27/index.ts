@@ -35,6 +35,7 @@ export default class Lesson_27 {
 	constructor(props?: Lesson27ConstructorProps) {
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
+		this.gui?.close();
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
 
 		this.fileLoader = props?.fileLoader ?? new THREE.FileLoader();

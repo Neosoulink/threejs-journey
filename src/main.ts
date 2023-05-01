@@ -10,6 +10,18 @@ import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHel
 /* HELPERS */
 import ThreeApp from "./helpers/ThreeApp";
 
+// MODULES
+import lesson_25 from "./app/lesson_25";
+import lesson_24 from "./app/lesson_24";
+import lesson_22 from "./app/lesson_22";
+import lesson_21 from "./app/lesson_21";
+import Lesson_26 from "./app/lesson_26";
+import Lesson_27 from "./app/Lesson_27";
+import Lesson_32 from "./app/Lesson_32";
+import Lesson_33 from "./app/Lesson_33";
+import Lesson_34 from "./app/Lesson_34";
+import Lesson_35 from "./app/Lesson_35";
+
 /* COMPONENTS */
 import Cube from "./components/Cube";
 
@@ -57,22 +69,11 @@ import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 
-// MODULES
-import lesson_25 from "./app/lesson_25";
-import lesson_24 from "./app/lesson_24";
-import lesson_22 from "./app/lesson_22";
-import lesson_21 from "./app/lesson_21";
-import Lesson_26 from "./app/lesson_26";
-import Lesson_27 from "./app/Lesson_27";
-import Lesson_32 from "./app/Lesson_32";
-import Lesson_33 from "./app/Lesson_33";
-import Lesson_34 from "./app/Lesson_34";
-
 // APP
 const APP = new ThreeApp({
 	enableControls: true,
 	enableDebug: true,
-	axesSizes: 2,
+	axesSizes: undefined,
 });
 
 /* DATA */
@@ -94,12 +95,12 @@ const APP_CONFIG = {
 const _GUI = APP.debug?.ui;
 
 const _GUI_MAIN_FOLDER = _GUI?.addFolder("Main");
-if (APP.control) {
+if (APP.control)
 	_GUI_MAIN_FOLDER?.add(APP.control, "enabled").name("Enabled orbit control");
-	_GUI_MAIN_FOLDER
-		?.add(APP_CONFIG, "enableDblClickFullScreen")
-		.name("enable dblclick FullScreen");
-}
+
+_GUI_MAIN_FOLDER
+	?.add(APP_CONFIG, "enableDblClickFullScreen")
+	.name("enable dblclick FullScreen");
 
 /* CLOCK */
 const ANIMATION_CLOCK = new THREE.Clock();
@@ -117,7 +118,9 @@ LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
 };
 LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
-	if (DOM_LOADING_BAR?.style && LESSON_34.overlayMaterial) {
+	const OVERLAY_MATERIAL =
+		LESSON_34.overlayMaterial ?? LESSON_35.overlayMaterial;
+	if (DOM_LOADING_BAR?.style && OVERLAY_MATERIAL) {
 		DOM_LOADING_BAR.style.transform = `scaleX(${itemsLoaded / itemsToLoad})`;
 	}
 	console.log("On progress", itemsLoaded / itemsToLoad);
@@ -125,16 +128,22 @@ LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
 
 LOADING_MANAGER.onLoad = () => {
 	GSAP.delayedCall(0.6, () => {
-		if (LESSON_34.overlayMaterial) {
+		const OVERLAY_MATERIAL =
+			LESSON_34.overlayMaterial ?? LESSON_35.overlayMaterial;
+		if (OVERLAY_MATERIAL) {
 			if (DOM_LOADING_BAR?.style) {
 				DOM_LOADING_BAR.style.transform = "";
 				DOM_LOADING_BAR.classList.add("ended");
 			}
-			GSAP.to(LESSON_34.overlayMaterial.uniforms.uAlpha, {
+			GSAP.to(OVERLAY_MATERIAL.uniforms.uAlpha, {
 				duration: 3,
 				value: 0,
 			});
 		}
+
+		GSAP.delayedCall(2.2, () => {
+			LESSON_35.sceneReady = true;
+		});
 		console.log("End loading");
 	});
 };
@@ -337,7 +346,7 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 
 		DONUT_GROUP.add(donut);
 	}
-	APP.scene.add(TEXT_FORM);
+	// APP.scene.add(TEXT_FORM);
 });
 
 CUBES_GROUP.add(Cube, CubeClone);
@@ -1343,6 +1352,16 @@ const LESSON_34 = new Lesson_34({
 	GLTF_Loader: GLTF_LOADER,
 });
 
+/**
+ * Lesson 35
+ */
+const LESSON_35 = new Lesson_35({
+	CubeTextureLoader: CUBE_TEXTURE_LOADER,
+	fileLoader: FILE_LOADER,
+	GLTF_Loader: GLTF_LOADER,
+});
+LESSON_35.construct();
+
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
 LIGHT_FORMS_GROUP.add(
@@ -1378,20 +1397,21 @@ const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
 
 /* Scene */
-APP.scene.add(
-	GROUP_APP_CAMERA,
-	CUBES_GROUP,
-	TRIANGLE_MESH,
-	MESH_NEW_MATERIAL_GROUP,
-	DONUT_GROUP,
-	LIGHT_FORMS_GROUP,
-	SHADOW_GROUP,
-	HAUNTED_HOUSE_GROUP,
-	PARTICLES_GROUP,
-	PARTICLES_GALAXY_GROUP,
-	RAY_CASTER_GROUP,
-	SCROLL_BASED_GROUP
-);
+APP.scene
+	.add
+	// GROUP_APP_CAMERA,
+	// CUBES_GROUP,
+	// TRIANGLE_MESH,
+	// MESH_NEW_MATERIAL_GROUP,
+	// DONUT_GROUP,
+	// LIGHT_FORMS_GROUP,
+	// SHADOW_GROUP,
+	// HAUNTED_HOUSE_GROUP,
+	// PARTICLES_GROUP,
+	// PARTICLES_GALAXY_GROUP,
+	// RAY_CASTER_GROUP,
+	// SCROLL_BASED_GROUP
+	();
 
 if (SCROLL_BASED_GROUP.visible) {
 	APP.camera.position.z = 6;
