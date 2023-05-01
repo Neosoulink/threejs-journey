@@ -26,6 +26,7 @@ export default ({
 	const FOLDER_NAME = "Lesson 22 | Imported Models";
 	let groupContainer: THREE.Group | undefined;
 	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
+	_GUI?.close();
 
 	const destroy = () => {
 		if (groupContainer) {

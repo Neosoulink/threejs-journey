@@ -33,6 +33,7 @@ export default ({
 
 	let groupContainer: THREE.Group | undefined;
 	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
+	_GUI?.close();
 
 	const destroy = () => {
 		if (groupContainer) {

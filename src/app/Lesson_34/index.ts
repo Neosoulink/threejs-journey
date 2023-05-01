@@ -52,6 +52,7 @@ export default class Lesson_34 {
 		this.fileLoader = fileLoader ?? new THREE.FileLoader();
 
 		this.gui = this.app.debug?.ui?.addFolder(this.folderName);
+		this.gui?.close();
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
 	}
 

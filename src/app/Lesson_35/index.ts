@@ -76,6 +76,10 @@ export default class Lesson_35 {
 				this.environmentMapTexture = undefined;
 			}
 
+			if (this.app.updateCallbacks[this.folderName]) {
+				delete this.app.updateCallbacks[this.folderName];
+			}
+
 			this.app.scene.background = null;
 			this.app.scene.environment = null;
 
@@ -103,8 +107,19 @@ export default class Lesson_35 {
 			this.groupContainer = new THREE.Group();
 
 			// DATA
+			const rayCaster = new THREE.Raycaster();
 			const debugObject = { envMapIntensity: 2.5 };
+			const points: {
+				position: THREE.Vector3;
+				element: HTMLDivElement | null;
+			}[] = [
+				{
+					position: new THREE.Vector3(1.55, 0.1, -0.6),
+					element: window.document.querySelector(".point-0"),
+				},
+			];
 
+			// FUNCTIONS
 			const updateAllChildMeshEnvMap = () => {
 				this.groupContainer?.traverse((child) => {
 					if (
@@ -154,7 +169,7 @@ export default class Lesson_35 {
 
 			// MODELS
 			this.GLTF_Loader.load(damagedHelmetGLTF, (gltf) => {
-				gltf.scene.scale.set(2.5, 2.5, 2.5)
+				gltf.scene.scale.set(2.5, 2.5, 2.5);
 				gltf.scene.rotation.y = Math.PI * 0.5;
 
 				this.groupContainer?.add(gltf.scene);
@@ -237,6 +252,37 @@ export default class Lesson_35 {
 				.max(5)
 				.step(0.001)
 				.name("LightX");
+
+			this.app.setUpdateCallback(this.folderName, () => {
+				for (const point of points) {
+					if (point.element) {
+						const screenPosition = point.position.clone();
+						screenPosition.project(this.app.camera);
+
+						rayCaster.setFromCamera(screenPosition, this.app.camera);
+						const intersects = rayCaster.intersectObjects(
+							this.app.scene.children,
+							true
+						);
+
+						console.log(intersects.length);
+
+						if (intersects.length === 0) {
+							point.element?.classList.add("visible");
+						} else {
+							point.element?.classList.remove("visible");
+						}
+
+						const translateX = screenPosition.x * this.app.sizes.width * 0.5;
+						const translateY = -(
+							screenPosition.y *
+							this.app.sizes.height *
+							0.5
+						);
+						point.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
+					}
+				}
+			});
 
 			this.gui?.add({ fn: () => this.destroy() }, "fn").name("Destroy");
 
