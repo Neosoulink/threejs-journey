@@ -66,6 +66,7 @@ import Lesson_26 from "./app/lesson_26";
 import Lesson_27 from "./app/Lesson_27";
 import Lesson_32 from "./app/Lesson_32";
 import Lesson_33 from "./app/Lesson_33";
+import Lesson_34 from "./app/Lesson_34";
 
 // APP
 const APP = new ThreeApp({
@@ -76,6 +77,7 @@ const APP = new ThreeApp({
 
 /* DATA */
 // let savedTime = Date.now();
+const DOM_LOADING_BAR = document.querySelector<HTMLDivElement>(".loading-bar");
 const SCROLL_BASED_DOM_BODY = document.querySelector("body.scroll-based");
 /* Cursor position*/
 const CURSOR_POS = {
@@ -114,18 +116,35 @@ const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
 };
-LOADING_MANAGER.onProgress = () => {
-	console.log("On progress");
+LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
+	if (DOM_LOADING_BAR?.style && LESSON_34.overlayMaterial) {
+		DOM_LOADING_BAR.style.transform = `scaleX(${itemsLoaded / itemsToLoad})`;
+	}
+	console.log("On progress", itemsLoaded / itemsToLoad);
 };
+
 LOADING_MANAGER.onLoad = () => {
-	console.log("End loading");
+	GSAP.delayedCall(0.6, () => {
+		if (LESSON_34.overlayMaterial) {
+			if (DOM_LOADING_BAR?.style) {
+				DOM_LOADING_BAR.style.transform = "";
+				DOM_LOADING_BAR.classList.add("ended");
+			}
+			GSAP.to(LESSON_34.overlayMaterial.uniforms.uAlpha, {
+				duration: 3,
+				value: 0,
+			});
+		}
+		console.log("End loading");
+	});
 };
 LOADING_MANAGER.onError = () => {
 	console.log("Error triggered");
 };
-const FONT_LOADER = new FontLoader();
-const DRACO_LOADER = new DRACOLoader();
-const GLTF_LOADER = new GLTFLoader();
+const FONT_LOADER = new FontLoader(LOADING_MANAGER);
+const DRACO_LOADER = new DRACOLoader(LOADING_MANAGER);
+const GLTF_LOADER = new GLTFLoader(LOADING_MANAGER);
+const FILE_LOADER = new THREE.FileLoader(LOADING_MANAGER);
 
 /**
  * LOADER
@@ -1314,6 +1333,15 @@ new Lesson_32();
  * Lesson 33
  */
 new Lesson_33({ textureLoader: TEXTURE_LOADER });
+
+/**
+ * Lesson 34
+ */
+const LESSON_34 = new Lesson_34({
+	CubeTextureLoader: CUBE_TEXTURE_LOADER,
+	fileLoader: FILE_LOADER,
+	GLTF_Loader: GLTF_LOADER,
+});
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
