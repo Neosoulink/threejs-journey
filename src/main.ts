@@ -77,6 +77,7 @@ const APP = new ThreeApp({
 
 /* DATA */
 // let savedTime = Date.now();
+const DOM_LOADING_BAR = document.querySelector<HTMLDivElement>(".loading-bar");
 const SCROLL_BASED_DOM_BODY = document.querySelector("body.scroll-based");
 /* Cursor position*/
 const CURSOR_POS = {
@@ -115,17 +116,27 @@ const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
 };
-LOADING_MANAGER.onProgress = () => {
-	console.log("On progress");
-};
-LOADING_MANAGER.onLoad = () => {
-	if (LESSON_34.overlayMaterial) {
-		GSAP.to(LESSON_34.overlayMaterial.uniforms.uAlpha, {
-			duration: 3,
-			value: 0,
-		});
+LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
+	if (DOM_LOADING_BAR?.style && LESSON_34.overlayMaterial) {
+		DOM_LOADING_BAR.style.transform = `scaleX(${itemsLoaded / itemsToLoad})`;
 	}
-	console.log("End loading");
+	console.log("On progress", itemsLoaded / itemsToLoad);
+};
+
+LOADING_MANAGER.onLoad = () => {
+	GSAP.delayedCall(0.6, () => {
+		if (LESSON_34.overlayMaterial) {
+			if (DOM_LOADING_BAR?.style) {
+				DOM_LOADING_BAR.style.transform = "";
+				DOM_LOADING_BAR.classList.add("ended");
+			}
+			GSAP.to(LESSON_34.overlayMaterial.uniforms.uAlpha, {
+				duration: 3,
+				value: 0,
+			});
+		}
+		console.log("End loading");
+	});
 };
 LOADING_MANAGER.onError = () => {
 	console.log("Error triggered");
@@ -1331,8 +1342,6 @@ const LESSON_34 = new Lesson_34({
 	fileLoader: FILE_LOADER,
 	GLTF_Loader: GLTF_LOADER,
 });
-
-LESSON_34.construct();
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
