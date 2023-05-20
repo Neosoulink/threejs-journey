@@ -68,6 +68,7 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
+import Lesson_38 from "./app/Lesson_38";
 
 // APP
 const APP = new ThreeApp({
@@ -123,7 +124,7 @@ LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
 	if (DOM_LOADING_BAR?.style && OVERLAY_MATERIAL) {
 		DOM_LOADING_BAR.style.transform = `scaleX(${itemsLoaded / itemsToLoad})`;
 	}
-	console.log("On progress", itemsLoaded / itemsToLoad);
+	console.log(`On progress`, itemsLoaded / itemsToLoad);
 };
 
 LOADING_MANAGER.onLoad = () => {
@@ -155,9 +156,6 @@ const DRACO_LOADER = new DRACOLoader(LOADING_MANAGER);
 const GLTF_LOADER = new GLTFLoader(LOADING_MANAGER);
 const FILE_LOADER = new THREE.FileLoader(LOADING_MANAGER);
 
-/**
- * LOADER
- */
 DRACO_LOADER.setDecoderPath("/decoders/draco/");
 GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
 
@@ -1360,7 +1358,13 @@ const LESSON_35 = new Lesson_35({
 	fileLoader: FILE_LOADER,
 	GLTF_Loader: GLTF_LOADER,
 });
-LESSON_35.construct();
+
+const LESSON_38 = new Lesson_38({
+	textureLoader: TEXTURE_LOADER,
+	gltfLoader: GLTF_LOADER,
+});
+
+LESSON_38.construct();
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
