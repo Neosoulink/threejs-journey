@@ -5,6 +5,12 @@ import GUI from "lil-gui";
 // HELPERS
 import ThreeApp from "../../helpers/ThreeApp";
 
+// MODELS
+import portalModel from "../../assets/models/portal/portal.glb?url";
+
+// TEXTURES
+import portalTexture from "../../assets/models/portal/baked.jpg";
+
 // LOCAL TYPES
 export interface Lesson32ConstructorProps {
 	textureLoader?: THREE.TextureLoader;
@@ -91,14 +97,50 @@ export default class Lesson_38 {
 			this.mainGroup = new THREE.Group();
 
 			/**
+			 * Texture
+			 */
+			const bakedPortalTexture = this.textureLoader.load(portalTexture);
+			bakedPortalTexture.flipY = false;
+			bakedPortalTexture.encoding = THREE.sRGBEncoding;
+
+			/**
+			 * Material
+			 */
+			const bakedMaterial = new THREE.MeshBasicMaterial({
+				map: bakedPortalTexture,
+			});
+
+			const poleLightMaterial = new THREE.MeshBasicMaterial({
+				color: 0xffffe5,
+			});
+
+			const portalLightMaterial = new THREE.MeshBasicMaterial({
+				color: 0xffffff,
+			});
+
+			/**
 			 * Object
 			 */
-			const cube = new THREE.Mesh(
-				new THREE.BoxGeometry(1, 1, 1),
-				new THREE.MeshBasicMaterial()
-			);
-
-			this.mainGroup.add(cube);
+			this.gltfLoader.load(portalModel, (model) => {
+				model.scene.rotateY(Math.PI);
+				console.log(model.scene);
+				model.scene.traverse((child) => {
+					if (
+						child instanceof THREE.Mesh &&
+						["poleLightA", "poleLightB"].includes(child.name)
+					) {
+						child.material = poleLightMaterial;
+					} else if (
+						child instanceof THREE.Mesh &&
+						["portalLight"].includes(child.name)
+					) {
+						child.material = portalLightMaterial;
+					} else if (child instanceof THREE.Mesh) {
+						child.material = bakedMaterial;
+					}
+				});
+				this.mainGroup?.add(model.scene);
+			});
 
 			/**
 			 * Animate
@@ -108,6 +150,10 @@ export default class Lesson_38 {
 			// this.app.setUpdateCallback(this.folderName, () => {
 			// 	tick();
 			// });
+
+			this.app.camera.position.x = 4;
+			this.app.camera.position.y = 2;
+			this.app.camera.position.z = 4;
 
 			this.app.scene.add(this.mainGroup);
 			this.gui = this.appGui?.addFolder(this.folderName);
