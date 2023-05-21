@@ -28,11 +28,15 @@ export default class Lesson_38 {
 	clock?: THREE.Clock;
 	textureLoader: THREE.TextureLoader;
 	gltfLoader: GLTFLoader;
+	debugObject = {
+		renderClearColor: this.app.renderer.getClearColor(new THREE.Color()),
+	};
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 	resizeEvent?: () => unknown;
 
 	constructor(props?: Lesson32ConstructorProps) {
+		console.log("this.app.renderer.clearColor ==>", this.app.renderer);
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
@@ -123,7 +127,7 @@ export default class Lesson_38 {
 			 */
 			this.gltfLoader.load(portalModel, (model) => {
 				model.scene.rotateY(Math.PI);
-				console.log(model.scene);
+
 				model.scene.traverse((child) => {
 					if (
 						child instanceof THREE.Mesh &&
@@ -143,6 +147,33 @@ export default class Lesson_38 {
 			});
 
 			/**
+			 * Fireflies
+			 */
+			const firefliesGeometry = new THREE.BufferGeometry();
+			const firefliesCount = 30;
+			const positionArray = new Float32Array(firefliesCount * 3);
+
+			for (let i = 0; i < firefliesCount; i++) {
+				positionArray[i * 3 + 0] = (Math.random() - 0.5) * 4;
+				positionArray[i * 3 + 1] = Math.random() * 1.5;
+				positionArray[i * 3 + 2] = (Math.random() - 0.5) * 4;
+			}
+
+			firefliesGeometry.setAttribute(
+				"position",
+				new THREE.BufferAttribute(positionArray, 3)
+			);
+
+			// Material
+			const firefliesMaterial = new THREE.PointsMaterial({
+				size: 0.05,
+				sizeAttenuation: true,
+			});
+			// Points
+			const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
+			this.mainGroup.add(fireflies);
+
+			/**
 			 * Animate
 			 */
 			// const tick = () => {};
@@ -155,8 +186,14 @@ export default class Lesson_38 {
 			this.app.camera.position.y = 2;
 			this.app.camera.position.z = 4;
 
+			this.app.renderer.setClearColor(this.debugObject.renderClearColor);
+
 			this.app.scene.add(this.mainGroup);
 			this.gui = this.appGui?.addFolder(this.folderName);
+
+			this.gui?.addColor(this.debugObject, "renderClearColor").onChange(() => {
+				this.app.renderer.setClearColor(this.debugObject.renderClearColor);
+			});
 
 			this.gui
 				?.add({ function: () => this.destroy() }, "function")
