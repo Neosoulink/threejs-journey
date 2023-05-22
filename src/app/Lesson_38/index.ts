@@ -5,6 +5,10 @@ import GUI from "lil-gui";
 // HELPERS
 import ThreeApp from "../../helpers/ThreeApp";
 
+// SHADERS
+import firefliesVertUrl from "./shaders/fireflies.vert?url";
+import firefliesFragUrl from "./shaders/fireflies.frag?url";
+
 // MODELS
 import portalModel from "../../assets/models/portal/portal.glb?url";
 
@@ -15,6 +19,7 @@ import portalTexture from "../../assets/models/portal/baked.jpg";
 export interface Lesson32ConstructorProps {
 	textureLoader?: THREE.TextureLoader;
 	gltfLoader?: GLTFLoader;
+	fileLoader?: THREE.FileLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
@@ -28,6 +33,7 @@ export default class Lesson_38 {
 	clock?: THREE.Clock;
 	textureLoader: THREE.TextureLoader;
 	gltfLoader: GLTFLoader;
+	fileLoader: THREE.FileLoader;
 	debugObject = {
 		renderClearColor: this.app.renderer.getClearColor(new THREE.Color()),
 	};
@@ -36,13 +42,13 @@ export default class Lesson_38 {
 	resizeEvent?: () => unknown;
 
 	constructor(props?: Lesson32ConstructorProps) {
-		console.log("this.app.renderer.clearColor ==>", this.app.renderer);
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
 		this.gui?.close();
 		this.textureLoader = props?.textureLoader ?? new THREE.TextureLoader();
 		this.gltfLoader = props?.gltfLoader ?? new GLTFLoader();
+		this.fileLoader = props?.fileLoader ?? new THREE.FileLoader();
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
@@ -165,10 +171,25 @@ export default class Lesson_38 {
 			);
 
 			// Material
-			const firefliesMaterial = new THREE.PointsMaterial({
-				size: 0.05,
-				sizeAttenuation: true,
+			/**
+			 * Shaders
+			 */
+			const firefliesVertShader = await this.loadFile(firefliesVertUrl);
+			const firefliesFragShader = await this.loadFile(firefliesFragUrl);
+			const firefliesMaterial = new THREE.RawShaderMaterial({
+				vertexShader: firefliesVertShader,
+				fragmentShader: firefliesFragShader,
+				uniforms: {
+					pixelRation: {
+						value: Math.min(this.app.renderer.getPixelRatio(), 2),
+					},
+				},
 			});
+			console.log(
+				"Math.min(this.app.renderer.pixelRatio, 2) ==>",
+				Math.min(this.app.renderer.getPixelRatio(), 2),
+				Math.min(window.devicePixelRatio, 2)
+			);
 			// Points
 			const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
 			this.mainGroup.add(fireflies);
@@ -201,5 +222,18 @@ export default class Lesson_38 {
 		}
 
 		this.onConstruct && this.onConstruct();
+	}
+
+	async loadFile(fileLocation: string) {
+		return new Promise<string | undefined>((res, rej) => {
+			this.fileLoader.load(
+				fileLocation,
+				(file) => {
+					res(file.toString());
+				},
+				() => {},
+				() => rej(undefined)
+			);
+		});
 	}
 }
