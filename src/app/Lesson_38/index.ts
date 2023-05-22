@@ -38,7 +38,7 @@ export default class Lesson_38 {
 	gltfLoader: GLTFLoader;
 	fileLoader: THREE.FileLoader;
 	firefliesMaterial?: THREE.RawShaderMaterial;
-	portalMaterial?: THREE.RawShaderMaterial;
+	portalLightMaterial?: THREE.RawShaderMaterial;
 	debugObject = {
 		renderClearColor: this.app.renderer.getClearColor(new THREE.Color()),
 	};
@@ -131,8 +131,16 @@ export default class Lesson_38 {
 				color: 0xffffe5,
 			});
 
-			const portalLightMaterial = new THREE.MeshBasicMaterial({
-				color: 0xffffff,
+			const portalVertShader = await this.loadFile(portalVertUrl);
+			const portalFragShader = await this.loadFile(portalFragUrl);
+			this.portalLightMaterial = new THREE.RawShaderMaterial({
+				vertexShader: portalVertShader,
+				fragmentShader: portalFragShader,
+				uniforms: {
+					uTime: { value: 0 },
+					uColorStart: { value: new THREE.Color(0x000000) },
+					uColorEnd: { value: new THREE.Color(0xffffff) },
+				},
 			});
 
 			/**
@@ -151,7 +159,9 @@ export default class Lesson_38 {
 						child instanceof THREE.Mesh &&
 						["portalLight"].includes(child.name)
 					) {
-						child.material = portalLightMaterial;
+						if (this.portalLightMaterial) {
+							child.material = this.portalLightMaterial;
+						}
 					} else if (child instanceof THREE.Mesh) {
 						child.material = bakedMaterial;
 					}
@@ -205,14 +215,6 @@ export default class Lesson_38 {
 				depthWrite: false,
 			});
 
-			const portalVertShader = await this.loadFile(portalVertUrl);
-			const portalFragShader = await this.loadFile(portalFragUrl);
-			this.portalMaterial = new THREE.RawShaderMaterial({
-				vertexShader: portalVertShader,
-				fragmentShader: portalFragShader,
-				uniforms: {},
-			});
-
 			// Points
 			const fireflies = new THREE.Points(
 				firefliesGeometry,
@@ -247,6 +249,12 @@ export default class Lesson_38 {
 			this.gui?.addColor(this.debugObject, "renderClearColor").onChange(() => {
 				this.app.renderer.setClearColor(this.debugObject.renderClearColor);
 			});
+			this.gui
+				?.addColor(this.portalLightMaterial.uniforms.uColorStart, "value")
+				.name("Portal start color");
+			this.gui
+				?.addColor(this.portalLightMaterial.uniforms.uColorEnd, "value")
+				.name("Portal end color");
 
 			this.gui
 				?.add({ function: () => this.destroy() }, "function")
@@ -272,6 +280,9 @@ export default class Lesson_38 {
 		this.app.setUpdateCallback(this.folderName, () => {
 			if (this.firefliesMaterial?.uniforms.uTime) {
 				this.firefliesMaterial.uniforms.uTime.value = CLOCK.getElapsedTime();
+			}
+			if (this.portalLightMaterial?.uniforms.uTime) {
+				this.portalLightMaterial.uniforms.uTime.value = CLOCK.getElapsedTime();
 			}
 		});
 
