@@ -182,6 +182,7 @@ export default class Lesson_38 {
 			this.firefliesMaterial = new THREE.RawShaderMaterial({
 				vertexShader: firefliesVertShader,
 				fragmentShader: firefliesFragShader,
+				transparent: true,
 				uniforms: {
 					uPixelRation: {
 						value: Math.min(this.app.renderer.getPixelRatio(), 2),
