@@ -161,16 +161,23 @@ export default class Lesson_38 {
 			const firefliesGeometry = new THREE.BufferGeometry();
 			const firefliesCount = 30;
 			const positionArray = new Float32Array(firefliesCount * 3);
+			const scaleArray = new Float32Array(firefliesCount);
 
 			for (let i = 0; i < firefliesCount; i++) {
 				positionArray[i * 3 + 0] = (Math.random() - 0.5) * 4;
 				positionArray[i * 3 + 1] = Math.random() * 1.5;
 				positionArray[i * 3 + 2] = (Math.random() - 0.5) * 4;
+
+				scaleArray[i] = Math.random();
 			}
 
 			firefliesGeometry.setAttribute(
 				"position",
 				new THREE.BufferAttribute(positionArray, 3)
+			);
+			firefliesGeometry.setAttribute(
+				"aScale",
+				new THREE.BufferAttribute(positionArray, 1)
 			);
 
 			// Material
@@ -218,7 +225,7 @@ export default class Lesson_38 {
 			this.gui
 				?.add(this.firefliesMaterial.uniforms.uSize, "value")
 				.min(1)
-				.max(30)
+				.max(100)
 				.step(1)
 				.name("Point Size");
 			this.gui?.addColor(this.debugObject, "renderClearColor").onChange(() => {
