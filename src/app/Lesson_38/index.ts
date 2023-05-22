@@ -191,11 +191,14 @@ export default class Lesson_38 {
 				fragmentShader: firefliesFragShader,
 				transparent: true,
 				uniforms: {
+					uTime: { value: 0 },
 					uPixelRation: {
 						value: Math.min(this.app.renderer.getPixelRatio(), 2),
 					},
 					uSize: { value: 100 },
 				},
+				blending: THREE.AdditiveBlending,
+				depthWrite: false,
 			});
 			// Points
 			const fireflies = new THREE.Points(
@@ -246,6 +249,19 @@ export default class Lesson_38 {
 			}
 		};
 		this.app.sizes.on("resize", this.resizeEvent);
+
+		/**
+		 * Animate
+		 */
+
+		const CLOCK = new THREE.Clock();
+
+		this.app.setUpdateCallback(this.folderName, () => {
+			if (this.firefliesMaterial?.uniforms.uTime) {
+				this.firefliesMaterial.uniforms.uTime.value = CLOCK.getElapsedTime();
+			}
+		});
+
 		this.onConstruct && this.onConstruct();
 	}
 
