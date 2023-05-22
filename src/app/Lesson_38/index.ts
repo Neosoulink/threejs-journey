@@ -34,6 +34,7 @@ export default class Lesson_38 {
 	textureLoader: THREE.TextureLoader;
 	gltfLoader: GLTFLoader;
 	fileLoader: THREE.FileLoader;
+	firefliesMaterial?: THREE.RawShaderMaterial;
 	debugObject = {
 		renderClearColor: this.app.renderer.getClearColor(new THREE.Color()),
 	};
@@ -88,6 +89,8 @@ export default class Lesson_38 {
 			if (this.app.updateCallbacks[this.folderName]) {
 				delete this.app.updateCallbacks[this.folderName];
 			}
+
+			this.resizeEvent && this.app.sizes.off("resize", this.resizeEvent);
 
 			this.onDestruct && this.onDestruct();
 		}
@@ -176,22 +179,21 @@ export default class Lesson_38 {
 			 */
 			const firefliesVertShader = await this.loadFile(firefliesVertUrl);
 			const firefliesFragShader = await this.loadFile(firefliesFragUrl);
-			const firefliesMaterial = new THREE.RawShaderMaterial({
+			this.firefliesMaterial = new THREE.RawShaderMaterial({
 				vertexShader: firefliesVertShader,
 				fragmentShader: firefliesFragShader,
 				uniforms: {
-					pixelRation: {
+					uPixelRation: {
 						value: Math.min(this.app.renderer.getPixelRatio(), 2),
 					},
+					uSize: { value: 100 },
 				},
 			});
-			console.log(
-				"Math.min(this.app.renderer.pixelRatio, 2) ==>",
-				Math.min(this.app.renderer.getPixelRatio(), 2),
-				Math.min(window.devicePixelRatio, 2)
-			);
 			// Points
-			const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
+			const fireflies = new THREE.Points(
+				firefliesGeometry,
+				this.firefliesMaterial
+			);
 			this.mainGroup.add(fireflies);
 
 			/**
@@ -210,8 +212,14 @@ export default class Lesson_38 {
 			this.app.renderer.setClearColor(this.debugObject.renderClearColor);
 
 			this.app.scene.add(this.mainGroup);
-			this.gui = this.appGui?.addFolder(this.folderName);
 
+			this.gui = this.appGui?.addFolder(this.folderName);
+			this.gui
+				?.add(this.firefliesMaterial.uniforms.uSize, "value")
+				.min(1)
+				.max(30)
+				.step(1)
+				.name("Point Size");
 			this.gui?.addColor(this.debugObject, "renderClearColor").onChange(() => {
 				this.app.renderer.setClearColor(this.debugObject.renderClearColor);
 			});
@@ -221,6 +229,15 @@ export default class Lesson_38 {
 				.name("Destroy");
 		}
 
+		this.resizeEvent = () => {
+			if (this.firefliesMaterial) {
+				this.firefliesMaterial.uniforms.uPixelRation.value = Math.min(
+					this.app.renderer.getPixelRatio(),
+					2
+				);
+			}
+		};
+		this.app.sizes.on("resize", this.resizeEvent);
 		this.onConstruct && this.onConstruct();
 	}
 

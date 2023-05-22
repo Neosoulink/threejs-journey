@@ -1,7 +1,9 @@
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-uniform float pixelRation;
+
+uniform float uPixelRation;
+uniform float uSize;
 
 attribute vec3 position;
 
@@ -11,5 +13,6 @@ void main() {
 	vec4 projectionPosition = projectionMatrix * viewPosition;
 
 	gl_Position = projectionPosition;
-	gl_PointSize = 40.0 * pixelRation;
+	gl_PointSize = uSize * uPixelRation;
+	gl_PointSize *= (1.0 / -viewPosition.z);
 }
