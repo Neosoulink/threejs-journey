@@ -14,6 +14,10 @@ export default class Debug {
 
 			if (window) {
 				window.document.body.appendChild(this.stats.dom);
+
+				if (window.innerWidth <= 450) {
+					this.ui.close();
+				}
 			}
 		}
 	}
