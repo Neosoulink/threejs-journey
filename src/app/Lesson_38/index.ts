@@ -6,8 +6,11 @@ import GUI from "lil-gui";
 import ThreeApp from "../../helpers/ThreeApp";
 
 // SHADERS
-import firefliesVertUrl from "./shaders/fireflies.vert?url";
-import firefliesFragUrl from "./shaders/fireflies.frag?url";
+import firefliesVertUrl from "./shaders/fireflies/vertex.vert?url";
+import firefliesFragUrl from "./shaders/fireflies/fragment.frag?url";
+
+import portalVertUrl from "./shaders/portal/vertex.vert?url";
+import portalFragUrl from "./shaders/portal/fragment.frag?url";
 
 // MODELS
 import portalModel from "../../assets/models/portal/portal.glb?url";
@@ -35,6 +38,7 @@ export default class Lesson_38 {
 	gltfLoader: GLTFLoader;
 	fileLoader: THREE.FileLoader;
 	firefliesMaterial?: THREE.RawShaderMaterial;
+	portalMaterial?: THREE.RawShaderMaterial;
 	debugObject = {
 		renderClearColor: this.app.renderer.getClearColor(new THREE.Color()),
 	};
@@ -200,6 +204,15 @@ export default class Lesson_38 {
 				blending: THREE.AdditiveBlending,
 				depthWrite: false,
 			});
+
+			const portalVertShader = await this.loadFile(portalVertUrl);
+			const portalFragShader = await this.loadFile(portalFragUrl);
+			this.portalMaterial = new THREE.RawShaderMaterial({
+				vertexShader: portalVertShader,
+				fragmentShader: portalFragShader,
+				uniforms: {},
+			});
+
 			// Points
 			const fireflies = new THREE.Points(
 				firefliesGeometry,
