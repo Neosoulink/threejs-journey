@@ -11,16 +11,18 @@ import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHel
 import ThreeApp from "./helpers/ThreeApp";
 
 // MODULES
-import lesson_25 from "./app/lesson_25";
 import lesson_24 from "./app/lesson_24";
 import lesson_22 from "./app/lesson_22";
 import lesson_21 from "./app/lesson_21";
+import Lesson_25_Env from "./app/lesson_25_environment_map";
+import lesson_25 from "./app/lesson_25";
 import Lesson_26 from "./app/lesson_26";
 import Lesson_27 from "./app/Lesson_27";
 import Lesson_32 from "./app/Lesson_32";
 import Lesson_33 from "./app/Lesson_33";
 import Lesson_34 from "./app/Lesson_34";
 import Lesson_35 from "./app/Lesson_35";
+import Lesson_38 from "./app/Lesson_38";
 
 /* COMPONENTS */
 import Cube from "./components/Cube";
@@ -68,7 +70,6 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
-import Lesson_38 from "./app/Lesson_38";
 
 // APP
 const APP = new ThreeApp({
@@ -646,7 +647,7 @@ HAUNTED_HOUSE_WALLS.position.y = 2.5 / 2;
 HAUNTED_HOUSE_WALLS.castShadow = true;
 // Roof
 const HAUNTED_HOUSE_ROOF = new THREE.Mesh(
-	new THREE.ConeBufferGeometry(3.5, 1, 4),
+	new THREE.ConeGeometry(3.5, 1, 4),
 	new THREE.MeshStandardMaterial({
 		color: 0xb35e45,
 	})
@@ -655,7 +656,7 @@ HAUNTED_HOUSE_ROOF.position.y = 2.5 + 0.5;
 HAUNTED_HOUSE_ROOF.rotation.y = Math.PI * 0.25;
 // Door
 const HAUNTED_HOUSE_DOOR = new THREE.Mesh(
-	new THREE.PlaneBufferGeometry(2.2, 2.2, 100, 100),
+	new THREE.PlaneGeometry(2.2, 2.2, 100, 100),
 	new THREE.MeshStandardMaterial({
 		// color: 0xaa7b7b,
 		map: DOOR_COLOR_TEXTURE,
@@ -864,7 +865,7 @@ const PARTICLES_GROUP = new THREE.Group();
 PARTICLES_GROUP.visible = false;
 
 /* Circle point */
-const PARTICLES_GEOMETRY = new THREE.SphereBufferGeometry(1, 32, 32);
+const PARTICLES_GEOMETRY = new THREE.SphereGeometry(1, 32, 32);
 const PARTICLES_MATERIAL = new THREE.PointsMaterial({
 	size: 0.02,
 	sizeAttenuation: true,
@@ -1311,6 +1312,12 @@ lesson_24({
 });
 
 /**
+ * Lesson 25 | Environment map
+ */
+const LESSON_25_ENV = new Lesson_25_Env({});
+LESSON_25_ENV.construct();
+
+/**
  * Lesson 25 | Realistic renderer
  */
 lesson_25({
@@ -1359,12 +1366,10 @@ const LESSON_35 = new Lesson_35({
 	GLTF_Loader: GLTF_LOADER,
 });
 
-const LESSON_38 = new Lesson_38({
+new Lesson_38({
 	textureLoader: TEXTURE_LOADER,
 	gltfLoader: GLTF_LOADER,
 });
-
-LESSON_38.construct();
 
 // ADD TO GROUPE
 MESH_NEW_MATERIAL_GROUP.add(SphereForm, PlaneForm, TorusForm);
@@ -1422,17 +1427,11 @@ if (SCROLL_BASED_GROUP.visible) {
 	APP.camera.updateProjectionMatrix();
 }
 
-/* Control */
-if (APP?.control?.enabled) {
-	APP.control.target.set(0, 0.75, 0);
-	APP.control.enableDamping = true;
-}
-
 /* Renderer */
 APP.renderer.shadowMap.enabled = true;
 APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-APP.renderer.physicallyCorrectLights = true;
-APP.renderer.outputEncoding = THREE.sRGBEncoding;
+APP.renderer.useLegacyLights = true;
+APP.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 /* Haunted house fog */
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
@@ -1592,7 +1591,7 @@ APP.setUpdateCallback("root", () => {
 
 	// UPDATE CONTROL
 	if (APP?.control?.enabled) {
-		APP.control.update();
+		// APP.control.update();
 	}
 
 	/* Physics world */
