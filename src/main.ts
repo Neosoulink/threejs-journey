@@ -1314,7 +1314,10 @@ lesson_24({
 /**
  * Lesson 25 | Environment map
  */
-const LESSON_25_ENV = new Lesson_25_Env({});
+const LESSON_25_ENV = new Lesson_25_Env({
+	GLTF_Loader: GLTF_LOADER,
+	CubeTextureLoader: CUBE_TEXTURE_LOADER,
+});
 LESSON_25_ENV.construct();
 
 /**
