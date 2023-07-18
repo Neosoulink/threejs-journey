@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader";
 import GUI from "lil-gui";
 
 // HELPERS
@@ -22,6 +23,7 @@ import hdrEnvImg from "../assets/img/textures/environmentMaps/customEnvMap-rgb2k
 export interface Lesson25Props {
 	GLTF_Loader?: GLTFLoader;
 	RGBE_Loader?: RGBELoader;
+	EXR_Loader?: EXRLoader;
 	CubeTextureLoader?: THREE.CubeTextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
@@ -34,6 +36,7 @@ class Lesson_25_Env {
 	gui?: GUI;
 	GLTF_Loader: GLTFLoader;
 	RGBE_Loader: RGBELoader;
+	EXR_Loader: EXRLoader;
 	CubeTextureLoader: THREE.CubeTextureLoader;
 	mainGroup?: THREE.Group;
 	environmentMapTexture: THREE.CubeTexture | THREE.DataTexture | undefined;
@@ -45,6 +48,7 @@ class Lesson_25_Env {
 		this.appGui = this.app.debug?.ui;
 		this.GLTF_Loader = props.GLTF_Loader ?? new GLTFLoader();
 		this.RGBE_Loader = props.RGBE_Loader ?? new RGBELoader();
+		this.EXR_Loader = props.EXR_Loader ?? new EXRLoader();
 		this.CubeTextureLoader =
 			props.CubeTextureLoader ?? new THREE.CubeTextureLoader();
 		this.gui = this.appGui?.addFolder(this.folderName);
@@ -129,6 +133,8 @@ class Lesson_25_Env {
 				// this.app.scene.background = this.environmentMapTexture;
 				this.app.scene.environment = this.environmentMapTexture;
 			});
+
+			// this.EXR_Loader.load(exrEnvImg, (exrEnvMap) => {});
 
 			this.GLTF_Loader.load(FlightHelmetGLTF, (gltf) => {
 				gltf.scene.scale.set(10, 10, 10);
