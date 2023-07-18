@@ -120,7 +120,7 @@ export default class Lesson_34 {
 				});
 			};
 
-			this.overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1);
+			this.overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1);
 			this.overlayMaterial = new THREE.ShaderMaterial({
 				transparent: true,
 				uniforms: {

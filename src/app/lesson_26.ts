@@ -178,8 +178,8 @@ export default class Lesson_26 {
 			directionalLight.shadow.normalBias = 0.05;
 			directionalLight.position.set(3.5, 2, -1.25);
 
-			this.app.renderer.physicallyCorrectLights = true;
-			this.app.renderer.outputEncoding = THREE.sRGBEncoding;
+			this.app.renderer.useLegacyLights = true;
+			this.app.renderer.outputColorSpace = THREE.SRGBColorSpace;
 			this.app.renderer.toneMapping = THREE.CineonToneMapping;
 			this.app.renderer.toneMappingExposure = 1.75;
 			this.app.renderer.shadowMap.enabled = true;

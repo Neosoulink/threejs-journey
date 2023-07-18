@@ -144,7 +144,7 @@ export default class Lesson_35 {
 				});
 			};
 
-			this.overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1);
+			this.overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1);
 			this.overlayMaterial = new THREE.ShaderMaterial({
 				transparent: true,
 				uniforms: {
@@ -270,7 +270,10 @@ export default class Lesson_35 {
 							const screenPosition = point.position.clone();
 							screenPosition.project(this.app.camera);
 
-							rayCaster.setFromCamera(screenPosition, this.app.camera);
+							rayCaster.setFromCamera(
+								new THREE.Vector2(screenPosition.x, screenPosition.y),
+								this.app.camera
+							);
 							const intersects = rayCaster.intersectObjects(
 								this.app.scene.children,
 								true
