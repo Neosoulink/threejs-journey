@@ -17,8 +17,8 @@ export default class Renderer {
 			alpha: true,
 		});
 
-		this.intense.physicallyCorrectLights = true;
-		this.intense.outputEncoding = THREE.sRGBEncoding;
+		this.intense.useLegacyLights = true;
+		this.intense.outputColorSpace = THREE.SRGBColorSpace;
 		this.intense.toneMapping = THREE.CineonToneMapping;
 		this.intense.toneMappingExposure = 1.75;
 		this.intense.shadowMap.enabled = true;

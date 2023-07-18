@@ -107,7 +107,7 @@ export default class Lesson_27 {
 			 * Test mesh
 			 */
 			// Geometry
-			const geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32);
+			const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 			const POSITION_COUNT = (
 				geometry.attributes.position as THREE.Float32BufferAttribute
 			).count;
