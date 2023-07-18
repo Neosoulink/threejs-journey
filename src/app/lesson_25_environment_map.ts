@@ -17,7 +17,8 @@ import nzEnvImg from "../assets/img/textures/environmentMaps/4/nz.png";
 import pxEnvImg from "../assets/img/textures/environmentMaps/4/px.png";
 import pyEnvImg from "../assets/img/textures/environmentMaps/4/py.png";
 import pzEnvImg from "../assets/img/textures/environmentMaps/4/pz.png";
-import hdrEnvImg from "../assets/img/textures/environmentMaps/customEnvMap-rgb2k.hdr?url";
+import animeArtImg from "../assets/img/textures/environmentMaps/blockadesLabsSkybox/digital_painting_neon_city_night_orange_lights_.jpg";
+// import hdrEnvImg from "../assets/img/textures/environmentMaps/customEnvMap-rgb2k.hdr?url";
 
 // LOCAL TYPES
 export interface Lesson25Props {
@@ -25,6 +26,7 @@ export interface Lesson25Props {
 	RGBE_Loader?: RGBELoader;
 	EXR_Loader?: EXRLoader;
 	CubeTextureLoader?: THREE.CubeTextureLoader;
+	TextureLoader?: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
@@ -38,8 +40,9 @@ class Lesson_25_Env {
 	RGBE_Loader: RGBELoader;
 	EXR_Loader: EXRLoader;
 	CubeTextureLoader: THREE.CubeTextureLoader;
+	TextureLoader: THREE.TextureLoader;
 	mainGroup?: THREE.Group;
-	environmentMapTexture: THREE.CubeTexture | THREE.DataTexture | undefined;
+	environmentMapTexture: THREE.Texture | undefined;
 	params = { envIntensity: 1 };
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
@@ -51,6 +54,7 @@ class Lesson_25_Env {
 		this.EXR_Loader = props.EXR_Loader ?? new EXRLoader();
 		this.CubeTextureLoader =
 			props.CubeTextureLoader ?? new THREE.CubeTextureLoader();
+		this.TextureLoader = props.TextureLoader ?? new THREE.TextureLoader();
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
 		this.gui?.close();
@@ -126,15 +130,24 @@ class Lesson_25_Env {
 			);
 			TORUS_KNOT.position.set(-4, 4, 0);
 
-			this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
-				hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
-				this.environmentMapTexture = hdrEnvMap;
+			// this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
+			// 	hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
+			// 	this.environmentMapTexture = hdrEnvMap;
 
-				// this.app.scene.background = this.environmentMapTexture;
-				this.app.scene.environment = this.environmentMapTexture;
-			});
+			// 	// this.app.scene.background = this.environmentMapTexture;
+			// 	this.app.scene.environment = this.environmentMapTexture;
+			// });
 
 			// this.EXR_Loader.load(exrEnvImg, (exrEnvMap) => {});
+
+			this.TextureLoader.load(animeArtImg, (animeArtMap) => {
+				this.environmentMapTexture = animeArtMap;
+				this.environmentMapTexture.mapping = THREE.EquirectangularReflectionMapping;
+				this.environmentMapTexture.colorSpace = THREE.SRGBColorSpace;
+
+				this.app.scene.background = this.environmentMapTexture;
+				this.app.scene.environment = this.environmentMapTexture;
+			}).addEventListener;
 
 			this.GLTF_Loader.load(FlightHelmetGLTF, (gltf) => {
 				gltf.scene.scale.set(10, 10, 10);
