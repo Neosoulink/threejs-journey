@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import GUI from "lil-gui";
 
 // HELPERS
@@ -15,10 +16,12 @@ import nzEnvImg from "../assets/img/textures/environmentMaps/4/nz.png";
 import pxEnvImg from "../assets/img/textures/environmentMaps/4/px.png";
 import pyEnvImg from "../assets/img/textures/environmentMaps/4/py.png";
 import pzEnvImg from "../assets/img/textures/environmentMaps/4/pz.png";
+import hdrEnvImg from "../assets/img/textures/environmentMaps/customEnvMap-rgb2k.hdr?url";
 
 // LOCAL TYPES
 export interface Lesson25Props {
 	GLTF_Loader?: GLTFLoader;
+	RGBE_Loader?: RGBELoader;
 	CubeTextureLoader?: THREE.CubeTextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
@@ -30,16 +33,18 @@ class Lesson_25_Env {
 	appGui?: GUI;
 	gui?: GUI;
 	GLTF_Loader: GLTFLoader;
+	RGBE_Loader: RGBELoader;
 	CubeTextureLoader: THREE.CubeTextureLoader;
 	mainGroup?: THREE.Group;
-	environmentMapTexture: THREE.CubeTexture | undefined;
-	params = { envIntensity: 3 };
+	environmentMapTexture: THREE.CubeTexture | THREE.DataTexture | undefined;
+	params = { envIntensity: 1 };
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
 	constructor(props: Lesson25Props) {
 		this.appGui = this.app.debug?.ui;
 		this.GLTF_Loader = props.GLTF_Loader ?? new GLTFLoader();
+		this.RGBE_Loader = props.RGBE_Loader ?? new RGBELoader();
 		this.CubeTextureLoader =
 			props.CubeTextureLoader ?? new THREE.CubeTextureLoader();
 		this.gui = this.appGui?.addFolder(this.folderName);
@@ -95,9 +100,8 @@ class Lesson_25_Env {
 				nzEnvImg,
 			]);
 
-			this.app.scene.background = this.environmentMapTexture;
-			this.app.scene.environment = this.environmentMapTexture;
-			this.app.scene.backgroundBlurriness = 0.5;
+			// this.app.scene.background = this.environmentMapTexture;
+			// this.app.scene.environment = this.environmentMapTexture;
 		}
 
 		if (!this.mainGroup) {
@@ -117,6 +121,14 @@ class Lesson_25_Env {
 				})
 			);
 			TORUS_KNOT.position.set(-4, 4, 0);
+
+			this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
+				hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
+				this.environmentMapTexture = hdrEnvMap;
+
+				// this.app.scene.background = this.environmentMapTexture;
+				this.app.scene.environment = this.environmentMapTexture;
+			});
 
 			this.GLTF_Loader.load(FlightHelmetGLTF, (gltf) => {
 				gltf.scene.scale.set(10, 10, 10);
