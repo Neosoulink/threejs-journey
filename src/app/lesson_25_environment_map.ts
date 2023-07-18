@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader";
+import { GroundProjectedSkybox } from "three/examples/jsm/objects/GroundProjectedSkybox";
 import GUI from "lil-gui";
 
 // HELPERS
@@ -17,8 +18,8 @@ import nzEnvImg from "../assets/img/textures/environmentMaps/4/nz.png";
 import pxEnvImg from "../assets/img/textures/environmentMaps/4/px.png";
 import pyEnvImg from "../assets/img/textures/environmentMaps/4/py.png";
 import pzEnvImg from "../assets/img/textures/environmentMaps/4/pz.png";
-import animeArtImg from "../assets/img/textures/environmentMaps/blockadesLabsSkybox/digital_painting_neon_city_night_orange_lights_.jpg";
-// import hdrEnvImg from "../assets/img/textures/environmentMaps/customEnvMap-rgb2k.hdr?url";
+// import animeArtImg from "../assets/img/textures/environmentMaps/blockadesLabsSkybox/digital_painting_neon_city_night_orange_lights_.jpg";
+import hdrEnvImg from "../assets/img/textures/environmentMaps/6/2k.hdr?url";
 
 // LOCAL TYPES
 export interface Lesson25Props {
@@ -130,24 +131,36 @@ class Lesson_25_Env {
 			);
 			TORUS_KNOT.position.set(-4, 4, 0);
 
-			// this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
-			// 	hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
-			// 	this.environmentMapTexture = hdrEnvMap;
+			this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
+				hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
+				this.environmentMapTexture = hdrEnvMap;
 
-			// 	// this.app.scene.background = this.environmentMapTexture;
-			// 	this.app.scene.environment = this.environmentMapTexture;
-			// });
+				// this.app.scene.background = this.environmentMapTexture;
+				this.app.scene.environment = this.environmentMapTexture;
+
+				// SKYBOX
+				const SKYBOX = new GroundProjectedSkybox(this.environmentMapTexture);
+				SKYBOX.radius = 120;
+				SKYBOX.height = 11;
+				SKYBOX.scale.setScalar(50);
+
+				this.gui?.add(SKYBOX, "height").min(0).max(200).name("SkyboxHeight");
+				this.gui?.add(SKYBOX, "radius").min(0).max(200).name("SkyboxRadius");
+
+				this.mainGroup?.add(SKYBOX);
+			});
 
 			// this.EXR_Loader.load(exrEnvImg, (exrEnvMap) => {});
 
-			this.TextureLoader.load(animeArtImg, (animeArtMap) => {
-				this.environmentMapTexture = animeArtMap;
-				this.environmentMapTexture.mapping = THREE.EquirectangularReflectionMapping;
-				this.environmentMapTexture.colorSpace = THREE.SRGBColorSpace;
+			// this.TextureLoader.load(animeArtImg, (animeArtMap) => {
+			// 	this.environmentMapTexture = animeArtMap;
+			// 	this.environmentMapTexture.mapping =
+			// 		THREE.EquirectangularReflectionMapping;
+			// 	this.environmentMapTexture.colorSpace = THREE.SRGBColorSpace;
 
-				this.app.scene.background = this.environmentMapTexture;
-				this.app.scene.environment = this.environmentMapTexture;
-			}).addEventListener;
+			// 	this.app.scene.background = this.environmentMapTexture;
+			// 	this.app.scene.environment = this.environmentMapTexture;
+			// });
 
 			this.GLTF_Loader.load(FlightHelmetGLTF, (gltf) => {
 				gltf.scene.scale.set(10, 10, 10);
