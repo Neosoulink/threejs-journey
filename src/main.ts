@@ -1314,11 +1314,10 @@ lesson_24({
 /**
  * Lesson 25 | Environment map
  */
-const LESSON_25_ENV = new Lesson_25_Env({
+new Lesson_25_Env({
 	GLTF_Loader: GLTF_LOADER,
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 });
-LESSON_25_ENV.construct();
 
 /**
  * Lesson 25 | Realistic renderer
@@ -1337,7 +1336,7 @@ const lesson_26 = new Lesson_26({
 });
 
 /**
- * Lesson 27
+ * Lesson 27 | Shaders
  */
 new Lesson_27();
 

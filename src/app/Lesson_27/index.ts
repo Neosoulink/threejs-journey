@@ -5,8 +5,8 @@ import GUI from "lil-gui";
 import ThreeApp from "../../helpers/ThreeApp";
 
 // SHADERS
-import flagVertexUrl from "./shaders/flag.vert?url";
-import flagFragUrl from "./shaders/flag.frag?url";
+import vertexShaderUrl from "./shaders/gl.vert?url";
+import fragmentShaderUrl from "./shaders/gl.frag?url";
 
 // TEXTURES
 import flagFrenchImg from "../../assets/img/textures/flag/flag-french.jpg?url";
@@ -98,40 +98,27 @@ export default class Lesson_27 {
 			this.mainGroup = new THREE.Group();
 			this.app.camera.position.set(-0.25, 0, 3);
 
-			/**
-			 * Textures
-			 */
-			// const textureLoader = new THREE.TextureLoader();
-
-			/**
-			 * Test mesh
-			 */
-			// Geometry
 			const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
-			const POSITION_COUNT = (
-				geometry.attributes.position as THREE.Float32BufferAttribute
-			).count;
-			const RANDOM_POSITION = new Float32Array(POSITION_COUNT);
+			const positionCount = geometry.attributes.position.count;
+			const randomPosition = new Float32Array(positionCount);
 
-			for (let i = 0; i < POSITION_COUNT; i++) {
-				RANDOM_POSITION[i] = Math.random();
-			}
+			for (let i = 0; i < positionCount; i++) randomPosition[i] = Math.random();
 
 			geometry.setAttribute(
 				"aRandom",
-				new THREE.BufferAttribute(RANDOM_POSITION, 1)
+				new THREE.BufferAttribute(randomPosition, 1)
 			);
 
 			// Material
-			const VERTEX_SHADER = await this.loadFile(flagVertexUrl);
-			const FRAGMENT_SHADER = await this.loadFile(flagFragUrl);
+			const vertexShader = await this.loadFile(vertexShaderUrl);
+			const fragmentShader = await this.loadFile(fragmentShaderUrl);
 			const material = new THREE.RawShaderMaterial({
-				vertexShader: VERTEX_SHADER,
-				fragmentShader: FRAGMENT_SHADER,
+				vertexShader: vertexShader,
+				fragmentShader: fragmentShader,
 				side: THREE.DoubleSide,
 				transparent: true,
 				uniforms: {
-					uFrequency: { value: new THREE.Vector2(10, 5) },
+					uFrequency: { value: new THREE.Vector2(6.5, 5) },
 					uTime: { value: 0 },
 					uTexture: { value: this.textureLoader.load(flagFrenchImg) },
 				},
