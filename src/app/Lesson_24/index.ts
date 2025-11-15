@@ -5,23 +5,19 @@ import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader";
 // import { GroundProjectedSkybox } from "three/examples/jsm/objects/GroundProjectedSkybox";
 import GUI from "lil-gui";
 
-// HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
-// MODELS
-import FlightHelmetGLTF from "../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
+import FlightHelmetGLTF from "../../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 
-// TEXTURES
-import nxEnvImg from "../assets/img/textures/environmentMaps/4/nx.png";
-import nyEnvImg from "../assets/img/textures/environmentMaps/4/ny.png";
-import nzEnvImg from "../assets/img/textures/environmentMaps/4/nz.png";
-import pxEnvImg from "../assets/img/textures/environmentMaps/4/px.png";
-import pyEnvImg from "../assets/img/textures/environmentMaps/4/py.png";
-import pzEnvImg from "../assets/img/textures/environmentMaps/4/pz.png";
-import animeArtImg from "../assets/img/textures/environmentMaps/blockadesLabsSkybox/interior_views_cozy_wood_cabin_with_cauldron_and_p.jpg";
-// import hdrEnvImg from "../assets/img/textures/environmentMaps/6/2k.hdr?url";
+import nxEnvImg from "../../assets/img/textures/environmentMaps/4/nx.png";
+import nyEnvImg from "../../assets/img/textures/environmentMaps/4/ny.png";
+import nzEnvImg from "../../assets/img/textures/environmentMaps/4/nz.png";
+import pxEnvImg from "../../assets/img/textures/environmentMaps/4/px.png";
+import pyEnvImg from "../../assets/img/textures/environmentMaps/4/py.png";
+import pzEnvImg from "../../assets/img/textures/environmentMaps/4/pz.png";
+import animeArtImg from "../../assets/img/textures/environmentMaps/blockadesLabsSkybox/interior_views_cozy_wood_cabin_with_cauldron_and_p.jpg";
+// import hdrEnvImg from "../../assets/img/textures/environmentMaps/6/2k.hdr?url";
 
-// LOCAL TYPES
 export interface Lesson25Props {
 	GLTF_Loader?: GLTFLoader;
 	RGBE_Loader?: RGBELoader;
@@ -32,8 +28,8 @@ export interface Lesson25Props {
 	onDestruct?: () => unknown;
 }
 
-class Lesson_25_Env {
-	folderName = "Lesson 25 | Environment map";
+export class Lesson_24 {
+	folderName = "Lesson 24 | Environment map";
 	app = new ThreeApp();
 	appGui?: GUI;
 	gui?: GUI;
@@ -141,7 +137,7 @@ class Lesson_25_Env {
 					color: new THREE.Color(10, 4, 2),
 				})
 			);
-			HOLY_DONUT.layers.enable(1)
+			HOLY_DONUT.layers.enable(1);
 			HOLY_DONUT.position.y = 3.5;
 
 			const CURVE_RENDERER_TARGET = new THREE.WebGLCubeRenderTarget(256, {
@@ -246,4 +242,3 @@ class Lesson_25_Env {
 		});
 	};
 }
-export default Lesson_25_Env;

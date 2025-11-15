@@ -1,21 +1,26 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
 
+// HELPERS
 import ThreeApp from "../../helpers/ThreeApp";
+
+// SHADERS
 import vertexShaderUrl from "./shaders/gl.vert?url";
 import fragmentShaderUrl from "./shaders/gl.frag?url";
 
+// TEXTURES
 import flagFrenchImg from "../../assets/img/textures/flag/flag-french.jpg?url";
 
-export interface Lesson27ConstructorProps {
+// LOCAL TYPES
+export interface Lesson28ConstructorProps {
 	fileLoader?: THREE.FileLoader;
 	TextureLoader: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
 
-export class Lesson_27 {
-	folderName = "Lesson 27 | Shaders";
+export class Lesson_28 {
+	folderName = "Lesson 28 | Shaders patterns";
 	app = new ThreeApp();
 	appGui?: GUI;
 	gui?: GUI;
@@ -27,7 +32,7 @@ export class Lesson_27 {
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
-	constructor(props?: Lesson27ConstructorProps) {
+	constructor(props?: Lesson28ConstructorProps) {
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.close();

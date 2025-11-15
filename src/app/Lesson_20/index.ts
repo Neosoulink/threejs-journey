@@ -1,21 +1,18 @@
 import * as THREE from "three";
 import Cannon, { Vec3 } from "cannon";
 
-// HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
-// TEXTURES
-import nxEnvImg from "../assets/img/textures/environmentMaps/0/nx.jpg";
-import nyEnvImg from "../assets/img/textures/environmentMaps/0/ny.jpg";
-import nzEnvImg from "../assets/img/textures/environmentMaps/0/nz.jpg";
-import pxEnvImg from "../assets/img/textures/environmentMaps/0/px.jpg";
-import pyEnvImg from "../assets/img/textures/environmentMaps/0/py.jpg";
-import pzEnvImg from "../assets/img/textures/environmentMaps/0/pz.jpg";
+import nxEnvImg from "../../assets/img/textures/environmentMaps/0/nx.jpg";
+import nyEnvImg from "../../assets/img/textures/environmentMaps/0/ny.jpg";
+import nzEnvImg from "../../assets/img/textures/environmentMaps/0/nz.jpg";
+import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
+import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
+import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
-// SOUNDS
-import tocSound from "../assets/sounds/hit.mp3";
+import tocSound from "../../assets/sounds/hit.mp3";
 
-export default ({
+export const lesson_20 = ({
 	CubeTextureLoader = new THREE.CubeTextureLoader(),
 	onConstruct,
 	onDestruct,
@@ -38,7 +35,7 @@ export default ({
 	const app = new ThreeApp();
 
 	// DATA
-	const FOLDER_NAME = "Lesson 21 | Physic world";
+	const FOLDER_NAME = "Lesson 20 | Physics";
 
 	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 	_GUI?.close();

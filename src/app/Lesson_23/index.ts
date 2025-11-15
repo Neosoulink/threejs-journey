@@ -1,14 +1,11 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-// HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
-// MODELS
-import HamburgerGLTF from "../assets/models/hamburger/hamburger.glb?url";
+import HamburgerGLTF from "../../assets/models/hamburger/hamburger.glb?url";
 
-/* REALISTIC MODELS */
-export default ({
+export const lesson_23 = ({
 	GLTF_Loader = new GLTFLoader(),
 	onConstruct,
 	onDestruct,
@@ -17,9 +14,8 @@ export default ({
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }) => {
-	// DATA
 	const app = new ThreeApp();
-	const FOLDER_NAME = "Lesson 24 | Custom Model from Blender";
+	const FOLDER_NAME = "Lesson 23 | Custom Model from Blender";
 	let groupContainer: THREE.Group | undefined;
 	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 	_GUI?.close();

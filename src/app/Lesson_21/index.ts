@@ -2,12 +2,12 @@ import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 // HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
 // MODELS
-import FoxGLTF from "../assets/models/Fox/glTF/Fox.gltf?url";
+import FoxGLTF from "../../assets/models/Fox/glTF/Fox.gltf?url";
 
-export default ({
+export const Lesson_21 = ({
 	GLTF_Loader = new GLTFLoader(),
 	foxLoadedCallback,
 	onConstruct,
@@ -23,7 +23,7 @@ export default ({
 }) => {
 	// DATA
 	const app = new ThreeApp();
-	const FOLDER_NAME = "Lesson 22 | Imported Models";
+	const FOLDER_NAME = "Lesson 21 | Imported Models";
 	let groupContainer: THREE.Group | undefined;
 	let _GUI = app.debug?.ui?.addFolder(FOLDER_NAME);
 	_GUI?.close();

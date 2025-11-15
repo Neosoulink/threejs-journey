@@ -11,13 +11,14 @@ import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHel
 import ThreeApp from "./helpers/ThreeApp";
 
 // MODULES
-import lesson_24 from "./app/lesson_24";
-import lesson_22 from "./app/lesson_22";
-import lesson_21 from "./app/lesson_21";
-import Lesson_25_Env from "./app/lesson_25_environment_map";
-import lesson_25 from "./app/lesson_25";
-import Lesson_26 from "./app/lesson_26";
-import Lesson_27 from "./app/Lesson_27";
+import { lesson_20 } from "./app/Lesson_20";
+import { Lesson_21 } from "./app/Lesson_21";
+import { lesson_23 } from "./app/Lesson_23";
+import { Lesson_24 } from "./app/Lesson_24";
+import { Lesson_25 } from "./app/Lesson_25";
+import { Lesson_26 } from "./app/Lesson_26";
+import { Lesson_27 } from "./app/Lesson_27";
+import { Lesson_28 } from "./app/Lesson_28";
 import Lesson_32 from "./app/Lesson_32";
 import Lesson_33 from "./app/Lesson_33";
 import Lesson_34 from "./app/Lesson_34";
@@ -1265,7 +1266,7 @@ if (SCROLL_BASED_GROUP.visible) {
 /* =========== END SCROLL BASED ANIMATION =========== */
 
 /**
- * Lesson 21 | Physic World
+ * Lesson 20 | Physics
  */
 let PHYSICS_WORLD_INSTANCE: Cannon.World | undefined,
 	PHYSIC_WORLD_CREATED_SPHERES:
@@ -1281,7 +1282,7 @@ let PHYSICS_WORLD_INSTANCE: Cannon.World | undefined,
 		  }[]
 		| undefined;
 
-lesson_21({
+lesson_20({
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 	onConstruct({ worldInstance, spheres, boxes }) {
 		PHYSICS_WORLD_INSTANCE = worldInstance;
@@ -1291,10 +1292,10 @@ lesson_21({
 });
 
 /**
- * Lesson 22 | Imported Models
+ * Lesson 21 | Imported Models
  */
 let lesson22FoxMixer: THREE.AnimationMixer | undefined;
-lesson_22({
+Lesson_21({
 	GLTF_Loader: GLTF_LOADER,
 	foxLoadedCallback: ({ mixer }) => {
 		lesson22FoxMixer = mixer;
@@ -1305,16 +1306,16 @@ lesson_22({
 });
 
 /**
- * Lesson 24 | Custom model with blender
+ * Lesson 23 | Custom model with blender
  */
-lesson_24({
+lesson_23({
 	GLTF_Loader: GLTF_LOADER,
 });
 
 /**
- * Lesson 25 | Environment map
+ * Lesson 24 | Environment map
  */
-new Lesson_25_Env({
+new Lesson_24({
 	GLTF_Loader: GLTF_LOADER,
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 });
@@ -1322,7 +1323,7 @@ new Lesson_25_Env({
 /**
  * Lesson 25 | Realistic renderer
  */
-lesson_25({
+Lesson_25({
 	GLTF_Loader: GLTF_LOADER,
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 });
@@ -1339,6 +1340,11 @@ const lesson_26 = new Lesson_26({
  * Lesson 27 | Shaders
  */
 new Lesson_27();
+
+/**
+ * Lesson 28 | Shaders patterns
+ */
+new Lesson_28();
 
 /**
  * Lesson 32

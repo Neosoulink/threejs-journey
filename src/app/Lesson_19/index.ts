@@ -1,48 +1,27 @@
 import * as THREE from "three";
-import { GUI } from "lil-gui";
-import Cannon from "cannon";
 
-// HELPERS
-import initThreeJs from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
-/* IMGS */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 
-// LOCAL TYPES
-export interface ConstructorProps {
-	app: initThreeJs;
-	appGui: GUI;
+export interface Lesson19ConstructorProps {
 	textureLoader: THREE.TextureLoader;
-	onConstruct?: (formsPhysic: {
-		worldInstance: Cannon.World;
-		spheres: {
-			mesh: THREE.Mesh;
-			body: Cannon.Body;
-		}[];
-		boxes: {
-			mesh: THREE.Mesh;
-			body: Cannon.Body;
-		}[];
-	}) => unknown;
+	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
 
-export default class Lesson_20 {
-	// PROPS
-	folderName = "Lesson 20 | Scroll based animation";
-	app: initThreeJs;
-	appGui: GUI;
-	gui?: GUI;
+export class Lesson_19 {
+	folderName = "Lesson 19 | Scroll based animation";
+	app = new ThreeApp();
+	appGui = this.app.debug?.ui;
+	gui = this.appGui?.addFolder(this.folderName);
 	groupContainer?: THREE.Group;
 	textureLoader: THREE.TextureLoader;
 
+	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
-	constructor({ app, appGui, textureLoader, onDestruct }: ConstructorProps) {
-		this.app = app;
-		this.appGui = appGui;
-		this.gui = appGui.addFolder(this.folderName);
-		this.gui.add({ function: this.construct }, "function").name("Enable");
+	constructor({ textureLoader, onDestruct }: Lesson19ConstructorProps) {
 		this.onDestruct = onDestruct;
 		this.textureLoader = textureLoader;
 	}
@@ -59,8 +38,8 @@ export default class Lesson_20 {
 				this.gui = undefined;
 			}
 
-			this.gui = this.appGui.addFolder(this.folderName);
-			this.gui.add({ function: this.construct }, "function").name("Enable");
+			this.gui = this.appGui?.addFolder(this.folderName);
+			this.gui?.add({ function: this.construct }, "function").name("Enable");
 
 			this.onDestruct && this.onDestruct();
 		}
@@ -182,10 +161,10 @@ export default class Lesson_20 {
 			);
 
 			this.gui = this.appGui?.addFolder("Scroll based");
-			this.gui.close();
-			this.gui.add(SCROLL_BASED_GROUP, "visible");
+			this.gui?.close();
+			this.gui?.add(SCROLL_BASED_GROUP, "visible");
 
-			this.gui.addColor(SCROLL_BASED_PARAMS, "materialColor").onChange(() => {
+			this.gui?.addColor(SCROLL_BASED_PARAMS, "materialColor").onChange(() => {
 				SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor);
 				SCROLL_BASED_PARTICLES_MATERIAL.color.set(
 					SCROLL_BASED_PARAMS.materialColor
@@ -200,7 +179,6 @@ export default class Lesson_20 {
 			this.app.camera.position.z = 6;
 			this.app.camera.fov = 35;
 			this.app.camera.updateProjectionMatrix();
-
 		}
 	}
 }

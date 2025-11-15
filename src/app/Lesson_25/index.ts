@@ -1,21 +1,18 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-// HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
-// MODELS
-import FlightHelmetGLTF from "../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
+import FlightHelmetGLTF from "../../assets/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 
-// TEXTURES
-import nxEnvImg from "../assets/img/textures/environmentMaps/0/nx.jpg";
-import nyEnvImg from "../assets/img/textures/environmentMaps/0/ny.jpg";
-import nzEnvImg from "../assets/img/textures/environmentMaps/0/nz.jpg";
-import pxEnvImg from "../assets/img/textures/environmentMaps/0/px.jpg";
-import pyEnvImg from "../assets/img/textures/environmentMaps/0/py.jpg";
-import pzEnvImg from "../assets/img/textures/environmentMaps/0/pz.jpg";
+import nxEnvImg from "../../assets/img/textures/environmentMaps/0/nx.jpg";
+import nyEnvImg from "../../assets/img/textures/environmentMaps/0/ny.jpg";
+import nzEnvImg from "../../assets/img/textures/environmentMaps/0/nz.jpg";
+import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
+import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
+import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
-export default ({
+export const Lesson_25 = ({
 	GLTF_Loader = new GLTFLoader(),
 	CubeTextureLoader = new THREE.CubeTextureLoader(),
 	onConstruct,
@@ -26,9 +23,8 @@ export default ({
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }) => {
-	// DATA
 	const app = new ThreeApp();
-	const FOLDER_NAME = "Lesson 25 | Realistic Renderer";
+	const FOLDER_NAME = "Lesson 25 | Realistic Render";
 	let ENVIRONMENT_MAP_TEXTURE: THREE.CubeTexture | undefined;
 
 	let groupContainer: THREE.Group | undefined;

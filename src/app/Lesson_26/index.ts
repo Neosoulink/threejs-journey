@@ -2,23 +2,19 @@ import * as THREE from "three";
 import Cannon from "cannon";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-// HELPERS
-import ThreeApp from "../helpers/ThreeApp";
+import ThreeApp from "../../helpers/ThreeApp";
 
-// MODELS
-import FoxGLTF from "../assets/models/Fox/glTF/Fox.gltf?url";
+import FoxGLTF from "../../assets/models/Fox/glTF/Fox.gltf?url";
 
-// TEXTURES
-import nxEnvImg from "../assets/img/textures/environmentMaps/0/nx.jpg";
-import nyEnvImg from "../assets/img/textures/environmentMaps/0/ny.jpg";
-import nzEnvImg from "../assets/img/textures/environmentMaps/0/nz.jpg";
-import pxEnvImg from "../assets/img/textures/environmentMaps/0/px.jpg";
-import pyEnvImg from "../assets/img/textures/environmentMaps/0/py.jpg";
-import pzEnvImg from "../assets/img/textures/environmentMaps/0/pz.jpg";
-import dirtColorImg from "../assets/img/textures/dirt/color.jpg";
-import dirtNormalImg from "../assets/img/textures/dirt/normal.jpg";
+import nxEnvImg from "../../assets/img/textures/environmentMaps/0/nx.jpg";
+import nyEnvImg from "../../assets/img/textures/environmentMaps/0/ny.jpg";
+import nzEnvImg from "../../assets/img/textures/environmentMaps/0/nz.jpg";
+import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
+import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
+import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
+import dirtColorImg from "../../assets/img/textures/dirt/color.jpg";
+import dirtNormalImg from "../../assets/img/textures/dirt/normal.jpg";
 
-// LOCAL TYPES
 export interface ConstructorProps {
 	textureLoader?: THREE.TextureLoader;
 	cubeTextureLoader?: THREE.CubeTextureLoader;
@@ -37,8 +33,7 @@ export interface ConstructorProps {
 	onDestruct?: () => unknown;
 }
 
-export default class Lesson_26 {
-	// PROPS
+export class Lesson_26 {
 	folderName = "Lesson 26 | Class integration";
 	groupContainer?: THREE.Group;
 	debugObject: { envMapIntensity?: number } = {};
