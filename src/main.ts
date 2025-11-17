@@ -205,7 +205,7 @@ const ENVIRONMENT_MAP_TEXTURE = CUBE_TEXTURE_LOADER.load([
 	pzEnvImg,
 	nzEnvImg,
 ]);
-ENVIRONMENT_MAP_TEXTURE.encoding = THREE.sRGBEncoding;
+ENVIRONMENT_MAP_TEXTURE.colorSpace = THREE.SRGBColorSpace;
 // const BAKED_SHADOW = TEXTURE_LOADER.load(bakedShadowImg);
 const SIMPLE_SHADOW = TEXTURE_LOADER.load(simpleShadowImg);
 /* Update texture properties */
