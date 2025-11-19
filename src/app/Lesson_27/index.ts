@@ -9,7 +9,7 @@ import flagFrenchImg from "../../assets/img/textures/flag/flag-french.jpg?url";
 
 export interface Lesson27ConstructorProps {
 	fileLoader?: THREE.FileLoader;
-	TextureLoader: THREE.TextureLoader;
+	textureLoader: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
@@ -34,7 +34,7 @@ export class Lesson_27 {
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
 
 		this.fileLoader = props?.fileLoader ?? new THREE.FileLoader();
-		this.textureLoader = props?.TextureLoader ?? new THREE.TextureLoader();
+		this.textureLoader = props?.textureLoader ?? new THREE.TextureLoader();
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;

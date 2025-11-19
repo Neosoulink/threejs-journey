@@ -11,7 +11,6 @@ import fragmentShaderUrl from "./shaders/fragment.glsl?url";
 // LOCAL TYPES
 export interface Lesson28ConstructorProps {
 	fileLoader?: THREE.FileLoader;
-	TextureLoader: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
@@ -25,7 +24,6 @@ export class Lesson_28 {
 	fileLoader: THREE.FileLoader;
 	meshShader: THREE.ShaderMaterialParameters = {};
 	material?: THREE.RawShaderMaterial;
-	textureLoader: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
@@ -36,7 +34,6 @@ export class Lesson_28 {
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Construct");
 
 		this.fileLoader = props?.fileLoader ?? new THREE.FileLoader();
-		this.textureLoader = props?.TextureLoader ?? new THREE.TextureLoader();
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;

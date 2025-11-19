@@ -20,6 +20,7 @@ import { Lesson_26 } from "./app/Lesson_26";
 import { Lesson_27 } from "./app/Lesson_27";
 import { Lesson_28 } from "./app/Lesson_28";
 import { Lesson_29 } from "./app/Lesson_29";
+import { Lesson_30 } from "./app/Lesson_30";
 import Lesson_32 from "./app/Lesson_32";
 import Lesson_33 from "./app/Lesson_33";
 import Lesson_34 from "./app/Lesson_34";
@@ -1337,17 +1338,22 @@ const lesson_26 = new Lesson_26({
 /**
  * Lesson 27 | Shaders
  */
-new Lesson_27();
+new Lesson_27({ fileLoader: FILE_LOADER, textureLoader: TEXTURE_LOADER });
 
 /**
  * Lesson 28 | Shaders patterns
  */
-new Lesson_28();
+new Lesson_28({ fileLoader: FILE_LOADER });
 
 /**
  * Lesson 29 | Raging sea
  */
-new Lesson_29();
+new Lesson_29({ fileLoader: FILE_LOADER });
+
+/**
+ * Lesson 30 | Raging sea
+ */
+new Lesson_30();
 
 /**
  * Lesson 32

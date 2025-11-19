@@ -184,6 +184,9 @@ void main() {
 	// // Pattern 26
 	// strength = vec3(length(vUv));
 
+	// // Pattern 26.1
+	// strength = vec3(length(0.08 / (vUv - vec2(0.5))));
+
 	// // Pattern 27
 	// strength = vec3(distance(vUv, vec2(0.5)));
 
