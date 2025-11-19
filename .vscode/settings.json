@@ -1,3 +1,12 @@
 {
-	"cSpell.words": ["mediump", "skybox", "smoothstep", "wireframe"]
+	"cSpell.words": [
+		"cnoise",
+		"colorspace",
+		"fract",
+		"mediump",
+		"Perlin",
+		"skybox",
+		"smoothstep",
+		"wireframe"
+	]
 }

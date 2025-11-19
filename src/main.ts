@@ -19,6 +19,7 @@ import { Lesson_25 } from "./app/Lesson_25";
 import { Lesson_26 } from "./app/Lesson_26";
 import { Lesson_27 } from "./app/Lesson_27";
 import { Lesson_28 } from "./app/Lesson_28";
+import { Lesson_29 } from "./app/Lesson_29";
 import Lesson_32 from "./app/Lesson_32";
 import Lesson_33 from "./app/Lesson_33";
 import Lesson_34 from "./app/Lesson_34";
@@ -72,7 +73,6 @@ import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
 
-// APP
 const APP = new ThreeApp({
 	enableControls: true,
 	enableDebug: true,
@@ -293,10 +293,10 @@ TRIANGLE_MESH.visible = false;
 
 // FONTS
 FONT_LOADER.load(HelvetikerFont, (font) => {
-	const BEVEL_THICKNESS = 0.03;
-	const BEVEL_SIZE = 0.02;
+	const BEVEL_THICKNESS = 0.03 as const;
+	const BEVEL_SIZE = 0.02 as const;
 
-	const TEXT_GEOMETRY = new TextGeometry("Three.js", {
+	const textGeometry = new TextGeometry("Three.js", {
 		font,
 		size: 0.5,
 		height: 0.2,
@@ -307,32 +307,30 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 		bevelOffset: 0,
 		bevelSegments: 4,
 	});
-	TEXT_GEOMETRY.computeBoundingBox();
-	// TEXT_GEOMETRY.translate(
-	// 	-((TEXT_GEOMETRY.boundingBox?.max.x ?? 1) - BEVEL_SIZE) * 0.5,
-	// 	-((TEXT_GEOMETRY.boundingBox?.max.y ?? 1) - BEVEL_SIZE) * 0.5,
-	// 	-((TEXT_GEOMETRY.boundingBox?.max.z ?? 1) - BEVEL_THICKNESS) * 0.5
+	textGeometry.computeBoundingBox();
+	// textGeometry.translate(
+	// 	-((textGeometry.boundingBox?.max.x ?? 1) - BEVEL_SIZE) * 0.5,
+	// 	-((textGeometry.boundingBox?.max.y ?? 1) - BEVEL_SIZE) * 0.5,
+	// 	-((textGeometry.boundingBox?.max.z ?? 1) - BEVEL_THICKNESS) * 0.5
 	// );
 
-	TEXT_GEOMETRY.center();
+	textGeometry.center();
 
-	const MAT_CAP_MATERIAL = new THREE.MeshMatcapMaterial({
+	const matCapMaterial = new THREE.MeshMatcapMaterial({
 		matcap: MATCAP_1_TEXTURE,
 	});
-	const TEXT_FORM = new THREE.Mesh(TEXT_GEOMETRY, MAT_CAP_MATERIAL);
+	const textForm = new THREE.Mesh(textGeometry, matCapMaterial);
+	textForm.visible = false;
 	const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
 
-	TEXT_FORM.visible = false;
-
 	setTimeout(() => {
-		const _GUI_TEXT_FOLDER = _GUI?.addFolder("Text");
-		_GUI_TEXT_FOLDER?.close();
-
-		_GUI_TEXT_FOLDER?.add(TEXT_FORM, "visible");
+		const guiTextFolder = _GUI?.addFolder("Text");
+		guiTextFolder?.close();
+		guiTextFolder?.add(textForm, "visible");
 	}, 1000);
 
 	for (let i = 0; i < 100; i++) {
-		const donut = new THREE.Mesh(donutGeometry, MAT_CAP_MATERIAL);
+		const donut = new THREE.Mesh(donutGeometry, matCapMaterial);
 
 		donut.position.x = (Math.random() - 0.5) * 10;
 		donut.position.y = (Math.random() - 0.5) * 10;
@@ -1347,6 +1345,11 @@ new Lesson_27();
 new Lesson_28();
 
 /**
+ * Lesson 29 | Raging sea
+ */
+new Lesson_29();
+
+/**
  * Lesson 32
  */
 new Lesson_32();
@@ -1763,6 +1766,27 @@ _GUI_PARTICLES?.close();
 _GUI_PARTICLES?.add(PARTICLES_GROUP, "visible");
 
 /* JS EVENTS */
+if (SCROLL_BASED_GROUP.visible)
+	SCROLL_BASED_DOM_BODY?.addEventListener("scroll", () => {
+		windowClientY = SCROLL_BASED_DOM_BODY.scrollTop;
+
+		const SCROLL_BASED_NEW_SECTION = Math.round(
+			windowClientY / APP.sceneSizes.height
+		);
+
+		if (SCROLL_BASED_NEW_SECTION != scrollBasedCurrentSection) {
+			scrollBasedCurrentSection = SCROLL_BASED_NEW_SECTION;
+
+			GSAP.to(SCROLL_BASED_MESHES_LIST[scrollBasedCurrentSection].rotation, {
+				duration: 1.5,
+				ease: "power2.inOut",
+				x: "+=6",
+				y: "+=3",
+				z: "+=1.5",
+			});
+		}
+	});
+
 window.addEventListener("dblclick", () => {
 	if (APP_CONFIG.enableDblClickFullScreen) {
 		const fullscreenElement =
@@ -1805,29 +1829,6 @@ window.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("click", () => {
-	if (rayCasterCurrentIntersect) {
+	if (rayCasterCurrentIntersect)
 		rayCasterCurrentIntersect.object.scale.set(1.5, 1.5, 1.5);
-	}
 });
-
-if (SCROLL_BASED_GROUP.visible) {
-	SCROLL_BASED_DOM_BODY?.addEventListener("scroll", () => {
-		windowClientY = SCROLL_BASED_DOM_BODY.scrollTop;
-
-		const SCROLL_BASED_NEW_SECTION = Math.round(
-			windowClientY / APP.sceneSizes.height
-		);
-
-		if (SCROLL_BASED_NEW_SECTION != scrollBasedCurrentSection) {
-			scrollBasedCurrentSection = SCROLL_BASED_NEW_SECTION;
-
-			GSAP.to(SCROLL_BASED_MESHES_LIST[scrollBasedCurrentSection].rotation, {
-				duration: 1.5,
-				ease: "power2.inOut",
-				x: "+=6",
-				y: "+=3",
-				z: "+=1.5",
-			});
-		}
-	});
-}

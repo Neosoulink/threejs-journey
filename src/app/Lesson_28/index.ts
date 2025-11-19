@@ -33,15 +33,13 @@ export class Lesson_28 {
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.close();
-		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
+		this.gui?.add({ fn: () => this.construct() }, "fn").name("Construct");
 
 		this.fileLoader = props?.fileLoader ?? new THREE.FileLoader();
 		this.textureLoader = props?.TextureLoader ?? new THREE.TextureLoader();
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
-
-		this.construct();
 	}
 
 	async construct() {

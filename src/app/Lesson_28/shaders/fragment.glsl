@@ -96,10 +96,10 @@ void main() {
 	// strength = vec3(step(0.8, modX));
 
 	// // Pattern 11
-	float modX = mod(vUv.x * 10.0, 1.0);
-	float modY = mod(vUv.y * 10.0, 1.0);
-	float stepXY = step(0.8, modX) + step(0.8, modY);
-	strength = vec3(stepXY);
+	// float modX = mod(vUv.x * 10.0, 1.0);
+	// float modY = mod(vUv.y * 10.0, 1.0);
+	// float stepXY = step(0.8, modX) + step(0.8, modY);
+	// strength = vec3(stepXY);
 
 	// // Pattern 12
 	// float modX = mod(vUv.x * 10.0, 1.0);
@@ -286,7 +286,7 @@ void main() {
 	// strength = vec3(sin(cnoise(vUv * 10.0) * 20.0));
 
 	// Pattern 50
-	// strength = vec3(step(0.9, sin(cnoise(vUv * 10.0) * 20.0)));
+	strength = vec3(step(0.9, sin(cnoise(vUv * 10.0) * 20.0)));
 
 	// Clamp strength to avoid artifacts
 	strength = clamp(strength, 0.0, 1.0);
