@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // CONSTANTS
 import SOURCES from "./sources";
@@ -99,7 +99,7 @@ export default class ThreeApp {
 		this.camera2.update();
 		this.rendererIntense.update();
 
-		if(this.debug?.stats) this.debug.stats.begin();
+		if (this.debug?.stats) this.debug.stats.begin();
 
 		const UPDATE_CALLBACKS_KEYS = Object.keys(this.updateCallbacks);
 		if (UPDATE_CALLBACKS_KEYS?.length) {
@@ -110,7 +110,7 @@ export default class ThreeApp {
 			});
 		}
 
-		if(this.debug?.stats) this.debug.stats.end();
+		if (this.debug?.stats) this.debug.stats.end();
 	}
 
 	destroy() {

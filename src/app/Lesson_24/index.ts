@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
-import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader";
-// import { GroundProjectedSkybox } from "three/examples/jsm/objects/GroundProjectedSkybox";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
+// import { GroundProjectedSkybox } from "three/examples/jsm/objects/GroundProjectedSkybox.js";
 import GUI from "lil-gui";
 
 import ThreeApp from "../../helpers/ThreeApp";

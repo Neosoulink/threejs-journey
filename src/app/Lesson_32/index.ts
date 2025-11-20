@@ -1,15 +1,16 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass";
-import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
-import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader";
-import { GammaCorrectionShader } from "three/examples/jsm/shaders/GammaCorrectionShader";
+import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.js";
+import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass.js";
+import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
+import { GammaCorrectionShader } from "three/examples/jsm/shaders/GammaCorrectionShader.js";
 
 // HELPERS
 import ThreeApp from "../../helpers/ThreeApp";

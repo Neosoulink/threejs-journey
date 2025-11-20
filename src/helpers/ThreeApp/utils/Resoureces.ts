@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import EventEmitter from "events";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 // CLASSES
 import ThreeApp from "..";
@@ -14,7 +14,7 @@ export type LoadedItemType = GLTF | THREE.Texture | THREE.CubeTexture;
 export default class Resources extends EventEmitter {
 	app: ThreeApp;
 	sources: ResourcesConstructor[];
-	items: { [name: SourceType['name']]: LoadedItemType } = {};
+	items: { [name: SourceType["name"]]: LoadedItemType } = {};
 	toLoad = 0;
 	loaded = 0;
 	loaders: {

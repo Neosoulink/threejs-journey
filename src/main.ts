@@ -1,10 +1,10 @@
 import * as THREE from "three";
 import Cannon from "cannon";
 import GSAP from "gsap";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 
 /* HELPERS */
@@ -21,6 +21,7 @@ import { Lesson_27 } from "./app/Lesson_27";
 import { Lesson_28 } from "./app/Lesson_28";
 import { Lesson_29 } from "./app/Lesson_29";
 import { Lesson_30 } from "./app/Lesson_30";
+import { Lesson_31 } from "./app/Lesson_31";
 import Lesson_32 from "./app/Lesson_32";
 import Lesson_33 from "./app/Lesson_33";
 import Lesson_34 from "./app/Lesson_34";
@@ -1354,6 +1355,11 @@ new Lesson_29({ fileLoader: FILE_LOADER });
  * Lesson 30 | Raging sea
  */
 new Lesson_30();
+
+/**
+ * Lesson 31 | Modified materials
+ */
+new Lesson_31();
 
 /**
  * Lesson 32

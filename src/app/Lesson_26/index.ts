@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Cannon from "cannon";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 import ThreeApp from "../../helpers/ThreeApp";
 
