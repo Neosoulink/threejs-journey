@@ -22,11 +22,11 @@ import { Lesson_28 } from "./app/Lesson_28";
 import { Lesson_29 } from "./app/Lesson_29";
 import { Lesson_30 } from "./app/Lesson_30";
 import { Lesson_31 } from "./app/Lesson_31";
-import Lesson_32 from "./app/Lesson_32";
-import Lesson_33 from "./app/Lesson_33";
-import Lesson_34 from "./app/Lesson_34";
-import Lesson_35 from "./app/Lesson_35";
-import Lesson_38 from "./app/Lesson_38";
+import { Lesson_45 } from "./app/Lesson_45";
+import { Lesson_46 } from "./app/Lesson_46";
+import { Lesson_47 } from "./app/Lesson_47";
+import { Lesson_48 } from "./app/Lesson_48";
+import { Lesson_49 } from "./app/Lesson_49";
 
 /* COMPONENTS */
 import Cube from "./components/Cube";
@@ -123,8 +123,7 @@ LOADING_MANAGER.onStart = () => {
 	console.log("on start loading");
 };
 LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
-	const OVERLAY_MATERIAL =
-		LESSON_34.overlayMaterial ?? LESSON_35.overlayMaterial;
+	const OVERLAY_MATERIAL = lesson47.overlayMaterial ?? lesson48.overlayMaterial;
 	if (DOM_LOADING_BAR?.style && OVERLAY_MATERIAL) {
 		DOM_LOADING_BAR.style.transform = `scaleX(${itemsLoaded / itemsToLoad})`;
 	}
@@ -134,7 +133,7 @@ LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
 LOADING_MANAGER.onLoad = () => {
 	GSAP.delayedCall(0.6, () => {
 		const OVERLAY_MATERIAL =
-			LESSON_34.overlayMaterial ?? LESSON_35.overlayMaterial;
+			lesson47.overlayMaterial ?? lesson48.overlayMaterial;
 		if (OVERLAY_MATERIAL) {
 			if (DOM_LOADING_BAR?.style) {
 				DOM_LOADING_BAR.style.transform = "";
@@ -147,7 +146,7 @@ LOADING_MANAGER.onLoad = () => {
 		}
 
 		GSAP.delayedCall(2.2, () => {
-			LESSON_35.sceneReady = true;
+			lesson48.sceneReady = true;
 		});
 		console.log("End loading");
 	});
@@ -160,7 +159,9 @@ const DRACO_LOADER = new DRACOLoader(LOADING_MANAGER);
 const GLTF_LOADER = new GLTFLoader(LOADING_MANAGER);
 const FILE_LOADER = new THREE.FileLoader(LOADING_MANAGER);
 
-DRACO_LOADER.setDecoderPath("/decoders/draco/");
+DRACO_LOADER.setDecoderPath(
+	"https://www.gstatic.com/draco/versioned/decoders/1.4.3/"
+);
 GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
 
 /**
@@ -952,9 +953,7 @@ const generateParticleGalaxy = () => {
 		PARTICLES_GALAXY_GROUP.remove(particlesGalaxyCustomPoints);
 	}
 
-	if (!PARTICLES_GALAXY_GROUP.visible) {
-		return;
-	}
+	if (!PARTICLES_GALAXY_GROUP.visible) return;
 
 	particlesGalaxyBufferGeometry = new THREE.BufferGeometry();
 
@@ -1362,34 +1361,41 @@ new Lesson_30();
 new Lesson_31();
 
 /**
- * Lesson 32
+ * Lesson 45 | Post processing
  */
-new Lesson_32();
+new Lesson_45({
+	GLTFLoader: GLTF_LOADER,
+	textureLoader: TEXTURE_LOADER,
+	cubeTextureLoader: CUBE_TEXTURE_LOADER,
+});
 
 /**
- * Lesson 33
+ * Lesson 46 | Performance tips
  */
-new Lesson_33({ textureLoader: TEXTURE_LOADER });
+new Lesson_46({ textureLoader: TEXTURE_LOADER });
 
 /**
- * Lesson 34
+ * Lesson 47 | Intro and Loading progress
  */
-const LESSON_34 = new Lesson_34({
+const lesson47 = new Lesson_47({
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 	fileLoader: FILE_LOADER,
 	GLTF_Loader: GLTF_LOADER,
 });
 
 /**
- * Lesson 35
+ * Lesson 48 | Mixing HTML and WebGL
  */
-const LESSON_35 = new Lesson_35({
+const lesson48 = new Lesson_48({
 	CubeTextureLoader: CUBE_TEXTURE_LOADER,
 	fileLoader: FILE_LOADER,
 	GLTF_Loader: GLTF_LOADER,
 });
 
-new Lesson_38({
+/**
+ *  Lesson 49 | Importing/optimizing scene
+ */
+new Lesson_49({
 	textureLoader: TEXTURE_LOADER,
 	gltfLoader: GLTF_LOADER,
 });
@@ -1429,20 +1435,20 @@ const GROUP_APP_CAMERA = new THREE.Group();
 GROUP_APP_CAMERA.add(APP.camera);
 
 /* Scene */
-// APP.scene.add(
-// 	GROUP_APP_CAMERA,
-// 	CUBES_GROUP,
-// 	TRIANGLE_MESH,
-// 	MESH_NEW_MATERIAL_GROUP,
-// 	DONUT_GROUP,
-// 	LIGHT_FORMS_GROUP,
-// 	SHADOW_GROUP,
-// 	HAUNTED_HOUSE_GROUP,
-// 	PARTICLES_GROUP,
-// 	PARTICLES_GALAXY_GROUP,
-// 	RAY_CASTER_GROUP,
-// 	SCROLL_BASED_GROUP
-// );
+APP.scene.add(
+	GROUP_APP_CAMERA,
+	CUBES_GROUP,
+	TRIANGLE_MESH,
+	MESH_NEW_MATERIAL_GROUP,
+	DONUT_GROUP,
+	LIGHT_FORMS_GROUP,
+	SHADOW_GROUP,
+	HAUNTED_HOUSE_GROUP,
+	PARTICLES_GROUP,
+	PARTICLES_GALAXY_GROUP,
+	RAY_CASTER_GROUP,
+	SCROLL_BASED_GROUP
+);
 
 if (SCROLL_BASED_GROUP.visible) {
 	APP.camera.position.z = 6;

@@ -8,13 +8,13 @@ import ThreeApp from "../../helpers/ThreeApp";
 import displacementTextureImg from "../../assets/img/textures/displacementMap.png";
 
 // LOCAL TYPES
-export interface Lesson32ConstructorProps {
+export interface Lesson46ConstructorProps {
 	textureLoader?: THREE.TextureLoader;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 }
 
-export default class Lesson_33 {
+export class Lesson_46 {
 	folderName = "Lesson 33 | Performance tips";
 	app = new ThreeApp();
 	appGui?: GUI;
@@ -26,7 +26,7 @@ export default class Lesson_33 {
 	onDestruct?: () => unknown;
 	resizeEvent?: () => unknown;
 
-	constructor(props?: Lesson32ConstructorProps) {
+	constructor(props?: Lesson46ConstructorProps) {
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");

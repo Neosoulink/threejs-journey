@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-import ThreeApp from "../../helpers/ThreeApp";
+import ThreeApp from "@/helpers/ThreeApp";
 
-import HamburgerGLTF from "../../assets/models/hamburger/hamburger.glb?url";
+import HamburgerGLTF from "@/assets/models/hamburger/hamburger.glb?url";
 
 export const lesson_23 = ({
 	GLTF_Loader = new GLTFLoader(),

@@ -19,7 +19,7 @@ import portalModel from "../../assets/models/portal/portal.glb?url";
 import portalTexture from "../../assets/models/portal/baked.jpg";
 
 // LOCAL TYPES
-export interface Lesson32ConstructorProps {
+export interface Lesson49ConstructorProps {
 	textureLoader?: THREE.TextureLoader;
 	gltfLoader?: GLTFLoader;
 	fileLoader?: THREE.FileLoader;
@@ -27,8 +27,8 @@ export interface Lesson32ConstructorProps {
 	onDestruct?: () => unknown;
 }
 
-export default class Lesson_38 {
-	folderName = "Lesson 38 | Importing/optimizing scene";
+export class Lesson_49 {
+	folderName = "Lesson 49 | Importing/optimizing scene";
 	app = new ThreeApp();
 	appGui?: GUI;
 	gui?: GUI;
@@ -46,7 +46,7 @@ export default class Lesson_38 {
 	onDestruct?: () => unknown;
 	resizeEvent?: () => unknown;
 
-	constructor(props?: Lesson32ConstructorProps) {
+	constructor(props?: Lesson49ConstructorProps) {
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");

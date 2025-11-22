@@ -16,10 +16,10 @@ import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
 import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
 import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
-export default class Lesson_35 {
+export class Lesson_48 {
 	// DATA
 	app = new ThreeApp();
-	folderName = "Lesson 35 | Mixing HTML and WebGL";
+	folderName = "Lesson 48 | Mixing HTML and WebGL";
 	environmentMapTexture?: THREE.CubeTexture;
 	groupContainer?: THREE.Group;
 	gui?: GUI;

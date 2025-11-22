@@ -16,10 +16,10 @@ import pxEnvImg from "../../assets/img/textures/environmentMaps/0/px.jpg";
 import pyEnvImg from "../../assets/img/textures/environmentMaps/0/py.jpg";
 import pzEnvImg from "../../assets/img/textures/environmentMaps/0/pz.jpg";
 
-export default class Lesson_34 {
+export class Lesson_47 {
 	// DATA
 	app = new ThreeApp();
-	folderName = "Lesson 34 | Intro and Loading progress";
+	folderName = "Lesson 47 | Intro and Loading progress";
 	environmentMapTexture?: THREE.CubeTexture;
 	groupContainer?: THREE.Group;
 	gui?: GUI;
