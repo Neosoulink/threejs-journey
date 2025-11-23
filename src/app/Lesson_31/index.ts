@@ -5,10 +5,6 @@ import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 // HELPERS
 import ThreeApp from "../../helpers/ThreeApp";
 
-// SHADERS
-// import vertexShaderUrl from "./shaders/vertex.glsl?url";
-// import fragmentShaderUrl from "./shaders/fragment.glsl?url";
-
 // ASSETS
 import leePerrySmithGlbUrl from "@/assets/models/LeePerrySmith/LeePerrySmith.glb?url";
 import leePerrySmithColorImgUrl from "@/assets/models/LeePerrySmith/color.jpg?url";
@@ -81,21 +77,13 @@ export class Lesson_31 {
 	}
 
 	async construct() {
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
+		this.gui?.children.forEach((child) => {
+			child.destroy();
+		});
 		if (this.scene) this.destruct();
 		if (this.scene) return;
 
 		this.scene = new THREE.Group();
-		this.gui = this.appGui?.addFolder(this.folderName);
-
-		const clock = new THREE.Clock();
-
-		// Shaders
-		// const vertexShader = await this.loadFileString(vertexShaderUrl);
-		// const fragmentShader = await this.loadFileString(fragmentShaderUrl);
 
 		// Environment map
 		const environmentMap = this.cubeTextureLoader.load([
@@ -224,7 +212,7 @@ export class Lesson_31 {
 
 		// Events
 		this.app.setUpdateCallback(this.folderName, () => {
-			this.update(clock.getElapsedTime());
+			this.update(this.app.time.elapsed * 0.001);
 		});
 
 		this.gui
@@ -289,12 +277,9 @@ export class Lesson_31 {
 		this.scene?.clear();
 		this.scene = undefined;
 
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
-
-		this.gui = this.appGui?.addFolder(this.folderName);
+		this.gui?.children.forEach((child) => {
+			child.destroy();
+		});
 		this.gui
 			?.add({ function: () => this.construct() }, "function")
 			.name("Construct");

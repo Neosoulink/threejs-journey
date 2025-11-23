@@ -22,6 +22,7 @@ import { Lesson_28 } from "./app/Lesson_28";
 import { Lesson_29 } from "./app/Lesson_29";
 import { Lesson_30 } from "./app/Lesson_30";
 import { Lesson_31 } from "./app/Lesson_31";
+import { Lesson_32 } from "./app/Lesson_32";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -1361,6 +1362,11 @@ new Lesson_30();
 new Lesson_31();
 
 /**
+ * Lesson 32 | Coffee Smoke
+ */
+new Lesson_32();
+
+/**
  * Lesson 45 | Post processing
  */
 new Lesson_45({
@@ -1455,12 +1461,6 @@ if (SCROLL_BASED_GROUP.visible) {
 	APP.camera.fov = 35;
 	APP.camera.updateProjectionMatrix();
 }
-
-/* Renderer */
-APP.renderer.shadowMap.enabled = true;
-APP.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-APP.renderer.useLegacyLights = true;
-APP.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 /* Haunted house fog */
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
