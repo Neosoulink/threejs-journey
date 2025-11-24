@@ -15,7 +15,7 @@ export default class Camera {
 
 	constructor(props: CameraProps) {
 		this.intense = new THREE.PerspectiveCamera(
-			75,
+			45,
 			this.app.sizes.width / this.app.sizes.height,
 			0.1,
 			1000

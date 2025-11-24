@@ -23,6 +23,7 @@ import { Lesson_29 } from "./app/Lesson_29";
 import { Lesson_30 } from "./app/Lesson_30";
 import { Lesson_31 } from "./app/Lesson_31";
 import { Lesson_32 } from "./app/Lesson_32";
+import { Lesson_33 } from "./app/Lesson_33";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -1365,6 +1366,11 @@ new Lesson_31();
  * Lesson 32 | Coffee Smoke
  */
 new Lesson_32();
+
+/**
+ * Lesson 33 | Hologram
+ */
+new Lesson_33();
 
 /**
  * Lesson 45 | Post processing

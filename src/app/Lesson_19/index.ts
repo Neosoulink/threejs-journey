@@ -33,24 +33,18 @@ export class Lesson_19 {
 			this.groupContainer.clear();
 			this.groupContainer = undefined;
 
-			if (this.gui) {
-				this.gui.destroy();
-				this.gui = undefined;
-			}
-
-			this.gui = this.appGui?.addFolder(this.folderName);
-			this.gui?.add({ function: this.construct }, "function").name("Enable");
+			this.gui?.children.forEach((child) => {
+				child.destroy();
+			});
+			this.gui
+				?.add({ function: () => this.construct() }, "function")
+				.name("Construct");
 
 			this.onDestruct && this.onDestruct();
 		}
 	}
 
 	construct() {
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
-
 		if (this.groupContainer) {
 			this.destroy();
 		}
@@ -160,9 +154,8 @@ export class Lesson_19 {
 				SCROLL_BASED_PARTICLES_POINTS
 			);
 
-			this.gui = this.appGui?.addFolder("Scroll based");
-			this.gui?.close();
 			this.gui?.add(SCROLL_BASED_GROUP, "visible");
+			this.gui?.open();
 
 			this.gui?.addColor(SCROLL_BASED_PARAMS, "materialColor").onChange(() => {
 				SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor);
