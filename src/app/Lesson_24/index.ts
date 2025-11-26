@@ -38,7 +38,7 @@ export class Lesson_24 {
 	EXR_Loader: EXRLoader;
 	CubeTextureLoader: THREE.CubeTextureLoader;
 	TextureLoader: THREE.TextureLoader;
-	mainGroup?: THREE.Group;
+	scene?: THREE.Group;
 	environmentMapTexture: THREE.Texture | undefined;
 	params = { envIntensity: 1 };
 	onConstruct?: () => unknown;
@@ -53,51 +53,16 @@ export class Lesson_24 {
 			props.CubeTextureLoader ?? new THREE.CubeTextureLoader();
 		this.TextureLoader = props.TextureLoader ?? new THREE.TextureLoader();
 		this.gui = this.appGui?.addFolder(this.folderName);
-		this.gui?.add({ fn: () => this.construct() }, "fn").name("Enable");
+		this.gui?.add({ fn: () => this.construct() }, "fn").name("Construct");
 		this.gui?.close();
 		this.onConstruct = props?.onConstruct;
 		this.onDestruct = props?.onDestruct;
 	}
 
-	destroy = () => {
-		if (this.mainGroup) {
-			this.app.scene.remove(this.mainGroup);
-
-			this.mainGroup.clear();
-			this.mainGroup = undefined;
-			if (this.gui) {
-				this.gui.destroy();
-				this.gui = undefined;
-			}
-
-			this.app.scene.background = null;
-			this.app.scene.environment = null;
-			this.app.scene.backgroundBlurriness = 0;
-			this.app.scene.backgroundIntensity = 1;
-			this.environmentMapTexture = undefined;
-
-			this.gui = this.app.debug?.ui?.addFolder(this.folderName);
-			this.gui
-				?.add({ function: () => this.construct() }, "function")
-				.name("Enable");
-
-			if (this.app.updateCallbacks[this.folderName]) {
-				delete this.app.updateCallbacks[this.folderName];
-			}
-
-			this.onDestruct && this.onDestruct();
-		}
-	};
-
 	construct = () => {
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
-
-		if (this.mainGroup) {
-			this.destroy();
-		}
+		this.gui?.children.forEach((child) => child.destroy());
+		if (this.scene) this.destruct();
+		if (this.scene) return;
 
 		if (!this.environmentMapTexture) {
 			this.environmentMapTexture = this.CubeTextureLoader.load([
@@ -113,120 +78,117 @@ export class Lesson_24 {
 			// this.app.scene.environment = this.environmentMapTexture;
 		}
 
-		if (!this.mainGroup) {
-			this.mainGroup = new THREE.Group();
-			this.gui = this.app.debug?.ui?.addFolder(this.folderName);
+		this.scene = new THREE.Group();
 
-			/**
-			 * Torus Knot
-			 */
-			const TORUS_KNOT = new THREE.Mesh(
-				new THREE.TorusKnotGeometry(1, 0.4, 100, 16),
-				new THREE.MeshStandardMaterial({
-					roughness: 0,
-					metalness: 1,
-					envMapIntensity: this.params.envIntensity,
-					color: 0xaaaaaa,
-				})
-			);
-			TORUS_KNOT.position.set(-4, 4, 0);
+		/**
+		 * Torus Knot
+		 */
+		const TORUS_KNOT = new THREE.Mesh(
+			new THREE.TorusKnotGeometry(1, 0.4, 100, 16),
+			new THREE.MeshStandardMaterial({
+				roughness: 0,
+				metalness: 1,
+				envMapIntensity: this.params.envIntensity,
+				color: 0xaaaaaa,
+			})
+		);
+		TORUS_KNOT.position.set(-4, 4, 0);
 
-			const HOLY_DONUT = new THREE.Mesh(
-				new THREE.TorusGeometry(8, 0.5),
-				new THREE.MeshBasicMaterial({
-					color: new THREE.Color(10, 4, 2),
-				})
-			);
-			HOLY_DONUT.layers.enable(1);
-			HOLY_DONUT.position.y = 3.5;
+		const HOLY_DONUT = new THREE.Mesh(
+			new THREE.TorusGeometry(8, 0.5),
+			new THREE.MeshBasicMaterial({
+				color: new THREE.Color(10, 4, 2),
+			})
+		);
+		HOLY_DONUT.layers.enable(1);
+		HOLY_DONUT.position.y = 3.5;
 
-			const CURVE_RENDERER_TARGET = new THREE.WebGLCubeRenderTarget(256, {
-				type: THREE.HalfFloatType,
-			});
+		const CURVE_RENDERER_TARGET = new THREE.WebGLCubeRenderTarget(256, {
+			type: THREE.HalfFloatType,
+		});
 
-			const CUBE_CAMERA = new THREE.CubeCamera(0.1, 100, CURVE_RENDERER_TARGET);
-			CUBE_CAMERA.layers.set(1);
+		const CUBE_CAMERA = new THREE.CubeCamera(0.1, 100, CURVE_RENDERER_TARGET);
+		CUBE_CAMERA.layers.set(1);
 
-			// this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
-			// 	hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
-			// 	this.environmentMapTexture = hdrEnvMap;
+		// this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
+		// 	hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
+		// 	this.environmentMapTexture = hdrEnvMap;
 
-			// 	// this.app.scene.background = this.environmentMapTexture;
-			// 	this.app.scene.environment = this.environmentMapTexture;
+		// 	// this.app.scene.background = this.environmentMapTexture;
+		// 	this.app.scene.environment = this.environmentMapTexture;
 
-			// 	// SKYBOX
-			// 	const SKYBOX = new GroundProjectedSkybox(this.environmentMapTexture);
-			// 	SKYBOX.radius = 120;
-			// 	SKYBOX.height = 11;
-			// 	SKYBOX.scale.setScalar(50);
+		// 	// SKYBOX
+		// 	const SKYBOX = new GroundProjectedSkybox(this.environmentMapTexture);
+		// 	SKYBOX.radius = 120;
+		// 	SKYBOX.height = 11;
+		// 	SKYBOX.scale.setScalar(50);
 
-			// 	this.gui?.add(SKYBOX, "height").min(0).max(200).name("SkyboxHeight");
-			// 	this.gui?.add(SKYBOX, "radius").min(0).max(200).name("SkyboxRadius");
+		// 	this.gui?.add(SKYBOX, "height").min(0).max(200).name("SkyboxHeight");
+		// 	this.gui?.add(SKYBOX, "radius").min(0).max(200).name("SkyboxRadius");
 
-			// 	this.mainGroup?.add(SKYBOX);
-			// });
+		// 	this.scene?.add(SKYBOX);
+		// });
 
-			// this.EXR_Loader.load(exrEnvImg, (exrEnvMap) => {});
+		// this.EXR_Loader.load(exrEnvImg, (exrEnvMap) => {});
 
-			this.TextureLoader.load(animeArtImg, (animeArtMap) => {
-				this.environmentMapTexture = animeArtMap;
-				this.environmentMapTexture.mapping =
-					THREE.EquirectangularReflectionMapping;
-				this.environmentMapTexture.colorSpace = THREE.SRGBColorSpace;
+		this.TextureLoader.load(animeArtImg, (animeArtMap) => {
+			this.environmentMapTexture = animeArtMap;
+			this.environmentMapTexture.mapping =
+				THREE.EquirectangularReflectionMapping;
+			this.environmentMapTexture.colorSpace = THREE.SRGBColorSpace;
 
-				this.app.scene.background = this.environmentMapTexture;
-				// this.app.scene.environment = this.environmentMapTexture;
-			});
+			this.app.scene.background = this.environmentMapTexture;
+			// this.app.scene.environment = this.environmentMapTexture;
+		});
 
-			this.GLTF_Loader.load(FlightHelmetGLTF, (gltf) => {
-				gltf.scene.scale.set(10, 10, 10);
+		this.GLTF_Loader.load(FlightHelmetGLTF, (gltf) => {
+			gltf.scene.scale.set(10, 10, 10);
 
-				this.updateAllChildMeshEnvMap(gltf.scene);
-
-				this.gui
-					?.add(this.params, "envIntensity")
-					.min(0)
-					.max(10)
-					.onChange((res: number) => {
-						this.updateAllChildMeshEnvMap(gltf.scene);
-						TORUS_KNOT.material.envMapIntensity = Number(res);
-					});
-				this.gui
-					?.add(this.app.scene, "backgroundBlurriness")
-					.min(0)
-					.max(1)
-					.step(0.001);
-				this.gui
-					?.add(this.app.scene, "backgroundIntensity")
-					.min(0)
-					.max(10)
-					.step(0.001);
-
-				this.mainGroup?.add(gltf.scene);
-			});
-
-			this.mainGroup.add(TORUS_KNOT, HOLY_DONUT);
-			this.app.scene.add(this.mainGroup);
-
-			this.app.camera.position.set(4, 5, 4);
-			if (this.app.control) this.app.control.target.y = 3.5;
+			this.updateAllChildMeshEnvMap(gltf.scene);
 
 			this.gui
-				?.add({ function: () => this.destroy() }, "function")
-				.name("Destroy");
+				?.add(this.params, "envIntensity")
+				.min(0)
+				.max(10)
+				.onChange((res: number) => {
+					this.updateAllChildMeshEnvMap(gltf.scene);
+					TORUS_KNOT.material.envMapIntensity = Number(res);
+				});
+			this.gui
+				?.add(this.app.scene, "backgroundBlurriness")
+				.min(0)
+				.max(1)
+				.step(0.001);
+			this.gui
+				?.add(this.app.scene, "backgroundIntensity")
+				.min(0)
+				.max(10)
+				.step(0.001);
 
-			this.app.scene.environment = CURVE_RENDERER_TARGET.texture;
+			this.scene?.add(gltf.scene);
+		});
 
-			const CLOCK = new THREE.Clock();
-			this.app.setUpdateCallback(this.folderName, () => {
-				if (HOLY_DONUT) {
-					HOLY_DONUT.rotation.x = Math.sin(CLOCK.getElapsedTime()) * 2;
-					CUBE_CAMERA.update(this.app.renderer, this.app.scene);
-				}
-			});
+		this.scene.add(TORUS_KNOT, HOLY_DONUT);
+		this.app.scene.add(this.scene);
 
-			this.onConstruct && this.onConstruct();
-		}
+		this.app.camera.position.set(4, 5, 4);
+		if (this.app.control) this.app.control.target.y = 3.5;
+
+		this.gui
+			?.add({ function: () => this.destruct() }, "function")
+			.name("Destruct");
+
+		this.app.scene.environment = CURVE_RENDERER_TARGET.texture;
+
+		const CLOCK = new THREE.Clock();
+		this.app.setUpdateCallback(this.folderName, () => {
+			if (HOLY_DONUT) {
+				HOLY_DONUT.rotation.x = Math.sin(CLOCK.getElapsedTime()) * 2;
+				CUBE_CAMERA.update(this.app.renderer, this.app.scene);
+			}
+		});
+
+		this.onConstruct && this.onConstruct();
 	};
 
 	updateAllChildMeshEnvMap = (object: THREE.Object3D) => {
@@ -240,5 +202,33 @@ export class Lesson_24 {
 				// child.receiveShadow = true;
 			}
 		});
+	};
+
+	destruct = () => {
+		if (this.scene) {
+			this.app.scene.remove(this.scene);
+
+			this.scene.clear();
+			this.scene = undefined;
+
+			this.app.scene.background = null;
+			this.app.scene.environment = null;
+			this.app.scene.backgroundBlurriness = 0;
+			this.app.scene.backgroundIntensity = 1;
+			this.environmentMapTexture = undefined;
+
+			this.gui?.children.forEach((child, i) => {
+				setTimeout(() => child.destroy(), i * 10);
+			});
+			this.gui
+				?.add({ function: () => this.construct() }, "function")
+				.name("Construct");
+
+			if (this.app.updateCallbacks[this.folderName]) {
+				delete this.app.updateCallbacks[this.folderName];
+			}
+
+			this.onDestruct && this.onDestruct();
+		}
 	};
 }

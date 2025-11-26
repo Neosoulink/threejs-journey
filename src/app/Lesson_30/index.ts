@@ -63,16 +63,12 @@ export class Lesson_30 {
 	}
 
 	async construct() {
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
+		this.gui?.children.forEach((child) => child.destroy());
 		if (this.mainGroup) this.destroy();
 		if (this.mainGroup) return;
 
 		const clock = new THREE.Clock();
 		this.mainGroup = new THREE.Group();
-		this.gui = this.appGui?.addFolder(this.folderName);
 
 		await this.generateGalaxy();
 
@@ -280,12 +276,9 @@ export class Lesson_30 {
 		this.mainGroup?.clear();
 		this.mainGroup = undefined;
 
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
-
-		this.gui = this.appGui?.addFolder(this.folderName);
+		this.gui?.children.forEach((child, i) => {
+			setTimeout(() => child.destroy(), i * 10);
+		});
 		this.gui
 			?.add({ function: () => this.construct() }, "function")
 			.name("Construct");

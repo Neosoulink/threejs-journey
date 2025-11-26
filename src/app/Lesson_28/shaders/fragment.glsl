@@ -301,6 +301,9 @@ void main() {
 	vec3 leftColor = vec3(0.0);
 	vec3 uvColor = vec3(vUv, 0.5);
 	vec3 mixedColor = mix(leftColor, uvColor, strength.r);
+
 	gl_FragColor = vec4(mixedColor, 1.0);
 
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
 }

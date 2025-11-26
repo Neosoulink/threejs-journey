@@ -77,9 +77,7 @@ export class Lesson_31 {
 	}
 
 	async construct() {
-		this.gui?.children.forEach((child) => {
-			child.destroy();
-		});
+		this.gui?.children.forEach((child) => child.destroy());
 		if (this.scene) this.destruct();
 		if (this.scene) return;
 
@@ -111,7 +109,7 @@ export class Lesson_31 {
 		});
 
 		const shaderHook: (
-			shader: THREE.Shader,
+			shader: THREE.ShaderLibShader,
 			normalSupport?: boolean
 		) => void = (shader, normalSupport) => {
 			shader.uniforms.uTime = this.configs.uTime;
@@ -277,8 +275,8 @@ export class Lesson_31 {
 		this.scene?.clear();
 		this.scene = undefined;
 
-		this.gui?.children.forEach((child) => {
-			child.destroy();
+		this.gui?.children.forEach((child, i) => {
+			setTimeout(() => child.destroy(), i * 10);
 		});
 		this.gui
 			?.add({ function: () => this.construct() }, "function")

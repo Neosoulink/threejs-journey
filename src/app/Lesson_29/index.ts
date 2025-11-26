@@ -60,153 +60,132 @@ export class Lesson_29 {
 	}
 
 	async construct() {
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
-
+		this.gui?.children.forEach((child) => {
+			child.destroy();
+		});
 		if (this.mainGroup) this.destroy();
+		if (this.mainGroup) return;
 
-		if (!this.mainGroup) {
-			this.mainGroup = new THREE.Group();
-			this.app.camera.position.set(1, 1, 2);
+		this.mainGroup = new THREE.Group();
+		this.app.camera.position.set(1, 1, 2);
 
-			// Geometry
-			this.geometry = new THREE.PlaneGeometry(2, 2, 512, 512);
+		// Geometry
+		this.geometry = new THREE.PlaneGeometry(2, 2, 512, 512);
 
-			// Material
-			const vertexShader = await this.loadFile(vertexShaderUrl);
-			const fragmentShader = await this.loadFile(fragmentShaderUrl);
-			this.material = new THREE.ShaderMaterial({
-				vertexShader: vertexShader,
-				fragmentShader: fragmentShader,
-				side: THREE.DoubleSide,
-				uniforms: {
-					uTime: { value: this.configs.time },
+		// Material
+		const vertexShader = await this.loadFile(vertexShaderUrl);
+		const fragmentShader = await this.loadFile(fragmentShaderUrl);
+		this.material = new THREE.ShaderMaterial({
+			vertexShader: vertexShader,
+			fragmentShader: fragmentShader,
+			side: THREE.DoubleSide,
+			uniforms: {
+				uTime: { value: this.configs.time },
 
-					uBigWavesFrequency: {
-						value: new THREE.Vector2(
-							this.configs.bigWavesFrequency.x,
-							this.configs.bigWavesFrequency.y
-						),
-					},
-					uBigWavesSpeed: { value: this.configs.bigWavesSpeed },
-					uBigWavesElevation: { value: this.configs.bigWavesElevation },
-
-					uWavesDepthColor: {
-						value: new THREE.Color(this.configs.wavesDepthColor),
-					},
-					uWavesSurfaceColor: {
-						value: new THREE.Color(this.configs.wavesSurfaceColor),
-					},
-					uWavesColorOffset: { value: this.configs.wavesColorOffset },
-					uWavesColorMultiplier: {
-						value: this.configs.wavesColorMultiplier,
-					},
-
-					uSmallWavesElevation: { value: this.configs.smallWavesElevation },
-					uSmallWavesFrequency: { value: this.configs.smallWavesFrequency },
-					uSmallWavesSpeed: { value: this.configs.smallWavesSpeed },
-					uSmallWavesIterations: { value: this.configs.smallWavesIterations },
+				uBigWavesFrequency: {
+					value: new THREE.Vector2(
+						this.configs.bigWavesFrequency.x,
+						this.configs.bigWavesFrequency.y
+					),
 				},
-			});
+				uBigWavesSpeed: { value: this.configs.bigWavesSpeed },
+				uBigWavesElevation: { value: this.configs.bigWavesElevation },
 
-			// Mesh
-			const mesh = new THREE.Mesh(this.geometry, this.material);
-			mesh.rotation.x = -Math.PI * 0.5;
+				uWavesDepthColor: {
+					value: new THREE.Color(this.configs.wavesDepthColor),
+				},
+				uWavesSurfaceColor: {
+					value: new THREE.Color(this.configs.wavesSurfaceColor),
+				},
+				uWavesColorOffset: { value: this.configs.wavesColorOffset },
+				uWavesColorMultiplier: {
+					value: this.configs.wavesColorMultiplier,
+				},
 
-			this.mainGroup.add(mesh);
-			this.app.scene.add(this.mainGroup);
+				uSmallWavesElevation: { value: this.configs.smallWavesElevation },
+				uSmallWavesFrequency: { value: this.configs.smallWavesFrequency },
+				uSmallWavesSpeed: { value: this.configs.smallWavesSpeed },
+				uSmallWavesIterations: { value: this.configs.smallWavesIterations },
+			},
+		});
 
-			this.gui = this.appGui?.addFolder(this.folderName);
-			this.gui
-				?.add(this.material.uniforms.uBigWavesElevation, "value", 0, 1, 0.001)
-				.name("Big Waves Elevation");
-			this.gui
-				?.add(
-					this.material.uniforms.uBigWavesFrequency.value,
-					"x",
-					0,
-					10,
-					0.001
-				)
-				.name("Big Waves Frequency X");
-			this.gui
-				?.add(
-					this.material.uniforms.uBigWavesFrequency.value,
-					"y",
-					0,
-					10,
-					0.001
-				)
-				.name("Big Waves Frequency Z");
-			this.gui
-				?.add(this.material.uniforms.uBigWavesSpeed, "value", 0, 5, 0.001)
-				.name("Big Waves Speed");
+		// Mesh
+		const mesh = new THREE.Mesh(this.geometry, this.material);
+		mesh.rotation.x = -Math.PI * 0.5;
 
-			this.gui
-				?.add(this.material.uniforms.uSmallWavesElevation, "value", 0, 1, 0.001)
-				.name("Small Waves Elevation");
-			this.gui
-				?.add(
-					this.material.uniforms.uSmallWavesFrequency.value,
-					"x",
-					0,
-					30,
-					0.001
-				)
-				.name("Small Waves Frequency X");
-			this.gui
-				?.add(
-					this.material.uniforms.uSmallWavesFrequency.value,
-					"y",
-					0,
-					30,
-					0.001
-				)
-				.name("Small Waves Frequency Z");
-			this.gui
-				?.add(this.material.uniforms.uSmallWavesSpeed, "value", 0, 4, 0.001)
-				.name("Small Waves Speed");
-			this.gui
-				?.add(this.material.uniforms.uSmallWavesIterations, "value", 0, 10, 1)
-				.name("Small Waves Iterations");
+		this.mainGroup.add(mesh);
+		this.app.scene.add(this.mainGroup);
 
-			this.gui
-				?.addColor(this.configs, "wavesDepthColor")
-				.onChange(() => {
-					if (this.material)
-						this.material.uniforms.uWavesDepthColor.value.set(
-							this.configs.wavesDepthColor
-						);
-				})
-				.name("Waves Depth Color");
-			this.gui
-				?.addColor(this.configs, "wavesSurfaceColor")
-				.onChange(() => {
-					if (this.material)
-						this.material.uniforms.uWavesSurfaceColor.value.set(
-							this.configs.wavesSurfaceColor
-						);
-				})
-				.name("Waves Surface Color");
-			this.gui
-				?.add(
-					this.material.uniforms.uWavesColorMultiplier,
-					"value",
-					0,
-					10,
-					0.001
-				)
-				.name("Waves Color Multiplier");
-			this.gui
-				?.add(this.material.uniforms.uWavesColorOffset, "value", 0, 3, 0.001)
-				.name("Waves Color Offset");
+		this.gui
+			?.add(this.material.uniforms.uBigWavesElevation, "value", 0, 1, 0.001)
+			.name("Big Waves Elevation");
+		this.gui
+			?.add(this.material.uniforms.uBigWavesFrequency.value, "x", 0, 10, 0.001)
+			.name("Big Waves Frequency X");
+		this.gui
+			?.add(this.material.uniforms.uBigWavesFrequency.value, "y", 0, 10, 0.001)
+			.name("Big Waves Frequency Z");
+		this.gui
+			?.add(this.material.uniforms.uBigWavesSpeed, "value", 0, 5, 0.001)
+			.name("Big Waves Speed");
 
-			this.gui
-				?.add({ function: () => this.destroy() }, "function")
-				.name("Destroy");
-		}
+		this.gui
+			?.add(this.material.uniforms.uSmallWavesElevation, "value", 0, 1, 0.001)
+			.name("Small Waves Elevation");
+		this.gui
+			?.add(
+				this.material.uniforms.uSmallWavesFrequency.value,
+				"x",
+				0,
+				30,
+				0.001
+			)
+			.name("Small Waves Frequency X");
+		this.gui
+			?.add(
+				this.material.uniforms.uSmallWavesFrequency.value,
+				"y",
+				0,
+				30,
+				0.001
+			)
+			.name("Small Waves Frequency Z");
+		this.gui
+			?.add(this.material.uniforms.uSmallWavesSpeed, "value", 0, 4, 0.001)
+			.name("Small Waves Speed");
+		this.gui
+			?.add(this.material.uniforms.uSmallWavesIterations, "value", 0, 10, 1)
+			.name("Small Waves Iterations");
+
+		this.gui
+			?.addColor(this.configs, "wavesDepthColor")
+			.onChange(() => {
+				if (this.material)
+					this.material.uniforms.uWavesDepthColor.value.set(
+						this.configs.wavesDepthColor
+					);
+			})
+			.name("Waves Depth Color");
+		this.gui
+			?.addColor(this.configs, "wavesSurfaceColor")
+			.onChange(() => {
+				if (this.material)
+					this.material.uniforms.uWavesSurfaceColor.value.set(
+						this.configs.wavesSurfaceColor
+					);
+			})
+			.name("Waves Surface Color");
+		this.gui
+			?.add(this.material.uniforms.uWavesColorMultiplier, "value", 0, 10, 0.001)
+			.name("Waves Color Multiplier");
+		this.gui
+			?.add(this.material.uniforms.uWavesColorOffset, "value", 0, 3, 0.001)
+			.name("Waves Color Offset");
+
+		this.gui
+			?.add({ function: () => this.destroy() }, "function")
+			.name("Destroy");
+
 		const clock = new THREE.Clock();
 
 		this.app.setUpdateCallback(this.folderName, () => {
@@ -244,9 +223,7 @@ export class Lesson_29 {
 				for (const key in child.material) {
 					const value = child.material[key];
 
-					if (value && typeof value.dispose === "function") {
-						value.dispose();
-					}
+					if (value && typeof value.dispose === "function") value.dispose();
 				}
 			}
 		});
@@ -256,12 +233,9 @@ export class Lesson_29 {
 		this.mainGroup?.clear();
 		this.mainGroup = undefined;
 
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
-
-		this.gui = this.appGui?.addFolder(this.folderName);
+		this.gui?.children.forEach((child, i) => {
+			setTimeout(() => child.destroy(), i * 10);
+		});
 		this.gui
 			?.add({ function: () => this.construct() }, "function")
 			.name("Construct");

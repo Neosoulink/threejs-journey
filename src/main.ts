@@ -76,6 +76,7 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
+import { Lesson_34 } from "./app/Lesson_34";
 
 const APP = new ThreeApp({
 	enableControls: true,
@@ -95,7 +96,7 @@ const CURSOR_POS = {
 let windowClientY = SCROLL_BASED_DOM_BODY?.scrollTop ?? 0;
 let scrollBasedCurrentSection = 0;
 const APP_CONFIG = {
-	enableDblClickFullScreen: true,
+	enableDblClickFullScreen: false,
 };
 
 /* debuggers */
@@ -122,14 +123,15 @@ DONUT_GROUP.visible = false;
 /* LOADERS */
 const LOADING_MANAGER = new THREE.LoadingManager();
 LOADING_MANAGER.onStart = () => {
-	console.log("on start loading");
+	console.log("Loading Started!");
 };
 LOADING_MANAGER.onProgress = (_itemUrl, itemsLoaded, itemsToLoad) => {
 	const OVERLAY_MATERIAL = lesson47.overlayMaterial ?? lesson48.overlayMaterial;
-	if (DOM_LOADING_BAR?.style && OVERLAY_MATERIAL) {
+	if (DOM_LOADING_BAR?.style && OVERLAY_MATERIAL)
 		DOM_LOADING_BAR.style.transform = `scaleX(${itemsLoaded / itemsToLoad})`;
-	}
-	console.log(`On progress`, itemsLoaded / itemsToLoad);
+
+	if (itemsLoaded / itemsToLoad >= 1)
+		console.log(`Loaded ${itemsLoaded} / ${itemsToLoad} items.`);
 };
 
 LOADING_MANAGER.onLoad = () => {
@@ -150,8 +152,8 @@ LOADING_MANAGER.onLoad = () => {
 		GSAP.delayedCall(2.2, () => {
 			lesson48.sceneReady = true;
 		});
-		console.log("End loading");
 	});
+	console.log("Loading Completed!");
 };
 LOADING_MANAGER.onError = () => {
 	console.log("Error triggered");
@@ -304,7 +306,6 @@ FONT_LOADER.load(HelvetikerFont, (font) => {
 	const textGeometry = new TextGeometry("Three.js", {
 		font,
 		size: 0.5,
-		height: 0.2,
 		curveSegments: 6,
 		bevelEnabled: true,
 		bevelThickness: BEVEL_THICKNESS,
@@ -1108,7 +1109,7 @@ _PARTICLES_GALAXY_FOLDER_GUI
 
 /* =========== START RAY CASTER =========== */
 let rayCasterCurrentIntersect: THREE.Intersection<
-	THREE.Object3D<THREE.Event>
+	THREE.Object3D<THREE.Object3DEventMap>
 > | null = null;
 const RAY_CASTER_GROUP = new THREE.Group();
 RAY_CASTER_GROUP.visible = false;
@@ -1355,22 +1356,44 @@ new Lesson_29({ fileLoader: FILE_LOADER });
 /**
  * Lesson 30 | Raging sea
  */
-new Lesson_30();
+new Lesson_30({
+	fileLoader: FILE_LOADER,
+});
 
 /**
  * Lesson 31 | Modified materials
  */
-new Lesson_31();
+new Lesson_31({
+	glTFLoader: GLTF_LOADER,
+	fileLoader: FILE_LOADER,
+	textureLoader: TEXTURE_LOADER,
+});
 
 /**
  * Lesson 32 | Coffee Smoke
  */
-new Lesson_32();
+new Lesson_32({
+	glTFLoader: GLTF_LOADER,
+	fileLoader: FILE_LOADER,
+	textureLoader: TEXTURE_LOADER,
+});
 
 /**
  * Lesson 33 | Hologram
  */
-new Lesson_33();
+new Lesson_33({
+	glTFLoader: GLTF_LOADER,
+	fileLoader: FILE_LOADER,
+	textureLoader: TEXTURE_LOADER,
+});
+
+/**
+ * Lesson 34 | Hologram
+ */
+new Lesson_34({
+	fileLoader: FILE_LOADER,
+	textureLoader: TEXTURE_LOADER,
+});
 
 /**
  * Lesson 45 | Post processing

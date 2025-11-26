@@ -11,4 +11,7 @@ void main() {
 	vec3 outputColor = mix(vec3(vUv, 0.5), mixedColor, 0.6);
 
 	gl_FragColor = vec4(outputColor, 1.0);
+
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
 }

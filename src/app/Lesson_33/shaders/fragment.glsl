@@ -31,6 +31,6 @@ void main() {
 
 	gl_FragColor = vec4(uColor, hologram);
 
-	#include <color_fragment>
-	#include <encodings_fragment>
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
 }

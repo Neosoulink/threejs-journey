@@ -49,19 +49,16 @@ export const lesson_20 = ({
 			groupContainer.clear();
 			groupContainer = undefined;
 		}
-
-		_GUI?.children.forEach((child) => {
-			child.destroy();
-		});
+		_GUI?.children.forEach((child, i) =>
+			setTimeout(() => child.destroy(), i * 10)
+		);
 		_GUI?.add({ function: construct }, "function").name("Construct");
 
 		onDestruct && onDestruct();
 	};
 
 	const construct = () => {
-		_GUI?.children.forEach((child) => {
-			child.destroy();
-		});
+		_GUI?.children.forEach((child) => child.destroy());
 
 		if (groupContainer) destroy();
 		if (groupContainer) return;

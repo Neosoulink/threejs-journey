@@ -40,42 +40,37 @@ export class Lesson_28 {
 	}
 
 	async construct() {
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
+		this.gui?.children.forEach((child) => {
+			child.destroy();
+		});
+		if (this.mainGroup) this.destroy();
+		if (this.mainGroup) return;
 
-		if (this.mainGroup) {
-			this.destroy();
-		}
+		this.mainGroup = new THREE.Group();
+		this.app.camera.position.set(0, 0, 1);
 
-		if (!this.mainGroup) {
-			this.mainGroup = new THREE.Group();
-			this.app.camera.position.set(0, 0, 1);
+		// Geometry
+		const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
-			// Geometry
-			const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+		// Material
+		const vertexShader = await this.loadFile(vertexShaderUrl);
+		const fragmentShader = await this.loadFile(fragmentShaderUrl);
+		const material = new THREE.ShaderMaterial({
+			vertexShader: vertexShader,
+			fragmentShader: fragmentShader,
+			side: THREE.DoubleSide,
+		});
 
-			// Material
-			const vertexShader = await this.loadFile(vertexShaderUrl);
-			const fragmentShader = await this.loadFile(fragmentShaderUrl);
-			const material = new THREE.ShaderMaterial({
-				vertexShader: vertexShader,
-				fragmentShader: fragmentShader,
-				side: THREE.DoubleSide,
-			});
+		// Mesh
+		const mesh = new THREE.Mesh(geometry, material);
 
-			// Mesh
-			const mesh = new THREE.Mesh(geometry, material);
+		this.mainGroup.add(mesh);
+		this.app.scene.add(this.mainGroup);
 
-			this.mainGroup.add(mesh);
-			this.app.scene.add(this.mainGroup);
+		this.gui
+			?.add({ function: () => this.destroy() }, "function")
+			.name("Destroy");
 
-			this.gui = this.appGui?.addFolder(this.folderName);
-			this.gui
-				?.add({ function: () => this.destroy() }, "function")
-				.name("Destroy");
-		}
 		const clock = new THREE.Clock();
 
 		this.app.setUpdateCallback(this.folderName, () => {
@@ -125,15 +120,12 @@ export class Lesson_28 {
 			this.mainGroup?.clear();
 			this.mainGroup = undefined;
 
-			if (this.gui) {
-				this.gui.destroy();
-				this.gui = undefined;
-			}
-
-			this.gui = this.appGui?.addFolder(this.folderName);
+			this.gui?.children.forEach((child, i) => {
+				setTimeout(() => child.destroy(), i * 10);
+			});
 			this.gui
 				?.add({ function: () => this.construct() }, "function")
-				.name("Enable");
+				.name("Construct");
 
 			if (this.app.updateCallbacks[this.folderName]) {
 				delete this.app.updateCallbacks[this.folderName];

@@ -35,7 +35,7 @@ export interface ConstructorProps {
 
 export class Lesson_26 {
 	folderName = "Lesson 26 | Class integration";
-	groupContainer?: THREE.Group;
+	mainGroup?: THREE.Group;
 	debugObject: { envMapIntensity?: number } = {};
 	foxMixer?: THREE.AnimationMixer;
 	environmentMap?: THREE.CubeTexture;
@@ -64,36 +64,11 @@ export class Lesson_26 {
 		this.onDestruct = onDestruct;
 	}
 
-	destroy() {
-		if (this.groupContainer) {
-			this.app.scene.remove(this.groupContainer);
-
-			this.groupContainer?.clear();
-			this.groupContainer = undefined;
-
-			if (this.gui) {
-				this.gui.destroy();
-				this.gui = undefined;
-			}
-
-			this.gui = this.appGui?.addFolder(this.folderName);
-			this.gui
-				?.add({ function: () => this.construct() }, "function")
-				.name("Enable");
-
-			this.onDestruct && this.onDestruct();
-		}
-	}
-
 	construct() {
-		if (this.gui) {
-			this.gui.destroy();
-			this.gui = undefined;
-		}
-
-		if (this.groupContainer) {
-			this.destroy();
-		}
+		this.gui?.children.forEach((child) => {
+			child.destroy();
+		});
+		if (this.mainGroup) this.destroy();
 
 		if (!this.environmentMap) {
 			this.environmentMap = this.cubeTextureLoader?.load([
@@ -106,126 +81,127 @@ export class Lesson_26 {
 			]);
 
 			if (this.environmentMap) {
-				this.environmentMap.encoding = THREE.sRGBEncoding;
+				this.environmentMap.colorSpace = THREE.SRGBColorSpace;
 				this.app.scene.environment = this.environmentMap;
 			}
 		}
 
 		if (
-			!this.groupContainer &&
-			this.environmentMap &&
-			this.cubeTextureLoader &&
-			this.textureLoader
-		) {
-			this.groupContainer = new THREE.Group();
+			!(
+				!this.mainGroup &&
+				this.environmentMap &&
+				this.cubeTextureLoader &&
+				this.textureLoader
+			)
+		)
+			return;
 
-			// scene.background = environmentMap
-			this.app.scene.environment = this.environmentMap;
+		this.mainGroup = new THREE.Group();
 
-			/**
-			 * Models
-			 */
+		// scene.background = environmentMap
+		this.app.scene.environment = this.environmentMap;
 
-			this.gltfLoader?.load(FoxGLTF, (gltf) => {
-				// Model
-				gltf.scene.scale.set(0.02, 0.02, 0.02);
-				this.groupContainer?.add(gltf.scene);
+		/**
+		 * Models
+		 */
 
-				// Animation
-				this.foxMixer = new THREE.AnimationMixer(gltf.scene);
-				const foxAction = this.foxMixer.clipAction(gltf.animations[0]);
-				foxAction.play();
+		this.gltfLoader?.load(FoxGLTF, (gltf) => {
+			// Model
+			gltf.scene.scale.set(0.02, 0.02, 0.02);
+			this.mainGroup?.add(gltf.scene);
 
-				// Update materials
-				this.updateAllMaterials();
-				this.groupContainer?.add(gltf.scene);
-			});
+			// Animation
+			this.foxMixer = new THREE.AnimationMixer(gltf.scene);
+			const foxAction = this.foxMixer.clipAction(gltf.animations[0]);
+			foxAction.play();
 
-			/**
-			 * Floor
-			 */
-			const floorColorTexture = this.textureLoader.load(dirtColorImg);
-			floorColorTexture.encoding = THREE.sRGBEncoding;
-			floorColorTexture.repeat.set(1.5, 1.5);
-			floorColorTexture.wrapS = THREE.RepeatWrapping;
-			floorColorTexture.wrapT = THREE.RepeatWrapping;
+			// Update materials
+			this.updateAllMaterials();
+			this.mainGroup?.add(gltf.scene);
+		});
 
-			const floorNormalTexture = this.textureLoader.load(dirtNormalImg);
-			floorNormalTexture.repeat.set(1.5, 1.5);
-			floorNormalTexture.wrapS = THREE.RepeatWrapping;
-			floorNormalTexture.wrapT = THREE.RepeatWrapping;
+		/**
+		 * Floor
+		 */
+		const floorColorTexture = this.textureLoader.load(dirtColorImg);
+		floorColorTexture.colorSpace = THREE.SRGBColorSpace;
+		floorColorTexture.repeat.set(1.5, 1.5);
+		floorColorTexture.wrapS = THREE.RepeatWrapping;
+		floorColorTexture.wrapT = THREE.RepeatWrapping;
 
-			const floorGeometry = new THREE.CircleGeometry(5, 64);
-			const floorMaterial = new THREE.MeshStandardMaterial({
-				map: floorColorTexture,
-				normalMap: floorNormalTexture,
-			});
-			const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-			floor.rotation.x = -Math.PI * 0.5;
+		const floorNormalTexture = this.textureLoader.load(dirtNormalImg);
+		floorNormalTexture.repeat.set(1.5, 1.5);
+		floorNormalTexture.wrapS = THREE.RepeatWrapping;
+		floorNormalTexture.wrapT = THREE.RepeatWrapping;
 
-			/**
-			 * Lights
-			 */
-			const directionalLight = new THREE.DirectionalLight("#ffffff", 4);
-			directionalLight.castShadow = true;
-			directionalLight.shadow.camera.far = 15;
-			directionalLight.shadow.mapSize.set(1024, 1024);
-			directionalLight.shadow.normalBias = 0.05;
-			directionalLight.position.set(3.5, 2, -1.25);
+		const floorGeometry = new THREE.CircleGeometry(5, 64);
+		const floorMaterial = new THREE.MeshStandardMaterial({
+			map: floorColorTexture,
+			normalMap: floorNormalTexture,
+		});
+		const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+		floor.rotation.x = -Math.PI * 0.5;
 
-			this.app.renderer.useLegacyLights = true;
-			this.app.renderer.outputColorSpace = THREE.SRGBColorSpace;
-			this.app.renderer.toneMapping = THREE.CineonToneMapping;
-			this.app.renderer.toneMappingExposure = 1.75;
-			this.app.renderer.shadowMap.enabled = true;
-			this.app.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-			this.app.renderer.setClearColor("#211d20");
+		/**
+		 * Lights
+		 */
+		const directionalLight = new THREE.DirectionalLight("#ffffff", 4);
+		directionalLight.castShadow = true;
+		directionalLight.shadow.camera.far = 15;
+		directionalLight.shadow.mapSize.set(1024, 1024);
+		directionalLight.shadow.normalBias = 0.05;
+		directionalLight.position.set(3.5, 2, -1.25);
 
-			this.groupContainer.add(floor, directionalLight);
+		this.app.renderer.outputColorSpace = THREE.SRGBColorSpace;
+		this.app.renderer.toneMapping = THREE.CineonToneMapping;
+		this.app.renderer.toneMappingExposure = 1.75;
+		this.app.renderer.shadowMap.enabled = true;
+		this.app.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		this.app.renderer.setClearColor("#211d20");
 
-			this.app.scene.add(this.groupContainer);
+		this.mainGroup.add(floor, directionalLight);
 
-			this.debugObject.envMapIntensity = 0.4;
-			this.gui = this.appGui?.addFolder(this.folderName);
-			this.gui
-				?.add(this.debugObject, "envMapIntensity")
-				.min(0)
-				.max(4)
-				.step(0.001)
-				.onChange(() => this.updateAllMaterials());
+		this.app.scene.add(this.mainGroup);
 
-			this.gui
-				?.add(directionalLight, "intensity")
-				.min(0)
-				.max(10)
-				.step(0.001)
-				.name("lightIntensity");
-			this.gui
-				?.add(directionalLight.position, "x")
-				.min(-5)
-				.max(5)
-				.step(0.001)
-				.name("lightX");
-			this.gui
-				?.add(directionalLight.position, "y")
-				.min(-5)
-				.max(5)
-				.step(0.001)
-				.name("lightY");
-			this.gui
-				?.add(directionalLight.position, "z")
-				.min(-5)
-				.max(5)
-				.step(0.001)
-				.name("lightZ");
-			this.gui
-				?.add({ function: () => this.destroy() }, "function")
-				.name("Destroy");
-		}
+		this.debugObject.envMapIntensity = 0.4;
+		this.gui
+			?.add(this.debugObject, "envMapIntensity")
+			.min(0)
+			.max(4)
+			.step(0.001)
+			.onChange(() => this.updateAllMaterials());
+
+		this.gui
+			?.add(directionalLight, "intensity")
+			.min(0)
+			.max(10)
+			.step(0.001)
+			.name("lightIntensity");
+		this.gui
+			?.add(directionalLight.position, "x")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("lightX");
+		this.gui
+			?.add(directionalLight.position, "y")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("lightY");
+		this.gui
+			?.add(directionalLight.position, "z")
+			.min(-5)
+			.max(5)
+			.step(0.001)
+			.name("lightZ");
+		this.gui
+			?.add({ function: () => this.destroy() }, "function")
+			.name("Destroy");
 	}
 
 	updateAllMaterials(this: Lesson_26) {
-		this.groupContainer?.traverse((child) => {
+		this.mainGroup?.traverse((child) => {
 			if (
 				child instanceof THREE.Mesh &&
 				child.material instanceof THREE.MeshStandardMaterial
@@ -237,5 +213,23 @@ export class Lesson_26 {
 				child.receiveShadow = true;
 			}
 		});
+	}
+
+	destroy() {
+		if (this.mainGroup) {
+			this.app.scene.remove(this.mainGroup);
+
+			this.mainGroup?.clear();
+			this.mainGroup = undefined;
+
+			this.gui?.children.forEach((child, i) => {
+				setTimeout(() => child.destroy(), i * 10);
+			});
+			this.gui
+				?.add({ function: () => this.construct() }, "function")
+				.name("Construct");
+
+			this.onDestruct && this.onDestruct();
+		}
 	}
 }
