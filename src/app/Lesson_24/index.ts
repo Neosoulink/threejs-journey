@@ -215,7 +215,6 @@ export class Lesson_24 {
 			this.app.scene.environment = null;
 			this.app.scene.backgroundBlurriness = 0;
 			this.app.scene.backgroundIntensity = 1;
-			this.environmentMapTexture = undefined;
 
 			this.gui?.children.forEach((child, i) => {
 				setTimeout(() => child.destroy(), i * 10);
