@@ -24,6 +24,8 @@ import { Lesson_30 } from "./app/Lesson_30";
 import { Lesson_31 } from "./app/Lesson_31";
 import { Lesson_32 } from "./app/Lesson_32";
 import { Lesson_33 } from "./app/Lesson_33";
+import { Lesson_34 } from "./app/Lesson_34";
+import { Lesson_35 } from "./app/Lesson_35";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -76,7 +78,6 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
-import { Lesson_34 } from "./app/Lesson_34";
 
 const APP = new ThreeApp({
 	enableControls: true,
@@ -1393,6 +1394,14 @@ new Lesson_33({
 new Lesson_34({
 	fileLoader: FILE_LOADER,
 	textureLoader: TEXTURE_LOADER,
+});
+
+/**
+ * Lesson 35 | Hologram
+ */
+new Lesson_35({
+	fileLoader: FILE_LOADER,
+	glTFLoader: GLTF_LOADER,
 });
 
 /**

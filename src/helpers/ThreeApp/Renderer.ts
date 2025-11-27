@@ -17,10 +17,9 @@ export default class Renderer {
 			alpha: true,
 		});
 
-		this.intense.useLegacyLights = true;
 		this.intense.outputColorSpace = THREE.SRGBColorSpace;
-		this.intense.toneMapping = THREE.CineonToneMapping;
-		this.intense.toneMappingExposure = 1.75;
+		this.intense.toneMapping = THREE.NoToneMapping;
+		this.intense.toneMappingExposure = 1;
 		this.intense.shadowMap.enabled = true;
 		this.intense.shadowMap.type = THREE.PCFSoftShadowMap;
 		this.intense.setClearColor("#211d20");
