@@ -151,14 +151,6 @@ export class Lesson_26 {
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.shadow.normalBias = 0.05;
 		directionalLight.position.set(3.5, 2, -1.25);
-
-		this.app.renderer.outputColorSpace = THREE.SRGBColorSpace;
-		this.app.renderer.toneMapping = THREE.CineonToneMapping;
-		this.app.renderer.toneMappingExposure = 1.75;
-		this.app.renderer.shadowMap.enabled = true;
-		this.app.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		this.app.renderer.setClearColor("#211d20");
-
 		this.mainGroup.add(floor, directionalLight);
 
 		this.app.scene.add(this.mainGroup);

@@ -118,7 +118,7 @@ export class Lesson_49 {
 			 */
 			const bakedPortalTexture = this.textureLoader.load(portalTexture);
 			bakedPortalTexture.flipY = false;
-			bakedPortalTexture.encoding = THREE.sRGBEncoding;
+			bakedPortalTexture.colorSpace = THREE.SRGBColorSpace;
 
 			/**
 			 * Material

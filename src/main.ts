@@ -26,6 +26,7 @@ import { Lesson_32 } from "./app/Lesson_32";
 import { Lesson_33 } from "./app/Lesson_33";
 import { Lesson_34 } from "./app/Lesson_34";
 import { Lesson_35 } from "./app/Lesson_35";
+import { Lesson_36 } from "./app/Lesson_36";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -1397,11 +1398,18 @@ new Lesson_34({
 });
 
 /**
- * Lesson 35 | Hologram
+ * Lesson 35 | Lights shading
  */
 new Lesson_35({
 	fileLoader: FILE_LOADER,
 	glTFLoader: GLTF_LOADER,
+});
+
+/**
+ * Lesson 36 | Raging sea shading
+ */
+new Lesson_36({
+	fileLoader: FILE_LOADER,
 });
 
 /**
@@ -1504,9 +1512,6 @@ if (SCROLL_BASED_GROUP.visible) {
 APP.scene.fog = HAUNTED_HOUSE_GROUP.visible
 	? new THREE.Fog("#262837", 0, 15)
 	: null;
-if (HAUNTED_HOUSE_GROUP.visible) {
-	APP.renderer.setClearColor("#262837");
-}
 
 /* Animate */
 let previewsElapseTime = 0;
