@@ -72,10 +72,6 @@ export class Lesson_36 {
 
 		this.mainGroup = new THREE.Group();
 
-		// Axes Helper
-		const axesHelper = new THREE.AxesHelper();
-		axesHelper.position.y += 0.25;
-
 		// Geometry
 		this.geometry = new THREE.PlaneGeometry(2, 2, 512, 512);
 		this.geometry.deleteAttribute("normal");
@@ -135,7 +131,7 @@ export class Lesson_36 {
 		const mesh = new THREE.Mesh(this.geometry, this.material);
 		mesh.rotation.x = -Math.PI * 0.5;
 
-		this.mainGroup.add(mesh, axesHelper);
+		this.mainGroup.add(mesh);
 		this.app.scene.add(this.mainGroup);
 
 		this.app.camera.position.set(1, 2, 2);

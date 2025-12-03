@@ -28,6 +28,7 @@ import { Lesson_34 } from "./app/Lesson_34";
 import { Lesson_35 } from "./app/Lesson_35";
 import { Lesson_36 } from "./app/Lesson_36";
 import { Lesson_37 } from "./app/Lesson_37";
+import { Lesson_38 } from "./app/Lesson_38";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -1419,6 +1420,14 @@ new Lesson_36({
 new Lesson_37({
 	fileLoader: FILE_LOADER,
 	glTFLoader: GLTF_LOADER,
+});
+
+/**
+ * Lesson 38 | Earth
+ */
+new Lesson_38({
+	fileLoader: FILE_LOADER,
+	textureLoader: TEXTURE_LOADER,
 });
 
 /**
