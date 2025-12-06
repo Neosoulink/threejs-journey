@@ -49,8 +49,6 @@ export class Lesson_38 {
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
-
-		this.construct();
 	}
 
 	async construct() {
@@ -80,6 +78,8 @@ export class Lesson_38 {
 			earthSpecularTextureUrl
 		);
 		earthSpecularTexture.anisotropy = 8;
+		earthSpecularTexture.wrapS = THREE.RepeatWrapping;
+		earthSpecularTexture.wrapT = THREE.RepeatWrapping;
 
 		// Shader
 		const earthVertexShader = await this.loadFile(glEarthVertexShaderUrl);
@@ -113,6 +113,8 @@ export class Lesson_38 {
 			vertexShader: atmosphereVertexShader,
 			fragmentShader: atmosphereFragmentShader,
 			uniforms: {
+				uTime: this.configs.uTime,
+
 				uSunDirection: this.configs.uSunDirection,
 				uAtmosphereDayColor: this.configs.uAtmosphereDayColor,
 				uAtmosphereTwilightColor: this.configs.uAtmosphereTwilightColor,
@@ -179,6 +181,7 @@ export class Lesson_38 {
 			?.add({ function: () => this.destroy() }, "function")
 			.name("Destruct");
 		this.gui?.open();
+		this.gui?.domElement.scrollIntoView({ block: "center" });
 
 		this.app.setUpdateCallback(this.folderName, () => {
 			const elapsedTime = this.app.time.elapsed * 0.001;

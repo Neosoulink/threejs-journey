@@ -208,10 +208,7 @@ export class Lesson_36 {
 			?.add({ function: () => this.destroy() }, "function")
 			.name("Destroy");
 		this.gui?.open();
-
-		setTimeout(() => {
-			this.appGui?.domElement.scrollTo(0, 9999);
-		}, 2000);
+		this.gui?.domElement.scrollIntoView({ block: "center" });
 
 		this.app.setUpdateCallback(this.folderName, () => {
 			this.update(this.app.time.elapsed * 0.001);

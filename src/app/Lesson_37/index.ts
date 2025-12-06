@@ -170,6 +170,7 @@ export class Lesson_37 {
 			?.add({ function: () => this.destruct() }, "function")
 			.name("Destruct");
 		this.gui?.open();
+		this.gui?.domElement.scrollIntoView({ block: "center" });
 
 		this.onConstruct && this.onConstruct();
 	}
