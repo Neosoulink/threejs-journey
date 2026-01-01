@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+import { HDRLoader } from "three/examples/jsm/Addons.js";
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 // import { GroundProjectedSkybox } from "three/examples/jsm/objects/GroundProjectedSkybox.js";
 import GUI from "lil-gui";
@@ -20,7 +20,7 @@ import animeArtImg from "../../assets/img/textures/environmentMaps/blockadesLabs
 
 export interface Lesson25Props {
 	GLTF_Loader?: GLTFLoader;
-	RGBE_Loader?: RGBELoader;
+	HDR_Loader?: HDRLoader;
 	EXR_Loader?: EXRLoader;
 	CubeTextureLoader?: THREE.CubeTextureLoader;
 	TextureLoader?: THREE.TextureLoader;
@@ -34,7 +34,7 @@ export class Lesson_24 {
 	appGui?: GUI;
 	gui?: GUI;
 	GLTF_Loader: GLTFLoader;
-	RGBE_Loader: RGBELoader;
+	HDR_Loader: HDRLoader;
 	EXR_Loader: EXRLoader;
 	CubeTextureLoader: THREE.CubeTextureLoader;
 	TextureLoader: THREE.TextureLoader;
@@ -47,7 +47,7 @@ export class Lesson_24 {
 	constructor(props: Lesson25Props) {
 		this.appGui = this.app.debug?.ui;
 		this.GLTF_Loader = props.GLTF_Loader ?? new GLTFLoader();
-		this.RGBE_Loader = props.RGBE_Loader ?? new RGBELoader();
+		this.HDR_Loader = props.HDR_Loader ?? new HDRLoader();
 		this.EXR_Loader = props.EXR_Loader ?? new EXRLoader();
 		this.CubeTextureLoader =
 			props.CubeTextureLoader ?? new THREE.CubeTextureLoader();
@@ -110,7 +110,7 @@ export class Lesson_24 {
 		const CUBE_CAMERA = new THREE.CubeCamera(0.1, 100, CURVE_RENDERER_TARGET);
 		CUBE_CAMERA.layers.set(1);
 
-		// this.RGBE_Loader.load(hdrEnvImg, (hdrEnvMap) => {
+		// this.HDR_Loader.load(hdrEnvImg, (hdrEnvMap) => {
 		// 	hdrEnvMap.mapping = THREE.EquirectangularReflectionMapping;
 		// 	this.environmentMapTexture = hdrEnvMap;
 

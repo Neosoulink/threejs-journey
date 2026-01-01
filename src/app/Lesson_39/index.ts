@@ -60,8 +60,6 @@ export class Lesson_39 {
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
-
-		this.construct();
 	}
 
 	async construct() {
