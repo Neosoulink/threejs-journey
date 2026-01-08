@@ -31,6 +31,7 @@ import { Lesson_37 } from "./app/Lesson_37";
 import { Lesson_38 } from "./app/Lesson_38";
 import { Lesson_39 } from "./app/Lesson_39";
 import { Lesson_40 } from "./app/Lesson_40";
+import { Lesson_41 } from "./app/Lesson_41";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -1441,9 +1442,17 @@ new Lesson_39({
 });
 
 /**
- * Lesson 39 | Particles Cursor Animation
+ * Lesson 40 | Particles Morphing
  */
 new Lesson_40({
+	fileLoader: FILE_LOADER,
+	gltfLoader: GLTF_LOADER,
+});
+
+/**
+ * Lesson 41 | GPGPU Flow Field Particles
+ */
+new Lesson_41({
 	fileLoader: FILE_LOADER,
 	gltfLoader: GLTF_LOADER,
 });

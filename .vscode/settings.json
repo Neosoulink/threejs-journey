@@ -5,6 +5,7 @@
 		"cnoise",
 		"colorspace",
 		"fract",
+		"GPGPU",
 		"mediump",
 		"Perlin",
 		"skybox",

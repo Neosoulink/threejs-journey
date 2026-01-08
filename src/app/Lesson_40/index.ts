@@ -60,18 +60,13 @@ export class Lesson_40 {
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
-
-		this.construct();
 	}
 
 	async construct() {
 		this.gui?.children.forEach((child) => child.destroy());
-
-		if (this.scene) this.destroy();
-		if (this.scene) return;
+		if (this.scene) this.destruct();
 
 		this.tl = gsap.timeline();
-
 		this.scene = new THREE.Group();
 
 		// Models Positions
@@ -179,6 +174,10 @@ export class Lesson_40 {
 				material.uniforms.uColorB.value.set(this.configs.colorB);
 		});
 		this.gui
+			?.add(this.configs.uSize, "value", 0, 1, 0.001)
+			.name("uSize")
+			.listen();
+		this.gui
 			?.add(this.configs.uProgress, "value", 0, 1, 0.001)
 			.name("uProgress")
 			.listen();
@@ -201,7 +200,7 @@ export class Lesson_40 {
 			?.add(
 				{
 					function: () => {
-						this.destroy();
+						this.destruct();
 					},
 				},
 				"function"
@@ -268,7 +267,7 @@ export class Lesson_40 {
 		this.configs.currentPosIndex = validIndex;
 	}
 
-	destroy() {
+	destruct() {
 		if (!this.scene) return;
 
 		this.scene.traverse((child) => {

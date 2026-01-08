@@ -1,6 +1,3 @@
-uniform vec3 uColorA;
-uniform vec3 uColorB;
-
 varying vec3 vColor;
 
 void main() {

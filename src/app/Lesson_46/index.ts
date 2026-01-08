@@ -15,7 +15,7 @@ export interface Lesson46ConstructorProps {
 }
 
 export class Lesson_46 {
-	folderName = "Lesson 33 | Performance tips";
+	folderName = "Lesson 46 | Performance tips";
 	app = new ThreeApp();
 	appGui?: GUI;
 	gui?: GUI;
