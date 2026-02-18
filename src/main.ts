@@ -32,6 +32,7 @@ import { Lesson_38 } from "./app/Lesson_38";
 import { Lesson_39 } from "./app/Lesson_39";
 import { Lesson_40 } from "./app/Lesson_40";
 import { Lesson_41 } from "./app/Lesson_41";
+import { Lesson_42 } from "./app/Lesson_42";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -84,6 +85,7 @@ import hauntedHouserRoughnessGrassImg from "./assets/img/textures/hauntedHouse/g
 import particle2Img from "./assets/img/textures/particles/2.png";
 /* gradient */
 import gradient3Img from "./assets/img/textures/gradients/3.jpg";
+import { HDRLoader } from "three/examples/jsm/Addons.js";
 
 const APP = new ThreeApp({
 	enableControls: true,
@@ -168,10 +170,11 @@ LOADING_MANAGER.onError = () => {
 const FONT_LOADER = new FontLoader(LOADING_MANAGER);
 const DRACO_LOADER = new DRACOLoader(LOADING_MANAGER);
 const GLTF_LOADER = new GLTFLoader(LOADING_MANAGER);
+const HDR_LOADER = new HDRLoader(LOADING_MANAGER);
 const FILE_LOADER = new THREE.FileLoader(LOADING_MANAGER);
 
 DRACO_LOADER.setDecoderPath(
-	"https://www.gstatic.com/draco/versioned/decoders/1.4.3/"
+	"https://www.gstatic.com/draco/versioned/decoders/1.4.3/",
 );
 GLTF_LOADER.setDRACOLoader(DRACO_LOADER);
 
@@ -199,7 +202,7 @@ const CUBE_TEXTURE_LOADER = new THREE.CubeTextureLoader(LOADING_MANAGER);
 // TEXTURES
 const DOOR_ALPHA_TEXTURE = TEXTURE_LOADER.load(doorAlphaImg);
 const DOOR_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
-	doorAmbientOcclusionImg
+	doorAmbientOcclusionImg,
 );
 const DOOR_COLOR_TEXTURE = TEXTURE_LOADER.load(doorDoorImg);
 const DOOR_HEIGHT_TEXTURE = TEXTURE_LOADER.load(doorHeightImg);
@@ -287,7 +290,7 @@ const TRIANGLE_MESH = new THREE.Mesh(TRIANGLE_GEOMETRY, TRIANGLE_MATERIAL);
 /* Attributes */
 TRIANGLE_GEOMETRY.setAttribute(
 	"position",
-	new THREE.BufferAttribute(TRIANGLE_VERTICES, 3)
+	new THREE.BufferAttribute(TRIANGLE_VERTICES, 3),
 );
 /* Material */
 CubeClone.material.color = new THREE.Color();
@@ -380,7 +383,7 @@ const SPOT_LIGHT = new THREE.SpotLight(
 	10,
 	Math.PI * 0.1,
 	0.25,
-	1
+	1,
 );
 
 /* Positions */
@@ -394,11 +397,11 @@ SPOT_LIGHT.target.position.x = -0.75;
 /* Light helper */
 const DIRECTIONAL_LIGHT_HELPER = new THREE.DirectionalLightHelper(
 	DIRECTIONAL_LIGHT,
-	0.2
+	0.2,
 );
 const HEMISPHERE_LIGHT_HELPER = new THREE.HemisphereLightHelper(
 	HEMISPHERE_LIGHT,
-	0.2
+	0.2,
 );
 const POINT_LIGHT_HELPER = new THREE.PointLightHelper(POINT_LIGHT, 0.2);
 const SPOT_LIGHT_HELPER = new THREE.SpotLightHelper(SPOT_LIGHT);
@@ -441,45 +444,45 @@ MATERIAL_FOR_LIGHT_PROPOSES.roughness = 0.4;
 /* MESH */
 const SphereForm = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 64, 64),
-	MATER6IAL_FOR_LIGHT_PROPOSES_2
+	MATER6IAL_FOR_LIGHT_PROPOSES_2,
 );
 const PlaneForm = new THREE.Mesh(
 	new THREE.PlaneGeometry(1, 1, 100, 100),
-	MATER6IAL_FOR_LIGHT_PROPOSES_2
+	MATER6IAL_FOR_LIGHT_PROPOSES_2,
 );
 const TorusForm = new THREE.Mesh(
 	new THREE.TorusGeometry(0.3, 0.2, 64, 128),
-	MATER6IAL_FOR_LIGHT_PROPOSES_2
+	MATER6IAL_FOR_LIGHT_PROPOSES_2,
 );
 const LIGHT_SPHERE = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 32, 32),
-	MATERIAL_FOR_LIGHT_PROPOSES
+	MATERIAL_FOR_LIGHT_PROPOSES,
 );
 const LIGHT_CUBE = new THREE.Mesh(
 	new THREE.BoxGeometry(0.75, 0.75, 0.75),
-	MATERIAL_FOR_LIGHT_PROPOSES
+	MATERIAL_FOR_LIGHT_PROPOSES,
 );
 const LIGHT_TORUS = new THREE.Mesh(
 	new THREE.TorusGeometry(0.3, 0.2, 32, 64),
-	MATERIAL_FOR_LIGHT_PROPOSES
+	MATERIAL_FOR_LIGHT_PROPOSES,
 );
 const LIGHT_PLANE = new THREE.Mesh(
 	new THREE.PlaneGeometry(5, 5),
-	MATERIAL_FOR_LIGHT_PROPOSES
+	MATERIAL_FOR_LIGHT_PROPOSES,
 );
 
 /* Attributes */
 SphereForm.geometry.setAttribute(
 	"uv2",
-	new THREE.BufferAttribute(SphereForm.geometry.attributes.uv.array, 2)
+	new THREE.BufferAttribute(SphereForm.geometry.attributes.uv.array, 2),
 );
 PlaneForm.geometry.setAttribute(
 	"uv2",
-	new THREE.BufferAttribute(PlaneForm.geometry.attributes.uv.array, 2)
+	new THREE.BufferAttribute(PlaneForm.geometry.attributes.uv.array, 2),
 );
 TorusForm.geometry.setAttribute(
 	"uv2",
-	new THREE.BufferAttribute(TorusForm.geometry.attributes.uv.array, 2)
+	new THREE.BufferAttribute(TorusForm.geometry.attributes.uv.array, 2),
 );
 
 /* Positions */
@@ -534,14 +537,14 @@ MATERIAL_FOR_SHADOWS_PROPOSES.roughness = 0.7;
 /* MESH */
 const SHADOW_SPHERE = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 32, 32),
-	MATERIAL_FOR_SHADOWS_PROPOSES
+	MATERIAL_FOR_SHADOWS_PROPOSES,
 );
 SHADOW_SPHERE.castShadow = true;
 
 const SHADOW_PLANE = new THREE.Mesh(
 	new THREE.PlaneGeometry(5, 5),
 	// new THREE.MeshBasicMaterial({ map: BAKED_SHADOW })
-	MATERIAL_FOR_SHADOWS_PROPOSES
+	MATERIAL_FOR_SHADOWS_PROPOSES,
 );
 SHADOW_PLANE.rotation.x = -Math.PI * 0.5;
 SHADOW_PLANE.position.y = -0.5;
@@ -553,20 +556,20 @@ const SHADOW_PLANE_BAKED_SHADOW = new THREE.Mesh(
 		color: 0x000000,
 		transparent: true,
 		alphaMap: SIMPLE_SHADOW,
-	})
+	}),
 );
 SHADOW_PLANE_BAKED_SHADOW.rotation.x = -Math.PI * 0.5;
 SHADOW_PLANE_BAKED_SHADOW.position.y = SHADOW_PLANE.position.y + 0.01;
 
 // HELPERS
 const SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
-	SHADOW_DIRECTIONAL_LIGHT.shadow.camera
+	SHADOW_DIRECTIONAL_LIGHT.shadow.camera,
 );
 const SHADOW_SPOT_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
-	SHADOW_SPOT_LIGHT.shadow.camera
+	SHADOW_SPOT_LIGHT.shadow.camera,
 );
 const SHADOW_POINT_LIGHT_CAMERA_HELPER = new THREE.CameraHelper(
-	SHADOW_POINT_LIGHT.shadow.camera
+	SHADOW_POINT_LIGHT.shadow.camera,
 );
 SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER.visible = false;
 SHADOW_SPOT_LIGHT_CAMERA_HELPER.visible = false;
@@ -574,7 +577,7 @@ SHADOW_POINT_LIGHT_CAMERA_HELPER.visible = false;
 SHADOW_GROUP.add(
 	SHADOW_DIRECTIONAL_LIGHT_CAMERA_HELPER,
 	SHADOW_SPOT_LIGHT_CAMERA_HELPER,
-	SHADOW_POINT_LIGHT_CAMERA_HELPER
+	SHADOW_POINT_LIGHT_CAMERA_HELPER,
 );
 /* =========== END SHADOW LESSON =========== */
 
@@ -587,37 +590,37 @@ HAUNTED_HOUSE_GROUP.visible = false;
 
 /* TEXTURES */
 const HAUNTED_HOUSE_WALLS_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseAmbientocclusionWallImg
+	hauntedHouseAmbientocclusionWallImg,
 );
 const HAUNTED_HOUSE_WALLS_COLOR_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseColorWallImg
+	hauntedHouseColorWallImg,
 );
 const HAUNTED_HOUSE_WALLS_NORMAL_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseNormalWallImg
+	hauntedHouseNormalWallImg,
 );
 const HAUNTED_HOUSE_WALLS_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouserRoughnessWallImg
+	hauntedHouserRoughnessWallImg,
 );
 const HAUNTED_HOUSE_GRASS_AMBIENT_OCCLUSION_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseAmbientocclusionGrassImg
+	hauntedHouseAmbientocclusionGrassImg,
 );
 const HAUNTED_HOUSE_GRASS_COLOR_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseColorGrassImg
+	hauntedHouseColorGrassImg,
 );
 const HAUNTED_HOUSE_GRASS_NORMAL_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseNormalGrassImg
+	hauntedHouseNormalGrassImg,
 );
 const HAUNTED_HOUSE_GRASS_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouserRoughnessGrassImg
+	hauntedHouserRoughnessGrassImg,
 );
 const HAUNTED_HOUSE_BRUSH_COLOR_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseColorGrassImg
+	hauntedHouseColorGrassImg,
 );
 const HAUNTED_HOUSE_BRUSH_NORMAL_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouseNormalGrassImg
+	hauntedHouseNormalGrassImg,
 );
 const HAUNTED_HOUSE_BRUSH_ROUGHNESS_TEXTURE = TEXTURE_LOADER.load(
-	hauntedHouserRoughnessGrassImg
+	hauntedHouserRoughnessGrassImg,
 );
 HAUNTED_HOUSE_GRASS_AMBIENT_OCCLUSION_TEXTURE.repeat.set(8, 8);
 HAUNTED_HOUSE_GRASS_COLOR_TEXTURE.repeat.set(8, 8);
@@ -646,14 +649,14 @@ const HAUNTED_HOUSE_WALLS = new THREE.Mesh(
 		map: HAUNTED_HOUSE_WALLS_COLOR_TEXTURE,
 		normalMap: HAUNTED_HOUSE_WALLS_NORMAL_TEXTURE,
 		roughnessMap: HAUNTED_HOUSE_WALLS_ROUGHNESS_TEXTURE,
-	})
+	}),
 );
 HAUNTED_HOUSE_WALLS.geometry.setAttribute(
 	"uv2",
 	new THREE.Float32BufferAttribute(
 		HAUNTED_HOUSE_WALLS.geometry.attributes.uv.array,
-		2
-	)
+		2,
+	),
 );
 HAUNTED_HOUSE_WALLS.position.y = 2.5 / 2;
 HAUNTED_HOUSE_WALLS.castShadow = true;
@@ -662,7 +665,7 @@ const HAUNTED_HOUSE_ROOF = new THREE.Mesh(
 	new THREE.ConeGeometry(3.5, 1, 4),
 	new THREE.MeshStandardMaterial({
 		color: 0xb35e45,
-	})
+	}),
 );
 HAUNTED_HOUSE_ROOF.position.y = 2.5 + 0.5;
 HAUNTED_HOUSE_ROOF.rotation.y = Math.PI * 0.25;
@@ -684,14 +687,14 @@ const HAUNTED_HOUSE_DOOR = new THREE.Mesh(
 		normalMap: DOOR_NORMAL_TEXTURE,
 		// normalScale: new THREE.Vector2(0.5, 0.5),
 		transparent: true,
-	})
+	}),
 );
 HAUNTED_HOUSE_DOOR.geometry.setAttribute(
 	"uv2",
 	new THREE.Float32BufferAttribute(
 		HAUNTED_HOUSE_DOOR.geometry.attributes.uv.array,
-		2
-	)
+		2,
+	),
 );
 HAUNTED_HOUSE_DOOR.position.y = 1;
 HAUNTED_HOUSE_DOOR.position.z = 2 + 0.0001;
@@ -706,28 +709,28 @@ const HAUNTED_HOUSE_BUSH_MATERIAL = new THREE.MeshStandardMaterial({
 
 const HAUNTED_HOUSE_BUSH1 = new THREE.Mesh(
 	HAUNTED_HOUSE_BUSH_GEOMETRY,
-	HAUNTED_HOUSE_BUSH_MATERIAL
+	HAUNTED_HOUSE_BUSH_MATERIAL,
 );
 HAUNTED_HOUSE_BUSH1.scale.set(0.5, 0.5, 0.5);
 HAUNTED_HOUSE_BUSH1.position.set(0.8, 0.2, 2.2);
 
 const HAUNTED_HOUSE_BUSH2 = new THREE.Mesh(
 	HAUNTED_HOUSE_BUSH_GEOMETRY,
-	HAUNTED_HOUSE_BUSH_MATERIAL
+	HAUNTED_HOUSE_BUSH_MATERIAL,
 );
 HAUNTED_HOUSE_BUSH2.scale.set(0.25, 0.25, 0.25);
 HAUNTED_HOUSE_BUSH2.position.set(1.4, 0.1, 2.1);
 
 const HAUNTED_HOUSE_BUSH3 = new THREE.Mesh(
 	HAUNTED_HOUSE_BUSH_GEOMETRY,
-	HAUNTED_HOUSE_BUSH_MATERIAL
+	HAUNTED_HOUSE_BUSH_MATERIAL,
 );
 HAUNTED_HOUSE_BUSH3.scale.set(0.4, 0.4, 0.4);
 HAUNTED_HOUSE_BUSH3.position.set(-0.8, 0.1, 2.2);
 
 const HAUNTED_HOUSE_BUSH4 = new THREE.Mesh(
 	HAUNTED_HOUSE_BUSH_GEOMETRY,
-	HAUNTED_HOUSE_BUSH_MATERIAL
+	HAUNTED_HOUSE_BUSH_MATERIAL,
 );
 HAUNTED_HOUSE_BUSH4.scale.set(0.15, 0.15, 0.15);
 HAUNTED_HOUSE_BUSH4.position.set(-1, 0.05, 2.6);
@@ -751,7 +754,7 @@ for (let i = 0; i < 40; i++) {
 	// console.log(_ANGLE, _RADIUS);
 	const _GRAVE_MESH = new THREE.Mesh(
 		HAUNTED_HOUSE_GRAVE_GEOMETRY,
-		HAUNTED_HOUSE_GRAVE_MATERIAL
+		HAUNTED_HOUSE_GRAVE_MATERIAL,
 	);
 	_GRAVE_MESH.position.set(_X, _Y, _Z);
 	_GRAVE_MESH.rotation.x = (Math.random() - 0.5) * 0.35;
@@ -771,14 +774,14 @@ const HAUNTED_FLOOR = new THREE.Mesh(
 		map: HAUNTED_HOUSE_GRASS_COLOR_TEXTURE,
 		normalMap: HAUNTED_HOUSE_GRASS_NORMAL_TEXTURE,
 		roughnessMap: HAUNTED_HOUSE_GRASS_ROUGHNESS_TEXTURE,
-	})
+	}),
 );
 HAUNTED_FLOOR.geometry.setAttribute(
 	"uv2",
 	new THREE.Float32BufferAttribute(
 		HAUNTED_FLOOR.geometry.attributes.uv.array,
-		2
-	)
+		2,
+	),
 );
 HAUNTED_FLOOR.rotation.x = -Math.PI * 0.5;
 HAUNTED_FLOOR.position.y = 0;
@@ -827,7 +830,7 @@ HAUNTED_HOUSE_HOUSE_GROUP.add(
 	HAUNTED_HOUSE_BUSH2,
 	HAUNTED_HOUSE_BUSH3,
 	HAUNTED_HOUSE_BUSH4,
-	HAUNTED_DOOR_LIGHT
+	HAUNTED_DOOR_LIGHT,
 );
 HAUNTED_HOUSE_GROUP.add(
 	HAUNTED_FLOOR,
@@ -837,7 +840,7 @@ HAUNTED_HOUSE_GROUP.add(
 	HAUNTED_HOUSE_GRAVES_GROUP,
 	HAUNTED_HOUSE_GHOST1,
 	HAUNTED_HOUSE_GHOST2,
-	HAUNTED_HOUSE_GHOST3
+	HAUNTED_HOUSE_GHOST3,
 );
 
 // GUI
@@ -884,16 +887,16 @@ const PARTICLES_MATERIAL = new THREE.PointsMaterial({
 });
 const PARTICLES_CIRCLE_POINTS = new THREE.Points(
 	PARTICLES_GEOMETRY,
-	PARTICLES_MATERIAL
+	PARTICLES_MATERIAL,
 );
 
 /* Custom particles */
 const PARTICLES_CUSTOM_VERTICES_COUNT = 400;
 const PARTICLES_CUSTOM_VERTICES = new Float32Array(
-	PARTICLES_CUSTOM_VERTICES_COUNT * 3
+	PARTICLES_CUSTOM_VERTICES_COUNT * 3,
 );
 const PARTICLES_CUSTOM_VERTICES_COLOR = new Float32Array(
-	PARTICLES_CUSTOM_VERTICES_COUNT * 3
+	PARTICLES_CUSTOM_VERTICES_COUNT * 3,
 );
 /* Fill vector 3 square line */
 for (let i = 0; i < PARTICLES_CUSTOM_VERTICES.length; i++) {
@@ -903,11 +906,11 @@ for (let i = 0; i < PARTICLES_CUSTOM_VERTICES.length; i++) {
 const PARTICLES_CUSTOM_GEOMETRY = new THREE.BufferGeometry();
 PARTICLES_CUSTOM_GEOMETRY.setAttribute(
 	"position",
-	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES, 3)
+	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES, 3),
 );
 PARTICLES_CUSTOM_GEOMETRY.setAttribute(
 	"color",
-	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES_COLOR, 3)
+	new THREE.BufferAttribute(PARTICLES_CUSTOM_VERTICES_COLOR, 3),
 );
 const PARTICLES_CUSTOM_TEXTURE = TEXTURE_LOADER.load(particle2Img);
 const PARTICLES_CUSTOM_POINT_MATERIAL = new THREE.PointsMaterial({
@@ -923,7 +926,7 @@ const PARTICLES_CUSTOM_POINT_MATERIAL = new THREE.PointsMaterial({
 });
 const PARTICLES_CUSTOM_POINTS = new THREE.Points(
 	PARTICLES_CUSTOM_GEOMETRY,
-	PARTICLES_CUSTOM_POINT_MATERIAL
+	PARTICLES_CUSTOM_POINT_MATERIAL,
 );
 
 PARTICLES_GROUP.add(PARTICLES_CIRCLE_POINTS, PARTICLES_CUSTOM_POINTS);
@@ -968,17 +971,17 @@ const generateParticleGalaxy = () => {
 	particlesGalaxyBufferGeometry = new THREE.BufferGeometry();
 
 	const PARTICLES_GALAXY_CUSTOM_VERTICES = new Float32Array(
-		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3
+		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3,
 	);
 	const PARTICLES_GALAXY_CUSTOM_COLORS = new Float32Array(
-		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3
+		PARTICLES_GALAXY_DEFAULT_PARAMS.count * 3,
 	);
 
 	const INSIDE_COLOR = new THREE.Color(
-		PARTICLES_GALAXY_DEFAULT_PARAMS.insideColor
+		PARTICLES_GALAXY_DEFAULT_PARAMS.insideColor,
 	);
 	const OUTSIDE_COLOR = new THREE.Color(
-		PARTICLES_GALAXY_DEFAULT_PARAMS.outsideColor
+		PARTICLES_GALAXY_DEFAULT_PARAMS.outsideColor,
 	);
 
 	/* Fill vector 3 square line */
@@ -1020,7 +1023,7 @@ const generateParticleGalaxy = () => {
 		const MIXED_COLOR = INSIDE_COLOR.clone();
 		MIXED_COLOR.lerp(
 			OUTSIDE_COLOR,
-			_RADIUS / PARTICLES_GALAXY_DEFAULT_PARAMS.radius
+			_RADIUS / PARTICLES_GALAXY_DEFAULT_PARAMS.radius,
 		);
 
 		PARTICLES_GALAXY_CUSTOM_COLORS[_I3 + 0] = MIXED_COLOR.r;
@@ -1030,12 +1033,12 @@ const generateParticleGalaxy = () => {
 
 	particlesGalaxyBufferGeometry.setAttribute(
 		"position",
-		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_VERTICES, 3)
+		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_VERTICES, 3),
 	);
 
 	particlesGalaxyBufferGeometry.setAttribute(
 		"color",
-		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_COLORS, 3)
+		new THREE.BufferAttribute(PARTICLES_GALAXY_CUSTOM_COLORS, 3),
 	);
 
 	particlesGalaxyMaterial = new THREE.PointsMaterial({
@@ -1048,7 +1051,7 @@ const generateParticleGalaxy = () => {
 
 	particlesGalaxyCustomPoints = new THREE.Points(
 		particlesGalaxyBufferGeometry,
-		particlesGalaxyMaterial
+		particlesGalaxyMaterial,
 	);
 	PARTICLES_GALAXY_GROUP.add(particlesGalaxyCustomPoints);
 };
@@ -1123,24 +1126,24 @@ RAY_CASTER_GROUP.visible = false;
 
 const RAY_CASTER_OBJECT_1 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
-	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+	new THREE.MeshBasicMaterial({ color: "#ff0000" }),
 );
 RAY_CASTER_OBJECT_1.position.x = -2;
 
 const RAY_CASTER_OBJECT_2 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
-	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+	new THREE.MeshBasicMaterial({ color: "#ff0000" }),
 );
 
 const RAY_CASTER_OBJECT_3 = new THREE.Mesh(
 	new THREE.SphereGeometry(0.5, 16, 16),
-	new THREE.MeshBasicMaterial({ color: "#ff0000" })
+	new THREE.MeshBasicMaterial({ color: "#ff0000" }),
 );
 RAY_CASTER_OBJECT_3.position.x = 2;
 
 const RAY_CASTER_INSTANCE = new THREE.Raycaster(
 	new THREE.Vector3(-3, 0, 0),
-	new THREE.Vector3(10, 0, 0).normalize()
+	new THREE.Vector3(10, 0, 0).normalize(),
 );
 
 const RAY_CASTER_MOUSE = new THREE.Vector2();
@@ -1148,7 +1151,7 @@ const RAY_CASTER_MOUSE = new THREE.Vector2();
 RAY_CASTER_GROUP.add(
 	RAY_CASTER_OBJECT_1,
 	RAY_CASTER_OBJECT_2,
-	RAY_CASTER_OBJECT_3
+	RAY_CASTER_OBJECT_3,
 );
 
 const _RAY_CASTER_FOLDER_GUI = _GUI?.addFolder("Ray caster");
@@ -1185,15 +1188,15 @@ const SCROLL_BASED_MATERIAL = new THREE.MeshToonMaterial({
 /* Meshes */
 const SCROLL_BASED_MESH1 = new THREE.Mesh(
 	new THREE.TorusGeometry(1, 0.4, 16, 60),
-	SCROLL_BASED_MATERIAL
+	SCROLL_BASED_MATERIAL,
 );
 const SCROLL_BASED_MESH2 = new THREE.Mesh(
 	new THREE.ConeGeometry(1, 2, 32),
-	SCROLL_BASED_MATERIAL
+	SCROLL_BASED_MATERIAL,
 );
 const SCROLL_BASED_MESH3 = new THREE.Mesh(
 	new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
-	SCROLL_BASED_MATERIAL
+	SCROLL_BASED_MATERIAL,
 );
 
 const SCROLL_BASED_MESHES_LIST = [
@@ -1215,7 +1218,7 @@ SCROLL_BASED_MESH3.position.x = 2;
 // Geometry
 const SCROLL_BASED_PARTICLES_COUNT = 200;
 const SCROLL_BASED_PARTICLES_POSITIONS = new Float32Array(
-	SCROLL_BASED_PARTICLES_COUNT * 3
+	SCROLL_BASED_PARTICLES_COUNT * 3,
 );
 
 for (let i = 0; i < SCROLL_BASED_PARTICLES_COUNT; i++) {
@@ -1231,7 +1234,7 @@ for (let i = 0; i < SCROLL_BASED_PARTICLES_COUNT; i++) {
 const SCROLL_BASED_PARTICLES_GEOMETRY = new THREE.BufferGeometry();
 SCROLL_BASED_PARTICLES_GEOMETRY.setAttribute(
 	"position",
-	new THREE.BufferAttribute(SCROLL_BASED_PARTICLES_POSITIONS, 3)
+	new THREE.BufferAttribute(SCROLL_BASED_PARTICLES_POSITIONS, 3),
 );
 
 const SCROLL_BASED_PARTICLES_MATERIAL = new THREE.PointsMaterial({
@@ -1242,7 +1245,7 @@ const SCROLL_BASED_PARTICLES_MATERIAL = new THREE.PointsMaterial({
 
 const SCROLL_BASED_PARTICLES_POINTS = new THREE.Points(
 	SCROLL_BASED_PARTICLES_GEOMETRY,
-	SCROLL_BASED_PARTICLES_MATERIAL
+	SCROLL_BASED_PARTICLES_MATERIAL,
 );
 
 SCROLL_BASED_GROUP.add(
@@ -1250,7 +1253,7 @@ SCROLL_BASED_GROUP.add(
 	SCROLL_BASED_MESH1,
 	SCROLL_BASED_MESH2,
 	SCROLL_BASED_MESH3,
-	SCROLL_BASED_PARTICLES_POINTS
+	SCROLL_BASED_PARTICLES_POINTS,
 );
 
 const _SCROLL_BASED_FOLDER_GUI = _GUI?.addFolder("Scroll based");
@@ -1262,7 +1265,7 @@ _SCROLL_BASED_FOLDER_GUI
 	.onChange(() => {
 		SCROLL_BASED_MATERIAL.color.set(SCROLL_BASED_PARAMS.materialColor);
 		SCROLL_BASED_PARTICLES_MATERIAL.color.set(
-			SCROLL_BASED_PARAMS.materialColor
+			SCROLL_BASED_PARAMS.materialColor,
 		);
 	});
 
@@ -1458,6 +1461,15 @@ new Lesson_41({
 });
 
 /**
+ * Lesson 42 | Wobbly Sphere
+ */
+new Lesson_42({
+	fileLoader: FILE_LOADER,
+	gltfLoader: GLTF_LOADER,
+	hdrLoader: HDR_LOADER,
+});
+
+/**
  * Lesson 45 | Post processing
  */
 new Lesson_45({
@@ -1515,7 +1527,7 @@ LIGHT_FORMS_GROUP.add(
 	LIGHT_SPHERE,
 	LIGHT_CUBE,
 	LIGHT_TORUS,
-	LIGHT_PLANE
+	LIGHT_PLANE,
 );
 SHADOW_GROUP.add(
 	SHADOW_AMBIENT_LIGHT,
@@ -1525,7 +1537,7 @@ SHADOW_GROUP.add(
 	SHADOW_POINT_LIGHT,
 	SHADOW_PLANE,
 	SHADOW_SPHERE,
-	SHADOW_PLANE_BAKED_SHADOW
+	SHADOW_PLANE_BAKED_SHADOW,
 );
 
 const GROUP_APP_CAMERA = new THREE.Group();
@@ -1544,7 +1556,7 @@ APP.scene.add(
 	PARTICLES_GROUP,
 	PARTICLES_GALAXY_GROUP,
 	RAY_CASTER_GROUP,
-	SCROLL_BASED_GROUP
+	SCROLL_BASED_GROUP,
 );
 
 if (SCROLL_BASED_GROUP.visible) {
@@ -1640,7 +1652,7 @@ APP.setUpdateCallback("root", () => {
 			const _X = PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3];
 			// @ts-ignore
 			PARTICLES_CUSTOM_GEOMETRY.attributes.position.array[I3 + 1] = Math.sin(
-				ELAPSED_TIME + _X
+				ELAPSED_TIME + _X,
 			);
 		}
 		PARTICLES_CUSTOM_GEOMETRY.attributes.position.needsUpdate = true;
@@ -1663,15 +1675,15 @@ APP.setUpdateCallback("root", () => {
 		];
 
 		const RAY_CASTER_INSTANCE_INTERSECTS = RAY_CASTER_INSTANCE.intersectObjects(
-			_RAY_CASTER_OBJECTS_ANIMATION
+			_RAY_CASTER_OBJECTS_ANIMATION,
 		);
 
 		_RAY_CASTER_OBJECTS_ANIMATION.map(
-			(item) => (item.material.color = new THREE.Color("#ff0000"))
+			(item) => (item.material.color = new THREE.Color("#ff0000")),
 		);
 		RAY_CASTER_INSTANCE_INTERSECTS.map(
 			// @ts-ignore
-			(item) => (item.object.material.color = new THREE.Color("#0000ff"))
+			(item) => (item.object.material.color = new THREE.Color("#0000ff")),
 		);
 
 		if (RAY_CASTER_INSTANCE_INTERSECTS.length) {
@@ -1727,7 +1739,7 @@ APP.setUpdateCallback("root", () => {
 			item.mesh.position.set(
 				item.body.position.x,
 				item.body.position.y,
-				item.body.position.z
+				item.body.position.z,
 			);
 		});
 	PHYSIC_WORLD_CREATED_BOXES &&
@@ -1735,13 +1747,13 @@ APP.setUpdateCallback("root", () => {
 			item.mesh.position.set(
 				item.body.position.x,
 				item.body.position.y,
-				item.body.position.z
+				item.body.position.z,
 			);
 			item.mesh.quaternion.set(
 				item.body.quaternion.x,
 				item.body.quaternion.y,
 				item.body.quaternion.z,
-				item.body.quaternion.w
+				item.body.quaternion.w,
 			);
 		});
 	// console.log(PHYSICS_WORLD_SPHERE_PHYSIC_BODY.position.y);
@@ -1789,7 +1801,7 @@ _GUI_CUBES_GROUP_FOLDER
 				});
 			},
 		},
-		"function"
+		"function",
 	)
 	.name("Cubes lite animation");
 
@@ -1877,7 +1889,7 @@ if (SCROLL_BASED_GROUP.visible)
 		windowClientY = SCROLL_BASED_DOM_BODY.scrollTop;
 
 		const SCROLL_BASED_NEW_SECTION = Math.round(
-			windowClientY / APP.sceneSizes.height
+			windowClientY / APP.sceneSizes.height,
 		);
 
 		if (SCROLL_BASED_NEW_SECTION != scrollBasedCurrentSection) {

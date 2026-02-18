@@ -30,7 +30,7 @@ export class Lesson_41 {
 	appGui?: GUI;
 	gui?: GUI;
 	scene?: THREE.Group;
-	fileLoader: THREE.FileLoader = new THREE.FileLoader();
+	fileLoader: THREE.FileLoader;
 	gltfLoader: GLTFLoader;
 	configs = {
 		uTime: new THREE.Uniform(0),
@@ -39,8 +39,8 @@ export class Lesson_41 {
 		uResolution: new THREE.Uniform(
 			new THREE.Vector2(
 				this.app.sizes.width * this.app.sizes.pixelRatio,
-				this.app.sizes.height * this.app.sizes.pixelRatio
-			)
+				this.app.sizes.height * this.app.sizes.pixelRatio,
+			),
 		),
 	};
 	onConstruct?: () => unknown;
@@ -57,8 +57,6 @@ export class Lesson_41 {
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
-
-		this.construct();
 	}
 
 	async construct() {
@@ -97,7 +95,7 @@ export class Lesson_41 {
 		gpgpu.computation = new GPUComputationRenderer(
 			gpgpu.size,
 			gpgpu.size,
-			this.app.renderer
+			this.app.renderer,
 		);
 
 		// Base Texture
@@ -121,9 +119,9 @@ export class Lesson_41 {
 			"uParticles",
 			gpgpuParticlesShader.replace(
 				"#include simplexNoise4d",
-				simplexNoise4DShader
+				simplexNoise4DShader,
 			),
-			baseParticlesTexture
+			baseParticlesTexture,
 		);
 		gpgpu.computation.setVariableDependencies(gpgpu.particlesVariable, [
 			gpgpu.particlesVariable,
@@ -131,7 +129,7 @@ export class Lesson_41 {
 		gpgpu.particlesVariable.material.uniforms.uTime = this.configs.uTime;
 		gpgpu.particlesVariable.material.uniforms.uDelta = this.configs.uDelta;
 		gpgpu.particlesVariable.material.uniforms.uBase = new THREE.Uniform(
-			baseParticlesTexture
+			baseParticlesTexture,
 		);
 		gpgpu.particlesVariable.material.uniforms.uFlowFieldInfluence =
 			new THREE.Uniform(0.5);
@@ -147,7 +145,7 @@ export class Lesson_41 {
 			new THREE.MeshBasicMaterial({
 				map: gpgpu.computation.getCurrentRenderTarget(gpgpu.particlesVariable)
 					.texture,
-			})
+			}),
 		);
 		gpgpu.debugMesh.visible = false;
 		gpgpu.debugMesh.position.x = -4;
@@ -180,15 +178,15 @@ export class Lesson_41 {
 		particles.geometry.setDrawRange(0, baseGeometry.count);
 		particles.geometry.setAttribute(
 			"aParticlesUv",
-			new THREE.BufferAttribute(particlesUvArray, 2)
+			new THREE.BufferAttribute(particlesUvArray, 2),
 		);
 		particles.geometry.setAttribute(
 			"aColor",
-			baseGeometry.instance.getAttribute("color")
+			baseGeometry.instance.getAttribute("color"),
 		);
 		particles.geometry.setAttribute(
 			"aSize",
-			new THREE.BufferAttribute(sizesArray, 1)
+			new THREE.BufferAttribute(sizesArray, 1),
 		);
 
 		particles.material = new THREE.ShaderMaterial({
@@ -220,14 +218,14 @@ export class Lesson_41 {
 			this.configs.uDelta.value = this.app.time.delta * 0.001;
 			this.configs.uResolution.value.set(
 				this.app.sizes.width * this.app.sizes.pixelRatio,
-				this.app.sizes.height * this.app.sizes.pixelRatio
+				this.app.sizes.height * this.app.sizes.pixelRatio,
 			);
 
 			gpgpu.computation?.compute();
 			if (particles.material && gpgpu.computation && gpgpu.particlesVariable)
 				particles.material.uniforms.uParticlesTexture.value =
 					gpgpu.computation.getCurrentRenderTarget(
-						gpgpu.particlesVariable
+						gpgpu.particlesVariable,
 					).texture;
 		});
 
@@ -241,7 +239,7 @@ export class Lesson_41 {
 				"value",
 				0,
 				1,
-				0.01
+				0.01,
 			)
 			.name("Flow Field Influence");
 		this.gui
@@ -250,7 +248,7 @@ export class Lesson_41 {
 				"value",
 				0,
 				10,
-				0.01
+				0.01,
 			)
 			.name("Flow Field Strength");
 		this.gui
@@ -259,7 +257,7 @@ export class Lesson_41 {
 				"value",
 				0,
 				1,
-				0.01
+				0.01,
 			)
 			.name("Flow Field Frequency");
 		this.gui?.add(gpgpu.debugMesh, "visible").name("Visible Debug");
@@ -270,7 +268,7 @@ export class Lesson_41 {
 						this.destruct();
 					},
 				},
-				"function"
+				"function",
 			)
 			.name("Destruct");
 		this.gui?.open();

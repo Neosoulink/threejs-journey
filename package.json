@@ -12,7 +12,8 @@
 		"events": "^3.3.0",
 		"gsap": "3.13.0",
 		"stats.js": "^0.17.0",
-		"three": "0.181.0"
+		"three": "0.181.0",
+		"three-custom-shader-material": "^6.4.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.28.5",
