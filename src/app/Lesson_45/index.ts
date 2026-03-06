@@ -47,7 +47,7 @@ export class Lesson_45 {
 	cubeTextureLoader: THREE.CubeTextureLoader;
 	textureLoader: THREE.TextureLoader;
 	effectComposer?: EffectComposer;
-	clock = new THREE.Clock();
+	clock = new THREE.Timer();
 	customDisplacementPass?: ShaderPass;
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
@@ -150,7 +150,7 @@ export class Lesson_45 {
 				pzEnvImg,
 				nzEnvImg,
 			]);
-			environmentMap.encoding = THREE.sRGBEncoding;
+			environmentMap.colorSpace = THREE.SRGBColorSpace;
 
 			this.effectComposer = undefined;
 
@@ -217,7 +217,7 @@ export class Lesson_45 {
 				new THREE.Vector2(1, 1),
 				0.3,
 				1,
-				0.6
+				0.6,
 			);
 			unrealBloomPass.enabled = false;
 			this.effectComposer.addPass(unrealBloomPass);
@@ -313,7 +313,7 @@ export class Lesson_45 {
 				this.app.renderer.getPixelRatio() === 1 &&
 				!this.app.renderer.capabilities.isWebGL2
 			) {
-				SMAA_Pass = new SMAAPass(this.app.sizes.width, this.app.sizes.height);
+				SMAA_Pass = new SMAAPass();
 				SMAA_Pass.enabled = false;
 				this.effectComposer.addPass(SMAA_Pass);
 			}
@@ -321,7 +321,7 @@ export class Lesson_45 {
 			this.resizeEvent = () => {
 				this.effectComposer?.setSize(
 					this.app.sizes.width,
-					this.app.sizes.height
+					this.app.sizes.height,
 				);
 				this.effectComposer?.setPixelRatio(this.app.sizes.pixelRatio);
 			};
@@ -396,7 +396,7 @@ export class Lesson_45 {
 
 	update() {
 		if (this.customDisplacementPass?.enabled) {
-			const elapsedTime = this.clock.getElapsedTime();
+			const elapsedTime = this.clock.getElapsed();
 			this.customDisplacementPass.material.uniforms.uTime.value = elapsedTime;
 		}
 		this.effectComposer?.render();

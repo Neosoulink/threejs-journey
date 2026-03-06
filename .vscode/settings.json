@@ -4,6 +4,7 @@
 		"biginnormal",
 		"cnoise",
 		"colorspace",
+		"Equirectangular",
 		"fract",
 		"GPGPU",
 		"mediump",

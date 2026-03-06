@@ -16,6 +16,7 @@ import wobbleVertexShaderUrl from "./shaders/wobble/vertex.glsl?url";
 
 // LOCAL TYPES
 export interface Lesson39ConstructorProps {
+	folderName: string;
 	fileLoader?: THREE.FileLoader;
 	gltfLoader?: GLTFLoader;
 	hdrLoader?: HDRLoader;
@@ -24,7 +25,7 @@ export interface Lesson39ConstructorProps {
 }
 
 export class Lesson_42 {
-	folderName = "Lesson 42 | Wobbly Sphere";
+	folderName: string;
 	app = new ThreeApp();
 	appGui?: GUI;
 	gui?: GUI;
@@ -46,7 +47,8 @@ export class Lesson_42 {
 	onConstruct?: () => unknown;
 	onDestruct?: () => unknown;
 
-	constructor(props?: Lesson39ConstructorProps) {
+	constructor(props: Lesson39ConstructorProps) {
+		this.folderName = props.folderName;
 		this.appGui = this.app.debug?.ui;
 		this.gui = this.appGui?.addFolder(this.folderName);
 		this.gui?.close();
@@ -58,8 +60,6 @@ export class Lesson_42 {
 
 		if (props?.onConstruct) this.onConstruct = props?.onConstruct;
 		if (props?.onDestruct) this.onDestruct = props?.onDestruct;
-
-		this.construct();
 	}
 
 	async loadFile(fileLocation: string) {

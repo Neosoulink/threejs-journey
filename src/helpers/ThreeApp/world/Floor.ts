@@ -26,7 +26,7 @@ export default class Floor {
 
 		if (_GRASS_COLOR_TEXTURE instanceof THREE.Texture) {
 			this.textures.color = _GRASS_COLOR_TEXTURE;
-			this.textures.color.encoding = THREE.sRGBEncoding;
+			this.textures.color.colorSpace = THREE.SRGBColorSpace;
 			this.textures.color.repeat.set(1.5, 1.5);
 			this.textures.color.wrapS = THREE.RepeatWrapping;
 			this.textures.color.wrapT = THREE.RepeatWrapping;
@@ -34,6 +34,7 @@ export default class Floor {
 
 		if (_GRASS_NORMAL_TEXTURE instanceof THREE.Texture) {
 			this.textures.normal = _GRASS_NORMAL_TEXTURE;
+			this.textures.normal.colorSpace = THREE.SRGBColorSpace;
 			this.textures.normal.repeat.set(1.5, 1.5);
 			this.textures.normal.wrapS = THREE.RepeatWrapping;
 			this.textures.normal.wrapT = THREE.RepeatWrapping;

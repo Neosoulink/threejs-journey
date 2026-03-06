@@ -73,7 +73,7 @@ export default class Environment {
 				intensity: 0.4,
 				texture: _TEXTURE,
 			};
-			this.environmentMap.texture.encoding = THREE.sRGBEncoding;
+			this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace;
 
 			this.app.scene.environment = this.environmentMap.texture;
 

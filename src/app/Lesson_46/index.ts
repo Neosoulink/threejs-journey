@@ -90,11 +90,11 @@ export class Lesson_46 {
 			this.mainGroup = new THREE.Group();
 
 			const displacementTexture = this.textureLoader.load(
-				displacementTextureImg
+				displacementTextureImg,
 			);
 
 			this.app.renderer.shadowMap.enabled = true;
-			this.app.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+			this.app.renderer.shadowMap.type = THREE.PCFShadowMap;
 			this.app.renderer.setSize(this.app.sizes.width, this.app.sizes.height);
 			this.app.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -103,7 +103,7 @@ export class Lesson_46 {
 			 */
 			const cube = new THREE.Mesh(
 				new THREE.BoxGeometry(2, 2, 2),
-				new THREE.MeshStandardMaterial()
+				new THREE.MeshStandardMaterial(),
 			);
 			cube.castShadow = true;
 			cube.receiveShadow = true;
@@ -112,7 +112,7 @@ export class Lesson_46 {
 
 			const torusKnot = new THREE.Mesh(
 				new THREE.TorusKnotGeometry(1, 0.4, 128, 32),
-				new THREE.MeshStandardMaterial()
+				new THREE.MeshStandardMaterial(),
 			);
 			torusKnot.castShadow = true;
 			torusKnot.receiveShadow = true;
@@ -120,7 +120,7 @@ export class Lesson_46 {
 
 			const sphere = new THREE.Mesh(
 				new THREE.SphereGeometry(1, 32, 32),
-				new THREE.MeshStandardMaterial()
+				new THREE.MeshStandardMaterial(),
 			);
 			sphere.position.set(5, 0, 0);
 			sphere.castShadow = true;
@@ -129,7 +129,7 @@ export class Lesson_46 {
 
 			const floor = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10),
-				new THREE.MeshStandardMaterial()
+				new THREE.MeshStandardMaterial(),
 			);
 			floor.position.set(0, -2, 0);
 			floor.rotation.x = -Math.PI * 0.5;

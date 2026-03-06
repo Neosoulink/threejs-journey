@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import EventEmitter from "events";
+import { EventEmitter } from "events";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 // CLASSES

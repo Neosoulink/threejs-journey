@@ -33,6 +33,7 @@ import { Lesson_39 } from "./app/Lesson_39";
 import { Lesson_40 } from "./app/Lesson_40";
 import { Lesson_41 } from "./app/Lesson_41";
 import { Lesson_42 } from "./app/Lesson_42";
+import { Lesson_43 } from "./app/Lesson_43";
 import { Lesson_45 } from "./app/Lesson_45";
 import { Lesson_46 } from "./app/Lesson_46";
 import { Lesson_47 } from "./app/Lesson_47";
@@ -120,7 +121,7 @@ _GUI_MAIN_FOLDER
 	.name("enable dblclick FullScreen");
 
 /* CLOCK */
-const ANIMATION_CLOCK = new THREE.Clock();
+const ANIMATION_CLOCK = new THREE.Timer();
 
 // GROUPE
 const MESH_NEW_MATERIAL_GROUP = new THREE.Group();
@@ -1460,10 +1461,15 @@ new Lesson_41({
 	gltfLoader: GLTF_LOADER,
 });
 
-/**
- * Lesson 42 | Wobbly Sphere
- */
 new Lesson_42({
+	folderName: "Lesson 42 | Wobbly Sphere",
+	fileLoader: FILE_LOADER,
+	gltfLoader: GLTF_LOADER,
+	hdrLoader: HDR_LOADER,
+});
+
+new Lesson_43({
+	folderName: "Lesson 43 | Sliced Model",
 	fileLoader: FILE_LOADER,
 	gltfLoader: GLTF_LOADER,
 	hdrLoader: HDR_LOADER,
@@ -1579,7 +1585,7 @@ APP.setUpdateCallback("root", () => {
 	// savedTime = CURRENT_TIME;
 
 	// ANIMATION using THREE clock
-	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsedTime();
+	const ELAPSED_TIME = ANIMATION_CLOCK.getElapsed();
 	const DELTA_TIME = ELAPSED_TIME - previewsElapseTime;
 	previewsElapseTime = ELAPSED_TIME;
 

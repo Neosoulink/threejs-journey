@@ -21,7 +21,7 @@ export default class Renderer {
 		this.intense.toneMapping = THREE.NoToneMapping;
 		this.intense.toneMappingExposure = 1;
 		this.intense.shadowMap.enabled = true;
-		this.intense.shadowMap.type = THREE.PCFSoftShadowMap;
+		this.intense.shadowMap.type = THREE.PCFShadowMap;
 		this.intense.setClearColor("#000011");
 		this.intense.setSize(this.app.sizes.width, this.app.sizes.height);
 		this.intense.setPixelRatio(this.app.sizes.pixelRatio);
